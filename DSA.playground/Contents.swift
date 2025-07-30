@@ -191,7 +191,7 @@ class Solution {
     //        }
     //        return ans
     //    }
-
+    
     //    func reversePairs(_ nums: [Int]) -> Int {
     ////        var answer = 0
     ////        for i in 0..<nums.count {
@@ -362,7 +362,7 @@ class Solution {
      Kadane
      K sum
      */
-
+    
     func subarraySum(_ nums: [Int], _ k: Int) -> Int {
         // needs to return the number of continuous subarrays whose sum equals to k
         /*
@@ -382,7 +382,7 @@ class Solution {
          let sum = subarray.reduce(0, +)
          if sum == k {
          count += 1
-
+         
          }
          }
          }
@@ -397,12 +397,12 @@ class Solution {
         for i in 0..<nums.count {
             currentSum += nums[i]
             let targetSumExists = prefixSumCount[currentSum-k] ?? 0 // Check if there exists a prefix sum such that currentSum - prefixSum = k
-                count += targetSumExists
-                prefixSumCount[currentSum, default: 0] += 1 // Initialize if not present
+            count += targetSumExists
+            prefixSumCount[currentSum, default: 0] += 1 // Initialize if not present
         }
         return count
     }
-
+    
     func findLongestSubarrayWithSum(_ nums: [Int], _ k: Int) -> Int {
         // Returns the length of the longest subarray with sum equals to k
         var count = 0
@@ -420,7 +420,7 @@ class Solution {
         }
         return count
     }
-
+    
     func findSubarraysWithXorEqualsTok(_ nums: [Int], _ k: Int) -> Int {
         // if A XOR B = k, then A = k XOR B
         var count = 0
@@ -434,7 +434,7 @@ class Solution {
         }
         return count
     }
-
+    
     func lengthOfLongestSubstring(_ s: String) -> Int {
         // example string: aecbcdeaf : Answer = 6 , i.e. bcdeaf
         // Idea have a hashMap which tells the index , i.e last occurrence of a character and use sliding window concept
@@ -450,18 +450,18 @@ class Solution {
         }
         return maxLength
     }
-
+    
     func reverseList(_ head: ListNode?) -> ListNode? {
         /* 1st method iterative solution
-        var prev: ListNode?
-        var current = head
-        while current != nil {
-            let nextNode = current?.next
-            current?.next = prev
-            prev = current
-            current = nextNode
-        }
-        return prev
+         var prev: ListNode?
+         var current = head
+         while current != nil {
+         let nextNode = current?.next
+         current?.next = prev
+         prev = current
+         current = nextNode
+         }
+         return prev
          */
         //2nd method: Recursive solution
         if head == nil || head?.next == nil {
@@ -470,22 +470,22 @@ class Solution {
         let newHead = reverseList(head?.next)
         head?.next?.next = head
         head?.next = nil
-
+        
         return newHead
     }
     func middleNode(_ head: ListNode?) -> ListNode? {
         /* 1st method: simply finding the number of elements and traversing again to get that
-        var sizeOfLinkedList = 0
-        var currentNode: ListNode? = head
-        while(currentNode?.next != nil){
-            sizeOfLinkedList += 1
-            currentNode = currentNode?.next
-        }
-        var currentNodeForTraversal: ListNode? = head
-        for _ in 0..<(sizeOfLinkedList/2) {
-            currentNodeForTraversal = currentNodeForTraversal?.next
-        }
-        return currentNodeForTraversal
+         var sizeOfLinkedList = 0
+         var currentNode: ListNode? = head
+         while(currentNode?.next != nil){
+         sizeOfLinkedList += 1
+         currentNode = currentNode?.next
+         }
+         var currentNodeForTraversal: ListNode? = head
+         for _ in 0..<(sizeOfLinkedList/2) {
+         currentNodeForTraversal = currentNodeForTraversal?.next
+         }
+         return currentNodeForTraversal
          */
         // 2nd method: 2 pointer slow/fast approach
         var slow: ListNode? = head
@@ -499,47 +499,47 @@ class Solution {
     /*
      3rd method: Recursive solution for finding middle of Linked List
      func findMiddleUtil(_ node: ListNode?, _ n: inout Int, _ mid: inout ListNode?) {
-         guard let node = node else {
-             n = (n+1) / 2   // Set n to half on reaching end
-             return
-         }
-         n += 1
-         findMiddleUtil(node.next, &n, &mid)
-         n -= 1
-         if n == 0 {
-             mid = node
-         }
+     guard let node = node else {
+     n = (n+1) / 2   // Set n to half on reaching end
+     return
      }
-
+     n += 1
+     findMiddleUtil(node.next, &n, &mid)
+     n -= 1
+     if n == 0 {
+     mid = node
+     }
+     }
+     
      func middleNode(_ head: ListNode?) -> ListNode? {
-         var n = 0
-         var mid: ListNode? = nil
-         findMiddleUtil(head, &n, &mid)
-         return mid
+     var n = 0
+     var mid: ListNode? = nil
+     findMiddleUtil(head, &n, &mid)
+     return mid
      }
      */
     func mergeTwoLists(_ list1: ListNode?, _ list2: ListNode?) -> ListNode? {
-    let dummy = ListNode(0)
-    var tail = dummy
-    var node1 = list1
-    var node2 = list2
-
-    while let n1 = node1, let n2 = node2 {
-        if n1.val < n2.val {
-            tail.next = n1
-            node1 = n1.next
-        } else {
-            tail.next = n2
-            node2 = n2.next
+        let dummy = ListNode(0)
+        var tail = dummy
+        var node1 = list1
+        var node2 = list2
+        
+        while let n1 = node1, let n2 = node2 {
+            if n1.val < n2.val {
+                tail.next = n1
+                node1 = n1.next
+            } else {
+                tail.next = n2
+                node2 = n2.next
+            }
+            tail = tail.next!
         }
-        tail = tail.next!
+        
+        // One list may have leftovers
+        tail.next = node1 ?? node2
+        return dummy.next
     }
-
-    // One list may have leftovers
-    tail.next = node1 ?? node2
-    return dummy.next
-    }
-
+    
     func removeNthFromEnd(_ head: ListNode?, _ n: Int) -> ListNode? {
         // Approach 1: Finding the length of the list and then removing the nth node from the end
         // Approach 2: Using two pointers (fast and slow) to find the nth node from the end, keep the fast n steps ahead of the slow pointer, when fast reaches the end, slow will be at the nth node from the end
@@ -557,7 +557,7 @@ class Solution {
         slow?.next = slow?.next?.next
         return dummy.next
     }
-
+    
     func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
         /*
          You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
@@ -583,7 +583,7 @@ class Solution {
         }
         return dummyNode.next
     }
-
+    
     func deleteNode(_ node: ListNode?) {
         var currentNode = node
         var nextNode = node?.next
@@ -592,7 +592,7 @@ class Solution {
             currentNode?.next = nextNode?.next
         }
     }
-
+    
     func getIntersectionNode(_ headA: ListNode?, _ headB: ListNode?) -> ListNode? {
         // find length of both the linked list
         var currentA = headA, currentB = headB
@@ -613,27 +613,27 @@ class Solution {
         // Now move both pointers until they meet
         var pointerA = lengthA > lengthB ? pointerToAdvance : headA
         var pointerB = lengthA > lengthB ? headB : pointerToAdvance
-
+        
         while pointerA !== pointerB {
             pointerA = pointerA?.next
             pointerB = pointerB?.next
         }
         return pointerA // or pointerB, both will be the same at this point
     }
-
+    
     func hasCycle(_ head: ListNode?) -> Bool {
         // Method 1: Using a set to store visited nodes
         /*
-        var visitedNodes: Set<ListNode> = []
-        var currentNode = head
-        while currentNode != nil {
-            if visitedNodes.contains(currentNode!) {
-                return true // Cycle detected
-            }
-            visitedNodes.insert(currentNode!)
-            currentNode = currentNode?.next
-        }
-        return false
+         var visitedNodes: Set<ListNode> = []
+         var currentNode = head
+         while currentNode != nil {
+         if visitedNodes.contains(currentNode!) {
+         return true // Cycle detected
+         }
+         visitedNodes.insert(currentNode!)
+         currentNode = currentNode?.next
+         }
+         return false
          */
         // Method 2: Using Floyd's Cycle Detection Algorithm (Tortoise and Hare)
         var dummyNode : ListNode? = ListNode(0)
@@ -659,11 +659,11 @@ class Solution {
         }
         return true // Cycle detected : slow will point that intersection point
     }
-
+    
     func reverseKGroup(_ head: ListNode?, _ k: Int) -> ListNode? {
         // Intuition: Recursion
         var currentNode: ListNode? = head
-
+        
         // Checking if k nodes do exist in Linked List
         for _ in 0..<k {
             if currentNode == nil {
@@ -671,7 +671,7 @@ class Solution {
             }
             currentNode = currentNode?.next
         }
-
+        
         // Reverse the first k nodes
         var prev: ListNode? = nil
         var current = head
@@ -682,15 +682,15 @@ class Solution {
             prev = current
             current = nextNode
         }
-
+        
         // head is the new tail, previous is the new head
         if let originalHead = head {
             originalHead.next = reverseKGroup(current, k)
         }
-
+        
         return prev
     }
-
+    
     func isPalindrome(_ head: ListNode?) -> Bool {
         // first find the middle of the linked list
         // reverse the second half of linked list
@@ -699,14 +699,14 @@ class Solution {
         if head == nil || head?.next == nil {
             return true
         }
-
+        
         var middleNode = middleNode(head)
         // reverse the second half
         var secondHalfHead: ListNode? = reverseList(middleNode?.next)
-
+        
         var firstHalfNode: ListNode? = head
         var isPalindrome = true
-
+        
         while isPalindrome && secondHalfHead != nil {
             if firstHalfNode?.val != secondHalfHead?.val {
                 isPalindrome = false
@@ -714,10 +714,90 @@ class Solution {
             firstHalfNode = firstHalfNode?.next
             secondHalfHead = secondHalfHead?.next
         }
-
+        
         // restore the second half again
         firstHalfNode?.next = reverseList(middleNode)
         return isPalindrome
+    }
+        
+    func mergeTwoSortedLinkedList(_ list1: Node?, _ list2: Node?) -> Node? {
+        var dummy = Node(0)
+        var tail: Node? = dummy
+        var node1 = list1
+        var node2 = list2
+        while node1 != nil && node2 != nil {
+            if node1!.val < node2!.val {
+                tail?.child = node1
+                node1 = node1?.child
+            } else {
+                tail?.child = node2
+                node2 = node2?.child
+            }
+            tail = tail?.child
+        }
+        tail?.child = node1 ?? node2
+        return dummy.child
+    }
+    
+    func flatten(_ head: Node?) -> Node? {
+        if head == nil || head?.next == nil {
+                return head
+        }
+        
+        var flattenedNext: Node? = flatten(head?.next)
+        
+        head?.next = nil
+        let mergedLinkedListHead = mergeTwoSortedLinkedList(head, flattenedNext)
+        
+        return mergedLinkedListHead
+    }
+    
+    func lengthOfListNode(_ head: ListNode?) -> Int {
+        if head == nil { return 0 }
+        var currNode = head
+        var answer = 0
+        while currNode != nil {
+            answer += 1
+            currNode = currNode?.next
+        }
+        return answer
+    }
+    
+    func rotateRight(_ head: ListNode?, _ k: Int) -> ListNode? {
+        if head == nil || head?.next == nil || k == 0 {
+            return head
+        }
+        
+        let length = lengthOfListNode(head)
+        
+        // Handle cases where no rotation is needed
+        let correctedK = k % length
+        if correctedK == 0 {
+            return head
+        }
+        
+        // Find the old tail (last node)
+        var tail: ListNode? = head
+        while tail?.next != nil {
+            tail = tail?.next
+        }
+        
+        // Find the new tail, which is at position (length - k - 1)
+        var newTail = head
+        for _ in 0..<(length - correctedK - 1) {
+            newTail = newTail?.next
+        }
+        
+        // The new head is the node after the new tail
+        let newHead = newTail?.next
+        
+        // Cut the list at the new tail
+        newTail?.next = nil
+        
+        // Connect the old tail to the old head
+        tail?.next = head
+        
+        return newHead
     }
 }
 
@@ -730,6 +810,13 @@ extension ListNode: Hashable {
     public static func == (lhs: ListNode, rhs: ListNode) -> Bool {
         return lhs === rhs  // Check if same object (reference equality)
     }
+}
+
+public class Node {
+    public var val: Int
+    public var next: Node?
+    public var child: Node?
+    public init(_ val: Int) { self.val = val; self.next = nil; self.child = nil; }
 }
 
 public class ListNode {
@@ -779,4 +866,5 @@ let solution = Solution()
 //let nums = [1,0,-1,0,-2,2]
 //let target = 0
 //solution.fourSum(nums, target)
+
 
