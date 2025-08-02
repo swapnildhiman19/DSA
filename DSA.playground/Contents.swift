@@ -191,7 +191,7 @@
 //    //        }
 //    //        return ans
 //    //    }
-//    
+//
 //    //    func reversePairs(_ nums: [Int]) -> Int {
 //    ////        var answer = 0
 //    ////        for i in 0..<nums.count {
@@ -362,7 +362,7 @@
 //     Kadane
 //     K sum
 //     */
-//    
+//
 //    func subarraySum(_ nums: [Int], _ k: Int) -> Int {
 //        // needs to return the number of continuous subarrays whose sum equals to k
 //        /*
@@ -382,7 +382,7 @@
 //         let sum = subarray.reduce(0, +)
 //         if sum == k {
 //         count += 1
-//         
+//
 //         }
 //         }
 //         }
@@ -402,7 +402,7 @@
 //        }
 //        return count
 //    }
-//    
+//
 //    func findLongestSubarrayWithSum(_ nums: [Int], _ k: Int) -> Int {
 //        // Returns the length of the longest subarray with sum equals to k
 //        var count = 0
@@ -420,7 +420,7 @@
 //        }
 //        return count
 //    }
-//    
+//
 //    func findSubarraysWithXorEqualsTok(_ nums: [Int], _ k: Int) -> Int {
 //        // if A XOR B = k, then A = k XOR B
 //        var count = 0
@@ -434,7 +434,7 @@
 //        }
 //        return count
 //    }
-//    
+//
 //    func lengthOfLongestSubstring(_ s: String) -> Int {
 //        // example string: aecbcdeaf : Answer = 6 , i.e. bcdeaf
 //        // Idea have a hashMap which tells the index , i.e last occurrence of a character and use sliding window concept
@@ -450,7 +450,7 @@
 //        }
 //        return maxLength
 //    }
-//    
+//
 //    func reverseList(_ head: ListNode?) -> ListNode? {
 //        /* 1st method iterative solution
 //         var prev: ListNode?
@@ -470,7 +470,7 @@
 //        let newHead = reverseList(head?.next)
 //        head?.next?.next = head
 //        head?.next = nil
-//        
+//
 //        return newHead
 //    }
 //    func middleNode(_ head: ListNode?) -> ListNode? {
@@ -510,7 +510,7 @@
 //     mid = node
 //     }
 //     }
-//     
+//
 //     func middleNode(_ head: ListNode?) -> ListNode? {
 //     var n = 0
 //     var mid: ListNode? = nil
@@ -523,7 +523,7 @@
 //        var tail = dummy
 //        var node1 = list1
 //        var node2 = list2
-//        
+//
 //        while let n1 = node1, let n2 = node2 {
 //            if n1.val < n2.val {
 //                tail.next = n1
@@ -534,12 +534,12 @@
 //            }
 //            tail = tail.next!
 //        }
-//        
+//
 //        // One list may have leftovers
 //        tail.next = node1 ?? node2
 //        return dummy.next
 //    }
-//    
+//
 //    func removeNthFromEnd(_ head: ListNode?, _ n: Int) -> ListNode? {
 //        // Approach 1: Finding the length of the list and then removing the nth node from the end
 //        // Approach 2: Using two pointers (fast and slow) to find the nth node from the end, keep the fast n steps ahead of the slow pointer, when fast reaches the end, slow will be at the nth node from the end
@@ -557,7 +557,7 @@
 //        slow?.next = slow?.next?.next
 //        return dummy.next
 //    }
-//    
+//
 //    func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
 //        /*
 //         You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
@@ -583,7 +583,7 @@
 //        }
 //        return dummyNode.next
 //    }
-//    
+//
 //    func deleteNode(_ node: ListNode?) {
 //        var currentNode = node
 //        var nextNode = node?.next
@@ -592,7 +592,7 @@
 //            currentNode?.next = nextNode?.next
 //        }
 //    }
-//    
+//
 //    func getIntersectionNode(_ headA: ListNode?, _ headB: ListNode?) -> ListNode? {
 //        // find length of both the linked list
 //        var currentA = headA, currentB = headB
@@ -613,14 +613,14 @@
 //        // Now move both pointers until they meet
 //        var pointerA = lengthA > lengthB ? pointerToAdvance : headA
 //        var pointerB = lengthA > lengthB ? headB : pointerToAdvance
-//        
+//
 //        while pointerA !== pointerB {
 //            pointerA = pointerA?.next
 //            pointerB = pointerB?.next
 //        }
 //        return pointerA // or pointerB, both will be the same at this point
 //    }
-//    
+//
 //    func hasCycle(_ head: ListNode?) -> Bool {
 //        // Method 1: Using a set to store visited nodes
 //        /*
@@ -659,11 +659,11 @@
 //        }
 //        return true // Cycle detected : slow will point that intersection point
 //    }
-//    
+//
 //    func reverseKGroup(_ head: ListNode?, _ k: Int) -> ListNode? {
 //        // Intuition: Recursion
 //        var currentNode: ListNode? = head
-//        
+//
 //        // Checking if k nodes do exist in Linked List
 //        for _ in 0..<k {
 //            if currentNode == nil {
@@ -671,7 +671,7 @@
 //            }
 //            currentNode = currentNode?.next
 //        }
-//        
+//
 //        // Reverse the first k nodes
 //        var prev: ListNode? = nil
 //        var current = head
@@ -682,15 +682,15 @@
 //            prev = current
 //            current = nextNode
 //        }
-//        
+//
 //        // head is the new tail, previous is the new head
 //        if let originalHead = head {
 //            originalHead.next = reverseKGroup(current, k)
 //        }
-//        
+//
 //        return prev
 //    }
-//    
+//
 //    func isPalindrome(_ head: ListNode?) -> Bool {
 //        // first find the middle of the linked list
 //        // reverse the second half of linked list
@@ -699,14 +699,14 @@
 //        if head == nil || head?.next == nil {
 //            return true
 //        }
-//        
+//
 //        var middleNode = middleNode(head)
 //        // reverse the second half
 //        var secondHalfHead: ListNode? = reverseList(middleNode?.next)
-//        
+//
 //        var firstHalfNode: ListNode? = head
 //        var isPalindrome = true
-//        
+//
 //        while isPalindrome && secondHalfHead != nil {
 //            if firstHalfNode?.val != secondHalfHead?.val {
 //                isPalindrome = false
@@ -714,12 +714,12 @@
 //            firstHalfNode = firstHalfNode?.next
 //            secondHalfHead = secondHalfHead?.next
 //        }
-//        
+//
 //        // restore the second half again
 //        firstHalfNode?.next = reverseList(middleNode)
 //        return isPalindrome
 //    }
-//        
+//
 //    func mergeTwoSortedLinkedList(_ list1: Node?, _ list2: Node?) -> Node? {
 //        var dummy = Node(0)
 //        var tail: Node? = dummy
@@ -738,20 +738,20 @@
 //        tail?.child = node1 ?? node2
 //        return dummy.child
 //    }
-//    
+//
 //    func flatten(_ head: Node?) -> Node? {
 //        if head == nil || head?.next == nil {
 //                return head
 //        }
-//        
+//
 //        var flattenedNext: Node? = flatten(head?.next)
-//        
+//
 //        head?.next = nil
 //        let mergedLinkedListHead = mergeTwoSortedLinkedList(head, flattenedNext)
-//        
+//
 //        return mergedLinkedListHead
 //    }
-//    
+//
 //    func lengthOfListNode(_ head: ListNode?) -> Int {
 //        if head == nil { return 0 }
 //        var currNode = head
@@ -762,41 +762,41 @@
 //        }
 //        return answer
 //    }
-//    
+//
 //    func rotateRight(_ head: ListNode?, _ k: Int) -> ListNode? {
 //        if head == nil || head?.next == nil || k == 0 {
 //            return head
 //        }
-//        
+//
 //        let length = lengthOfListNode(head)
-//        
+//
 //        // Handle cases where no rotation is needed
 //        let correctedK = k % length
 //        if correctedK == 0 {
 //            return head
 //        }
-//        
+//
 //        // Find the old tail (last node)
 //        var tail: ListNode? = head
 //        while tail?.next != nil {
 //            tail = tail?.next
 //        }
-//        
+//
 //        // Find the new tail, which is at position (length - k - 1)
 //        var newTail = head
 //        for _ in 0..<(length - correctedK - 1) {
 //            newTail = newTail?.next
 //        }
-//        
+//
 //        // The new head is the node after the new tail
 //        let newHead = newTail?.next
-//        
+//
 //        // Cut the list at the new tail
 //        newTail?.next = nil
-//        
+//
 //        // Connect the old tail to the old head
 //        tail?.next = head
-//        
+//
 //        return newHead
 //    }
 //}
@@ -869,73 +869,216 @@
 //
 //
 
-public class Node {
-  public var val: Int
-  public var next: Node?
-  public var random: Node?
-  public init(_ val: Int) {
-      self.val = val
-      self.next = nil
-      self.random = nil
-  }
-}
-
-extension Node: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-    }
-
-    public static func == (lhs: Node, rhs: Node) -> Bool {
-        return lhs === rhs // reference equality
-    }
-}
+//public class Node {
+//  public var val: Int
+//  public var next: Node?
+//  public var random: Node?
+//  public init(_ val: Int) {
+//      self.val = val
+//      self.next = nil
+//      self.random = nil
+//  }
+//}
+//
+//extension Node: Hashable {
+//    public func hash(into hasher: inout Hasher) {
+//        hasher.combine(ObjectIdentifier(self))
+//    }
+//
+//    public static func == (lhs: Node, rhs: Node) -> Bool {
+//        return lhs === rhs // reference equality
+//    }
+//}
+//
+//class Solution {
+//    func copyRandomList(_ head: Node?) -> Node? {
+//        guard let head = head else { return nil }
+//
+//        /* 1. O(n^2): Approach
+//         var originalNodes: [Node] = []
+//         var copyNodes: [Node] = []
+//         var node : Node? = head
+//         while let currNode = node {
+//         originalNodes.append(currNode)
+//         copyNodes.append(Node(currNode.val))
+//         node = currNode.next
+//         }
+//
+//         let n = originalNodes.count
+//         for i in 0..<n {
+//         if i < n-1 {
+//         copyNodes[i].next = copyNodes[i+1]
+//         }
+//         if let randomOriginalNode = originalNodes[i].random {
+//         // finding this randomOriginalNode in originalNode array
+//         if let idx = originalNodes.firstIndex(where: { $0 === randomOriginalNode }){
+//         copyNodes[i].random = copyNodes[idx]
+//         }
+//         }
+//         }
+//         return copyNodes.first
+//         }
+//         */
+//        // Using Hashmap
+//        var oldNodeToNewNodeMap: [Node: Node] = [:]
+//        var currentNode: Node? = head
+//        while let node = currentNode {
+//            let newNode = Node(node.val)
+//            oldNodeToNewNodeMap[node] = newNode
+//            currentNode = node.next
+//        }
+//        // Set the next and random pointer now
+//        currentNode = head
+//        while let node = currentNode {
+//            if let newNode = oldNodeToNewNodeMap[node] {
+//                newNode.next = node.next == nil ? nil : oldNodeToNewNodeMap[node.next!]
+//                newNode.random = node.random == nil ? nil : oldNodeToNewNodeMap[node.random!]
+//            }
+//            currentNode = node.next
+//        }
+//        return oldNodeToNewNodeMap[head]
+//    }
+//}
 
 class Solution {
-    func copyRandomList(_ head: Node?) -> Node? {
-        guard let head = head else { return nil }
-        
-        /* 1. O(n^2): Approach
-         var originalNodes: [Node] = []
-         var copyNodes: [Node] = []
-         var node : Node? = head
-         while let currNode = node {
-         originalNodes.append(currNode)
-         copyNodes.append(Node(currNode.val))
-         node = currNode.next
-         }
-         
-         let n = originalNodes.count
-         for i in 0..<n {
-         if i < n-1 {
-         copyNodes[i].next = copyNodes[i+1]
-         }
-         if let randomOriginalNode = originalNodes[i].random {
-         // finding this randomOriginalNode in originalNode array
-         if let idx = originalNodes.firstIndex(where: { $0 === randomOriginalNode }){
-         copyNodes[i].random = copyNodes[idx]
-         }
-         }
-         }
-         return copyNodes.first
-         }
-         */
-        // Using Hashmap
-        var oldNodeToNewNodeMap: [Node: Node] = [:]
-        var currentNode: Node? = head
-        while let node = currentNode {
-            let newNode = Node(node.val)
-            oldNodeToNewNodeMap[node] = newNode
-            currentNode = node.next
-        }
-        // Set the next and random pointer now
-        currentNode = head
-        while let node = currentNode {
-            if let newNode = oldNodeToNewNodeMap[node] {
-                newNode.next = node.next == nil ? nil : oldNodeToNewNodeMap[node.next!]
-                newNode.random = node.random == nil ? nil : oldNodeToNewNodeMap[node.random!]
+    //    func trap(_ height : [Int]) -> Int {
+    //        let n = height.count
+    //        //1. Recursive approach
+    //        //2. Add memoization
+    //       var leftMax = [Int:Int]()
+    //       var rightMax = [Int:Int]()
+    //        func maxLeft(_ index : Int) -> Int {
+    //            if index == 0 {
+    //                return 0
+    //            }
+    //    if let val = leftMax[index] { return val }
+    //            let val = max(height[index-1], maxLeft(index-1))
+    //            leftMax[index] = val
+    //            return val
+    //        }
+    //        func maxRight(_ index: Int)-> Int {
+    //            if index == n-1 {
+    //                return 0
+    //            }
+    //    if let val = rightMax[index] {return val}
+    //            let val = max(height[index+1], maxRight(index+1))
+    //            rightMax[index] = val
+    //            return val
+    //        }
+    //        var total = 0
+    //        for i in 0..<n {
+    //            let val = (min(maxLeft(i),maxRight(i))) - height[i]
+    //            if val > 0 {
+    //                total = total + val
+    //            }
+    //        }
+    //        return total
+    //    }
+    //    func trap(_ height: [Int]) -> Int {
+    //        //3. Using Dynamic Programming
+    //        let n = height.count
+    //        var leftMax: [Int] = Array(repeating: 0, count: n)
+    //        var rightMax: [Int] = Array(repeating: 0, count: n)
+    //        leftMax[0] = height[0]
+    //        for i in 1..<n {
+    //            leftMax[i] = max( leftMax[i-1], height[i-1] )
+    //        }
+    //
+    //
+    //        //through will go till 0
+    //        for i in stride(from:n-2, through:0, by: -1){
+    //            rightMax[i] = max(rightMax[i+1], height[i+1])
+    //        }
+    //
+    //
+    //        var total = 0
+    //        for i in 0..<n{
+    //            let val = min(leftMax[i], rightMax[i])-height[i]
+    //            if val > 0 {
+    //                total = total + val
+    //            }
+    //        }
+    //        return total
+    //
+    //    }
+    //    func trap(_ height: [Int]) -> Int {
+    //        //4. Using two pointer approach
+    //        let n = height.count
+    //        var left = 0, right = n-1, maxLeft = 0, maxRight = 0, total = 0
+    //        while left < right{
+    //            if height[left]<height[right] {
+    //                // left index storage
+    //                if height[left] >= maxLeft {
+    //                    maxLeft = height[left]
+    //                } else {
+    //                    total = total + (maxLeft - height[left])
+    //                }
+    //                left += 1
+    //            } else {
+    //                // right index storage
+    //                if height[right] >= maxRight {
+    //                    maxRight = height[right]
+    //                } else {
+    //                    total = total + (maxRight - height[right])
+    //                }
+    //                right -= 1
+    //            }
+    //        }
+    //        return total
+    //    }
+    /*
+     The Intuition Behind the Stack
+     Think of the stack as a way to keep track of potential left walls of a container that could hold water.
+     
+     What does the stack hold? The stack stores the indices of the bars. We always maintain the property that the heights of the bars corresponding to the indices in the stack are in decreasing or equal order from bottom to top. For example, stack = [index_of_height_5, index_of_height_3, index_of_height_2].
+     
+     When do we find water? We find trapped water when we encounter a bar that is taller than the bar at the top of the stack. This new, taller bar acts as a right wall.
+     
+     The bar we just popped from the stack (top) becomes the bottom of the container.
+     
+     The new top of the stack (after popping) becomes the left wall.
+     
+     Why calculate h * w? Once we have a left wall, a bottom, and a right wall, we've defined a "valley" or a "V" shape. The water trapped in this valley fills up like a rectangle.
+     
+     h (Height of water): The water can only fill up to the height of the shorter of the two walls (left and right). So, h = min(height[left_wall], height[right_wall]) - height[bottom]. We subtract the bottom's height because that space is already occupied by the bar itself.
+     
+     w (Width of water): This is simply the distance between the left and right walls. w = index_of_right_wall - index_of_left_wall - 1.
+     */
+    //    func trap(_ height: [Int]) -> Int {
+    //        var stack = [Int]()
+    //        var total = 0
+    //        for i in 0..<height.count {
+    //            //  i is the right wall
+    //            while !stack.isEmpty && height[i]>height[stack.last!] {
+    //                let top = stack.removeLast() // This is dip part of the valley
+    //                if stack.isEmpty { break }
+    //                let left = stack.last!
+    //                let height = min(height[i], height[left])-height[top]
+    //                let width = i - left - 1
+    //                total += height * width
+    //            }
+    //            stack.append(i)
+    //        }
+    //        return total
+    //    }
+    
+    func removeDuplicates(_ nums: inout [Int]) -> Int {
+        var start = 0, current = 0
+        let n = nums.count
+        while current < n {
+            if nums[start] != nums[current] && start < nums.count - 2 {
+                nums[start+1] =  nums[current]
+                start += 1
             }
-            currentNode = node.next
+            current += 1
         }
-        return oldNodeToNewNodeMap[head]
+        print(nums)
+        return start+1
     }
 }
+
+let obj = Solution()
+var array = [0,0,1,1,1,2,2,3,3,4]
+let k = obj.removeDuplicates(&array)
+print(k)
+
