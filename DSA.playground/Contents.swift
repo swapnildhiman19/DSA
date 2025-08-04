@@ -1122,6 +1122,67 @@ class Solution {
         }
         return profit
     }
+    
+    func coinChangeRecursive(_ coins: [Int], _ amount: Int) -> Int {
+        if amount == 0 {return 0}
+        if amount < 0 {return -1}
+        
+        var minCoins = Int.max
+        for coin in coins {
+            let minimumCoinsRequiredIfConsideringCoin = coinChangeRecursive(coins, amount - coin)
+            if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
+                minCoins = 1+minimumCoinsRequiredIfConsideringCoin
+            }
+        }
+        return (minCoins == Int.max) ? -1: minCoins
+    }
+
+    func coinChangeRecursiveWithMemoization(_ coins: [Int], _ amount: Int) -> Int {
+        var memo = [Int:Int]() //minimum number of coins required(value) of this amount (key)
+        func dp(_ rem: Int) -> Int {
+            if rem == 0 {return 0}
+            if rem < 0 {return -1}
+            if let cached = memo[rem] { return cached }
+            var minCoins = Int.max
+            for coin in coins {
+                let minimumCoinsRequiredIfConsideringCoin = dp(rem - coin)
+                if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
+                    minCoins = 1+minimumCoinsRequiredIfConsideringCoin
+                }
+            }
+            memo[rem] = (minCoins == Int.max) ? -1: minCoins
+            return memo[rem]!
+        }
+        return dp(amount)
+    }
+
+    func coinChangeDP(_ coins: [Int], _ amount: Int) -> Int {
+        if amount == 0 { return 0 }
+        var dp = Array(repeating: Int.max, count: amount + 1)
+        dp[0] = 0
+        for total in 1...amount {
+            for coin in coins {
+                if total >= coin && dp[total - coin] != Int.max {
+                    dp[total] = min(dp[total], 1+dp[total-coin])
+                }
+            }
+        }
+        return dp[amount] == Int.max ? -1 : dp[amount]
+    }
+
+    // assuming canonical denomination
+    func coingChangeGreedy( _ coins: [Int], _ amount: Int) -> Int{
+        let sortedCoins = coins.sorted(by: >)
+        var count  = 0
+        var amountLeft = amount
+        for coin in sortedCoins {
+            if amountLeft == 0 {break}
+            let use = amountLeft/coin
+            count += use
+            amountLeft -= use*coin
+        }
+        return amountLeft == 0 ? count : -1
+    }
 
 
 }
