@@ -1075,6 +1075,55 @@ class Solution {
         print(nums)
         return start+1
     }
+    
+    func jobScheduling(_ jobs: [[Int]]) -> (jobCount: Int, maxProfit: Int) {
+        var jobs = jobs.sorted{ $0[2] > $1[2]}
+        let maxDeadline = jobs.map{$0[1]}.max() ?? 0
+        var time = Array(repeating: false, count: maxDeadline+1)
+        var profit = 0
+        var jobCount = 0
+        for job in jobs {
+            let deadline = job[1]
+            let profitForJob = job[2]
+            
+            for timeSlot in stride(from: deadline, to: 0, by: -1){
+                if !time[timeSlot] {
+                    jobCount += 1
+                    profit += profitForJob
+                    time[timeSlot] = true
+                    break
+                }
+            }
+        }
+        return (jobCount, profit)
+    }
+    
+    func fractionalKnapSack(_ value:[Int], _ weight:[Int], _ capacity:Int) -> Double {
+        // Greed approach: To maximize the value/weight ratio, value bigger and weight smaller
+        var items = [(ratio: Double, value: Int, weight: Int)]()
+        for i in 0..<value.count {
+            let ratio = Double(value[i])/Double(weight[i])
+            items.append((ratio, value[i], weight[i]))
+        }
+        items.sort{$0.ratio>$1.ratio}
+        var profit: Double = 0.0
+        var remainingCapacity = capacity
+        for item in items {
+            if remainingCapacity == 0 { break }
+            if item.weight <= remainingCapacity {
+                // take full
+                profit += Double(item.value)
+                remainingCapacity -= item.weight
+            } else {
+                let holdingCapacity = Double(item.weight)/Double(remainingCapacity)
+                profit += Double(item.value) * holdingCapacity
+                remainingCapacity = 0
+            }
+        }
+        return profit
+    }
+
+
 }
 
 let obj = Solution()
