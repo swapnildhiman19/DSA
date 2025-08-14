@@ -1,1194 +1,1715 @@
-//import Foundation
+////////import Foundation
+//////////
+//////////class Solution {
+//////////    func findDuplicate(_ nums: [Int]) -> Int {
+//////////        /*
+//////////        var slow = nums[0]
+//////////        var fast = nums[0]
+//////////        // Floyd Marshall Algorithm
+//////////        // finding intersection point ( can be inside the circle also )
+//////////        // initially both slow and fast are same, needs atleast one iteration here to happen for the while loop
+//////////        repeat {
+//////////            slow = nums[slow]
+//////////            fast = nums[nums[fast]]
+//////////        } while slow != fast
+//////////        // finding the entrance point of the cycle
+//////////        while slow != fast {
+//////////            slow = nums[slow]
+//////////            fast = nums[fast]
+//////////        }
+//////////        return slow
+//////////         */
+//////////        /*
+//////////         Using Bit Manipulation
+//////////         */
+//////////        var n = nums.count
+//////////        var result = 0
+//////////        for bit in 0..<32 {
+//////////            var count = 0
+//////////            var expectedCount = 0
+//////////            for num in nums {
+//////////                if num & (1<<bit) == 1 {
+//////////                    count += 1
+//////////                }
+//////////            }
+//////////            for val in 1...n {
+//////////                if val & (1<<bit) == 1 {
+//////////                    expectedCount += 1
+//////////                }
+//////////            }
+//////////            if count>expectedCount {
+//////////                result = result | 1<<bit
+//////////            }
+//////////        }
+//////////        return result
+//////////    }
+//////////}
+//////////let solution = Solution()
+//////////var nums1 = [4,0,0,0,0,0]
+//////////var m = 1
+//////////var nums2 = [1,2,3,5,6]
+//////////var n = 5
+////////////solution.merge(&nums1, m, nums2, n)
+//////////let result = solution.findDuplicate([1,3,2,4,2])
+//////////print(result)
+//////////
+//////////
+////////
+////////
+/////////*
+//////// 4 3 2 6 1 2
+////////
+//////// 4 3 2      6 1 2
+////////
+//////// 3 4   2      1 6    2
+////////
+//////// 4   3   2      6  1    2
+////////
+//////// inversionCount = 1, 2, 4,
+//////// */
+////////
+//////////let dictionary = ["Swapnil":10] // this is a dictionary [String:Int] does not take optional key here , key can't be optional
+//////////let result = dictionary["Swapnil"] // result is an Int? optional because dictionary returns optional value
+//////////print(result) // Optional(10)
+//////////print(dictionary["Angela"])  // this return nil
+////////
+//////////class A {
+//////////    var a:Int
+//////////    var b:Int
+//////////    init(a: Int, b: Int) {
+//////////        self.a = a
+//////////        self.b = b
+//////////    }
+//////////}
+//////////
+//////////var a = A(a: 5, b: 10)
+//////////print(a.a)
+////////
+//////////let stringKey : String?
+//////////stringKey = "Swapnil"
+//////////if var unwrappedStringKey = stringKey {
+//////////    print(unwrappedStringKey)
+//////////}
+////////
+////////
+//////////class Solution {
+//////////    func searchMatrix(_ matrix: [[Int]], _ target: Int) -> Bool {
+//////////        // consider this as 1D array and find the element through binary search.
+//////////        // for ith element in 1D array in 2D array it's represented as
+//////////        // row = i/n , col = i%n
+//////////        let m = matrix.count
+//////////        let n = matrix[0].count
+//////////        let start = 0
+//////////        let end = m*n - 1
+//////////        func binarySearch(_ start: Int, _ end: Int) -> Bool {
+//////////            if start > end {
+//////////                return false
+//////////            }
+//////////            let mid = (start + end)/2
+//////////            let row = mid/n
+//////////            let col = mid%n
+//////////            if matrix[row][col] == target {
+//////////                return true
+//////////            } else if matrix[row][col] < target {
+//////////                return binarySearch(mid+1, end)
+//////////            } else {
+//////////                return binarySearch(start, mid-1)
+//////////            }
+//////////        }
+//////////        return binarySearch(start, end)
+//////////    }
+//////////}
+//////////
+//////////let solution = Solution()
+//////////let matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]]
+//////////print(solution.searchMatrix(matrix, 3))
+////////
+////////class Solution {
+////////    // Gives single majority element in the array i.e it's count is more than n/2
+////////    //    func majorityElement(_ nums: [Int]) -> Int {
+////////    //        var count = 1
+////////    //        var candidate = nums[0]
+////////    //        for i in 1..<nums.count {
+////////    //            if nums[i] == candidate {
+////////    //                count += 1
+////////    //            } else {
+////////    //                count -= 1
+////////    //                if count == 0 {
+////////    //                    candidate = nums[i]
+////////    //                    count = 1
+////////    //                }
+////////    //            }
+////////    //        }
+////////    //        var sureCandidate = 0
+////////    //        for num in nums {
+////////    //            if num == candidate {
+////////    //                sureCandidate += 1
+////////    //            }
+////////    //        }
+////////    //        if sureCandidate > nums.count/2 {
+////////    //            return candidate
+////////    //        } else {
+////////    //            return -1
+////////    //        }
+////////    //    }
+////////    //    // Gives all majority elements in the array i.e their count is more than n/3
+////////    //    func majorityElementII(_ nums: [Int]) -> [Int] {
+////////    //        // Probable candidates are atmost 2, because if there are more than 2 elements then their count can't be more than n/3
+////////    //        var count1 = 0, count2 = 0
+////////    //        var candidate1 = -1, candidate2 = -1
+////////    //        for j in 0..<nums.count {
+////////    //            if nums[j] == candidate1 {
+////////    //                count1 += 1
+////////    //            } else if nums[j] == candidate2 {
+////////    //                count2 += 1
+////////    //            } else if count1 == 0 {
+////////    //                candidate1 = nums[j]
+////////    //                count1 = 1
+////////    //            } else if count2 == 0 {
+////////    //                candidate2 = nums[j]
+////////    //                count2 = 1
+////////    //            } else {
+////////    //                count1 -= 1
+////////    //                count2 -= 1
+////////    //            }
+////////    //        }
+////////    //        // Now we have 2 candidates, we need to check their counts
+////////    //        var ans = [Int]()
+////////    //        var sureCandidateCount1 = 0, sureCandidateCount2 = 0
+////////    //        for j in 0..<nums.count {
+////////    //            if nums[j] == candidate1 {
+////////    //                sureCandidateCount1 += 1
+////////    //            } else if nums[j] == candidate2 {
+////////    //                sureCandidateCount2 += 1
+////////    //            }
+////////    //        }
+////////    //        if sureCandidateCount1 > nums.count/3 {
+////////    //            ans.append(candidate1)
+////////    //        }
+////////    //        if sureCandidateCount2 > nums.count/3 && candidate2 != candidate1 {
+////////    //            ans.append(candidate2)
+////////    //        }
+////////    //        return ans
+////////    //    }
+////////
+////////    //    func reversePairs(_ nums: [Int]) -> Int {
+////////    ////        var answer = 0
+////////    ////        for i in 0..<nums.count {
+////////    ////            for j in i+1..<nums.count {
+////////    ////                if nums[i] > 2*nums[j] {
+////////    ////                    answer += 1
+////////    ////                }
+////////    ////            }
+////////    ////        }
+////////    ////        return answer
+////////    //        if nums.count <= 1 { return 0 }
+////////    //        var nums = nums
+////////    //        return mergeSortCount(&nums, 0, nums.count - 1)
+////////    //    }
+////////    //
+////////    //    func mergeSortCount(_ nums:inout [Int], _ low: Int, _ high: Int) -> Int {
+////////    //        if low >= high { return 0 }
+////////    //        let mid = low + (high - low)/2
+////////    //        var count = 0
+////////    //        count += mergeSortCount(&nums, low, mid)
+////////    //        count += mergeSortCount(&nums, mid + 1, high)
+////////    //        count += countReversePairsBetweenTwoSortedArrays(&nums, low, mid, high)
+////////    //        mergeHelper(&nums, low, mid, high)
+////////    //        return count
+////////    //    }
+////////    //
+////////    //    func countReversePairsBetweenTwoSortedArrays(_ nums:inout [Int], _ low: Int,_ mid: Int, _ high: Int) -> Int {
+////////    //        var leftArray = Array(nums[low...mid])
+////////    //        var rightArray = Array(nums[mid+1...high])
+////////    //        var j = 0
+////////    //        var count = 0
+////////    //        for i in 0..<leftArray.count {
+////////    //            while j < rightArray.count {
+////////    //                let doubleValue = 2.0 * Double(rightArray[j])
+////////    //                if Double(leftArray[i]) > doubleValue {
+////////    //                    j += 1
+////////    //                } else {
+////////    //                    break
+////////    //                }
+////////    //            }
+////////    //            count += j
+////////    //        }
+////////    //        return count
+////////    //    }
+////////    //
+////////    //    func mergeHelper(_ nums:inout [Int], _ low: Int,_ mid: Int, _ high: Int) {
+////////    //        var leftArray = Array(nums[low...mid])
+////////    //        var rightArray = Array(nums[mid+1...high])
+////////    //        var leftStart = 0, rightStart = 0 , index = low
+////////    //        while leftStart < leftArray.count && rightStart < rightArray.count {
+////////    //            if leftArray[leftStart] < rightArray[rightStart] {
+////////    //                nums[index] = leftArray[leftStart]
+////////    //                leftStart += 1
+////////    //            } else {
+////////    //                nums[index] = rightArray[rightStart]
+////////    //                rightStart += 1
+////////    //            }
+////////    //            index += 1
+////////    //        }
+////////    //        while leftStart < leftArray.count {
+////////    //            nums[index] = leftArray[leftStart]
+////////    //            leftStart += 1
+////////    //            index += 1
+////////    //        }
+////////    //        while rightStart < rightArray.count {
+////////    //            nums[index] = rightArray[rightStart]
+////////    //            rightStart += 1
+////////    //            index += 1
+////////    //        }
+////////    //    }
+////////    //    func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
+////////    //        var hashMap: [Int: Int] = [:]
+////////    //        for (index, value) in nums.enumerated() {
+////////    //            if let otherIndex = hashMap[target - value] {
+////////    //                return [otherIndex, index]
+////////    //            }
+////////    //            hashMap[value] = index
+////////    //        }
+////////    //        return []
+////////    //    }
+////////    //    func fourSum(_ nums: [Int], _ target: Int) -> [[Int]] {
+////////    //        let nums = nums.sorted()
+////////    //        return kSum(nums, target, 0, 4)
+////////    //    }
+////////    //    func kSum (_ nums: [Int], _ target: Int,_ start: Int, _ k: Int) -> [[Int]] {
+////////    //        var result = [[Int]]()
+////////    //        let n = nums.count
+////////    //        if k == 2{
+////////    //            // 2 pointer approach, act as base case
+////////    //            var left = start
+////////    //            var right = n - 1
+////////    //            while left < right {
+////////    //                if nums[left] + nums[right] == target {
+////////    //                    result.append([nums[left], nums[right]])
+////////    //                    /*
+////////    //                     Need to skip duplicates
+////////    //                     */
+////////    //                    while left<right && nums[left] == nums[left + 1] {
+////////    //                        left += 1
+////////    //                    }
+////////    //                    while left<right && nums[right] == nums[right - 1] {
+////////    //                        right -= 1
+////////    //                    }
+////////    //                    left += 1
+////////    //                    right -= 1
+////////    //                } else if nums[left] + nums[right] < target {
+////////    //                    left += 1
+////////    //                } else {
+////////    //                    right -= 1
+////////    //                }
+////////    //            }
+////////    //            return result
+////////    //        }
+////////    //        var i = start
+////////    //        while i < n - k + 1 {
+////////    //            if i>start {
+////////    //                if nums[i] == nums[i-1]{
+////////    //                    i += 1
+////////    //                    continue
+////////    //                }
+////////    //            }
+////////    //            let restOfArrayResult = kSum(nums, target - nums[i], i + 1, k - 1)
+////////    //            for restOfArray in restOfArrayResult {
+////////    //                result.append([nums[i]] + restOfArray)
+////////    //            }
+////////    //            i += 1
+////////    //        }
+////////    //        return result
+////////    //    }
+////////    //    func longestConsecutive(_ nums: [Int]) -> Int {
+////////    ///*
+////////    //        var numSet = Set(nums) // Using set for O(1) lookup and Set is an unordered collection
+////////    //        var longestStreak = 0
+////////    //        for num in numSet {
+////////    //            if !numSet.contains(num-1){
+////////    //                //Starting a new sequence
+////////    //                var currentNum = num
+////////    //                var currentStreak = 1
+////////    //                while numSet.contains(currentNum + 1) {
+////////    //                    currentStreak += 1
+////////    //                    currentNum += 1
+////////    //                }
+////////    //                longestStreak = max(longestStreak, currentStreak)
+////////    //            }
+////////    //        }
+////////    //        return longestStreak // This is O(n) solution, even though we are using 2 loops, the inner loop will cover the consecutive elements once and outer loop won't cover those elements again, so it is O(n) in total.
+////////    // */
+////////    //        // Using DSU to find longest consecutive sequence
+////////    //        let uniqueNums = Array(Set(nums))
+////////    //        let n = uniqueNums.count
+////////    //        var uniqueNumsToIndex: [Int: Int] = [:]
+////////    //        for (index, num) in uniqueNums.enumerated() {
+////////    //            uniqueNumsToIndex[num] = index
+////////    //        }
+////////    //
+////////    //        var dsu = DSU(n)
+////////    //
+////////    //        // Union or grouping the consecutive numbers
+////////    //        for num in uniqueNums{
+////////    //            if let nextNumIndex = uniqueNumsToIndex[num + 1] {
+////////    //                dsu.union(uniqueNumsToIndex[num]!, nextNumIndex)
+////////    //            }
+////////    //        }
+////////    //        return dsu.size.max() ?? 0 // Return the size of the largest group
+////////    //    }
+////////    /*
+////////     Longest consecutive subsequence
+////////     Kadane
+////////     K sum
+////////     */
+////////
+////////    func subarraySum(_ nums: [Int], _ k: Int) -> Int {
+////////        // needs to return the number of continuous subarrays whose sum equals to k
+////////        /*
+////////         // 1st approach is to use brute force, O(n^2) solution
+////////         var prefixSum = Array(repeating: 0, count: nums.count)
+////////         if nums.isEmpty {
+////////         return 0
+////////         }
+////////         prefixSum[0] = nums[0]
+////////         for i in 1..<nums.count {
+////////         prefixSum[i] = prefixSum[i-1] + nums[i]
+////////         }
+////////         var count = 0
+////////         for i in 0..<nums.count {
+////////         for j in i..<nums.count {
+////////         let subarray = Array(nums[i...j])  // just nums[i...j] will be a ArraySlice type and not an Array type
+////////         let sum = subarray.reduce(0, +)
+////////         if sum == k {
+////////         count += 1
+////////
+////////         }
+////////         }
+////////         }
+////////         return count
+////////         */
+////////        /*
+////////         2nd approach is to use a hashmap to store the prefix sum and its count
+////////         */
+////////        var count = 0
+////////        var currentSum = 0
+////////        var prefixSumCount: [Int: Int] = [0:1] // number of times a prefix sum has occurred
+////////        for i in 0..<nums.count {
+////////            currentSum += nums[i]
+////////            let targetSumExists = prefixSumCount[currentSum-k] ?? 0 // Check if there exists a prefix sum such that currentSum - prefixSum = k
+////////            count += targetSumExists
+////////            prefixSumCount[currentSum, default: 0] += 1 // Initialize if not present
+////////        }
+////////        return count
+////////    }
+////////
+////////    func findLongestSubarrayWithSum(_ nums: [Int], _ k: Int) -> Int {
+////////        // Returns the length of the longest subarray with sum equals to k
+////////        var count = 0
+////////        var currentSum = 0
+////////        var prefixSumIndex: [Int: Int] = [0: -1] // Maps prefix sum to its first occurrence index
+////////        for i  in 0..<nums.count {
+////////            currentSum += nums[i]
+////////            if let firstIndex = prefixSumIndex[currentSum - k] {
+////////                count = max(count, i - firstIndex) // Update count if we found a longer subarray
+////////            }
+////////            // Only add the prefix sum if it is not already present to ensure we get the longest subarray
+////////            if prefixSumIndex[currentSum] == nil {
+////////                prefixSumIndex[currentSum] = i
+////////            }
+////////        }
+////////        return count
+////////    }
+////////
+////////    func findSubarraysWithXorEqualsTok(_ nums: [Int], _ k: Int) -> Int {
+////////        // if A XOR B = k, then A = k XOR B
+////////        var count = 0
+////////        var currentXor = 0
+////////        var prefixXorCount: [Int: Int] = [0: 1] // Maps prefix XOR to its count
+////////        for i in 0..<nums.count {
+////////            currentXor ^= nums[i] // Update current XOR
+////////            let targetXor = currentXor ^ k // Find the target XOR
+////////            count += prefixXorCount[targetXor, default: 0] // Add the count of target XOR
+////////            prefixXorCount[currentXor, default: 0] += 1 // Increment the count of current XOR
+////////        }
+////////        return count
+////////    }
+////////
+////////    func lengthOfLongestSubstring(_ s: String) -> Int {
+////////        // example string: aecbcdeaf : Answer = 6 , i.e. bcdeaf
+////////        // Idea have a hashMap which tells the index , i.e last occurrence of a character and use sliding window concept
+////////        var maxLength = 0
+////////        var start = 0
+////////        var lastSeenCharacters: [Character: Int] = [:]
+////////        for (index,character) in s.enumerated() {
+////////            if let lastSeenIndex = lastSeenCharacters[character] {
+////////                start = max(start, lastSeenIndex + 1)
+////////            }
+////////            maxLength = max(maxLength, index - start + 1)
+////////            lastSeenCharacters[character] = index
+////////        }
+////////        return maxLength
+////////    }
+////////
+////////    func reverseList(_ head: ListNode?) -> ListNode? {
+////////        /* 1st method iterative solution
+////////         var prev: ListNode?
+////////         var current = head
+////////         while current != nil {
+////////         let nextNode = current?.next
+////////         current?.next = prev
+////////         prev = current
+////////         current = nextNode
+////////         }
+////////         return prev
+////////         */
+////////        //2nd method: Recursive solution
+////////        if head == nil || head?.next == nil {
+////////            return head
+////////        }
+////////        let newHead = reverseList(head?.next)
+////////        head?.next?.next = head
+////////        head?.next = nil
+////////
+////////        return newHead
+////////    }
+////////    func middleNode(_ head: ListNode?) -> ListNode? {
+////////        /* 1st method: simply finding the number of elements and traversing again to get that
+////////         var sizeOfLinkedList = 0
+////////         var currentNode: ListNode? = head
+////////         while(currentNode?.next != nil){
+////////         sizeOfLinkedList += 1
+////////         currentNode = currentNode?.next
+////////         }
+////////         var currentNodeForTraversal: ListNode? = head
+////////         for _ in 0..<(sizeOfLinkedList/2) {
+////////         currentNodeForTraversal = currentNodeForTraversal?.next
+////////         }
+////////         return currentNodeForTraversal
+////////         */
+////////        // 2nd method: 2 pointer slow/fast approach
+////////        var slow: ListNode? = head
+////////        var fast: ListNode? = head
+////////        while fast != nil && fast?.next != nil {
+////////            slow = slow?.next
+////////            fast = fast?.next?.next
+////////        }
+////////        return slow
+////////    }
+////////    /*
+////////     3rd method: Recursive solution for finding middle of Linked List
+////////     func findMiddleUtil(_ node: ListNode?, _ n: inout Int, _ mid: inout ListNode?) {
+////////     guard let node = node else {
+////////     n = (n+1) / 2   // Set n to half on reaching end
+////////     return
+////////     }
+////////     n += 1
+////////     findMiddleUtil(node.next, &n, &mid)
+////////     n -= 1
+////////     if n == 0 {
+////////     mid = node
+////////     }
+////////     }
+////////
+////////     func middleNode(_ head: ListNode?) -> ListNode? {
+////////     var n = 0
+////////     var mid: ListNode? = nil
+////////     findMiddleUtil(head, &n, &mid)
+////////     return mid
+////////     }
+////////     */
+////////    func mergeTwoLists(_ list1: ListNode?, _ list2: ListNode?) -> ListNode? {
+////////        let dummy = ListNode(0)
+////////        var tail = dummy
+////////        var node1 = list1
+////////        var node2 = list2
+////////
+////////        while let n1 = node1, let n2 = node2 {
+////////            if n1.val < n2.val {
+////////                tail.next = n1
+////////                node1 = n1.next
+////////            } else {
+////////                tail.next = n2
+////////                node2 = n2.next
+////////            }
+////////            tail = tail.next!
+////////        }
+////////
+////////        // One list may have leftovers
+////////        tail.next = node1 ?? node2
+////////        return dummy.next
+////////    }
+////////
+////////    func removeNthFromEnd(_ head: ListNode?, _ n: Int) -> ListNode? {
+////////        // Approach 1: Finding the length of the list and then removing the nth node from the end
+////////        // Approach 2: Using two pointers (fast and slow) to find the nth node from the end, keep the fast n steps ahead of the slow pointer, when fast reaches the end, slow will be at the nth node from the end
+////////        var dummy = ListNode(0)
+////////        dummy.next = head
+////////        var fast: ListNode? = dummy
+////////        var slow: ListNode? = dummy
+////////        for _ in 0..<n {
+////////            fast = fast?.next
+////////        }
+////////        while fast?.next != nil {
+////////            slow = slow?.next
+////////            fast = fast?.next
+////////        }
+////////        slow?.next = slow?.next?.next
+////////        return dummy.next
+////////    }
+////////
+////////    func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+////////        /*
+////////         You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+////////         You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+////////         */
+////////        // Need to use the concept of carry here
+////////        var carry = 0
+////////        let dummyNode = ListNode(0)
+////////        var p = dummyNode
+////////        var list1 = l1, list2 = l2
+////////        while (list1 != nil || list2 != nil) {
+////////            let val1 = list1?.val ?? 0
+////////            let val2 = list2?.val ?? 0
+////////            let sum = val1 + val2 + carry
+////////            let newNodeVal = sum / 10
+////////            carry = sum % 10
+////////            p.next = ListNode(newNodeVal)
+////////            if let next = p.next {
+////////                p = next
+////////            }
+////////            list1 = list1?.next
+////////            list2 = list2?.next
+////////        }
+////////        return dummyNode.next
+////////    }
+////////
+////////    func deleteNode(_ node: ListNode?) {
+////////        var currentNode = node
+////////        var nextNode = node?.next
+////////        if currentNode != nil && nextNode != nil {
+////////            currentNode?.val = nextNode?.val ?? 0
+////////            currentNode?.next = nextNode?.next
+////////        }
+////////    }
+////////
+////////    func getIntersectionNode(_ headA: ListNode?, _ headB: ListNode?) -> ListNode? {
+////////        // find length of both the linked list
+////////        var currentA = headA, currentB = headB
+////////        var lengthA = 0, lengthB = 0
+////////        while currentA != nil {
+////////            lengthA += 1
+////////            currentA = currentA?.next
+////////        }
+////////        while currentB != nil {
+////////            lengthB += 1
+////////            currentB = currentB?.next
+////////        }
+////////        // Move the pointer of the longer list by the difference in lengths
+////////        var pointerToAdvance = lengthA > lengthB ? headA : headB
+////////        for _ in 0..<abs(lengthA - lengthB) {
+////////            pointerToAdvance = pointerToAdvance?.next
+////////        }
+////////        // Now move both pointers until they meet
+////////        var pointerA = lengthA > lengthB ? pointerToAdvance : headA
+////////        var pointerB = lengthA > lengthB ? headB : pointerToAdvance
+////////
+////////        while pointerA !== pointerB {
+////////            pointerA = pointerA?.next
+////////            pointerB = pointerB?.next
+////////        }
+////////        return pointerA // or pointerB, both will be the same at this point
+////////    }
+////////
+////////    func hasCycle(_ head: ListNode?) -> Bool {
+////////        // Method 1: Using a set to store visited nodes
+////////        /*
+////////         var visitedNodes: Set<ListNode> = []
+////////         var currentNode = head
+////////         while currentNode != nil {
+////////         if visitedNodes.contains(currentNode!) {
+////////         return true // Cycle detected
+////////         }
+////////         visitedNodes.insert(currentNode!)
+////////         currentNode = currentNode?.next
+////////         }
+////////         return false
+////////         */
+////////        // Method 2: Using Floyd's Cycle Detection Algorithm (Tortoise and Hare)
+////////        var dummyNode : ListNode? = ListNode(0)
+////////        dummyNode?.next = head
+////////        var slow = dummyNode
+////////        var fast = dummyNode
+////////        // here initially both slow and fast are same, so need to move them at least once, using do while loop
+////////        repeat {
+////////            slow = slow?.next
+////////            fast = fast?.next?.next
+////////            if fast == nil || fast?.next == nil {
+////////                return false // No cycle
+////////            }
+////////        } while slow != fast
+////////        // Meaningful cycle detected, move slow pointer to head and check if it meets fast pointer
+////////        slow = dummyNode
+////////        while slow !== fast {
+////////            slow = slow?.next
+////////            fast = fast?.next
+////////            if fast == nil || fast?.next == nil {
+////////                return false // No cycle
+////////            }
+////////        }
+////////        return true // Cycle detected : slow will point that intersection point
+////////    }
+////////
+////////    func reverseKGroup(_ head: ListNode?, _ k: Int) -> ListNode? {
+////////        // Intuition: Recursion
+////////        var currentNode: ListNode? = head
+////////
+////////        // Checking if k nodes do exist in Linked List
+////////        for _ in 0..<k {
+////////            if currentNode == nil {
+////////                return head
+////////            }
+////////            currentNode = currentNode?.next
+////////        }
+////////
+////////        // Reverse the first k nodes
+////////        var prev: ListNode? = nil
+////////        var current = head
+////////        var count = 0
+////////        for _ in 0..<k {
+////////            let nextNode = current?.next
+////////            current?.next = prev
+////////            prev = current
+////////            current = nextNode
+////////        }
+////////
+////////        // head is the new tail, previous is the new head
+////////        if let originalHead = head {
+////////            originalHead.next = reverseKGroup(current, k)
+////////        }
+////////
+////////        return prev
+////////    }
+////////
+////////    func isPalindrome(_ head: ListNode?) -> Bool {
+////////        // first find the middle of the linked list
+////////        // reverse the second half of linked list
+////////        // traverse if equal till the end : yes
+////////        // restore the order of second half to original list
+////////        if head == nil || head?.next == nil {
+////////            return true
+////////        }
+////////
+////////        var middleNode = middleNode(head)
+////////        // reverse the second half
+////////        var secondHalfHead: ListNode? = reverseList(middleNode?.next)
+////////
+////////        var firstHalfNode: ListNode? = head
+////////        var isPalindrome = true
+////////
+////////        while isPalindrome && secondHalfHead != nil {
+////////            if firstHalfNode?.val != secondHalfHead?.val {
+////////                isPalindrome = false
+////////            }
+////////            firstHalfNode = firstHalfNode?.next
+////////            secondHalfHead = secondHalfHead?.next
+////////        }
+////////
+////////        // restore the second half again
+////////        firstHalfNode?.next = reverseList(middleNode)
+////////        return isPalindrome
+////////    }
+////////
+////////    func mergeTwoSortedLinkedList(_ list1: Node?, _ list2: Node?) -> Node? {
+////////        var dummy = Node(0)
+////////        var tail: Node? = dummy
+////////        var node1 = list1
+////////        var node2 = list2
+////////        while node1 != nil && node2 != nil {
+////////            if node1!.val < node2!.val {
+////////                tail?.child = node1
+////////                node1 = node1?.child
+////////            } else {
+////////                tail?.child = node2
+////////                node2 = node2?.child
+////////            }
+////////            tail = tail?.child
+////////        }
+////////        tail?.child = node1 ?? node2
+////////        return dummy.child
+////////    }
+////////
+////////    func flatten(_ head: Node?) -> Node? {
+////////        if head == nil || head?.next == nil {
+////////                return head
+////////        }
+////////
+////////        var flattenedNext: Node? = flatten(head?.next)
+////////
+////////        head?.next = nil
+////////        let mergedLinkedListHead = mergeTwoSortedLinkedList(head, flattenedNext)
+////////
+////////        return mergedLinkedListHead
+////////    }
+////////
+////////    func lengthOfListNode(_ head: ListNode?) -> Int {
+////////        if head == nil { return 0 }
+////////        var currNode = head
+////////        var answer = 0
+////////        while currNode != nil {
+////////            answer += 1
+////////            currNode = currNode?.next
+////////        }
+////////        return answer
+////////    }
+////////
+////////    func rotateRight(_ head: ListNode?, _ k: Int) -> ListNode? {
+////////        if head == nil || head?.next == nil || k == 0 {
+////////            return head
+////////        }
+////////
+////////        let length = lengthOfListNode(head)
+////////
+////////        // Handle cases where no rotation is needed
+////////        let correctedK = k % length
+////////        if correctedK == 0 {
+////////            return head
+////////        }
+////////
+////////        // Find the old tail (last node)
+////////        var tail: ListNode? = head
+////////        while tail?.next != nil {
+////////            tail = tail?.next
+////////        }
+////////
+////////        // Find the new tail, which is at position (length - k - 1)
+////////        var newTail = head
+////////        for _ in 0..<(length - correctedK - 1) {
+////////            newTail = newTail?.next
+////////        }
+////////
+////////        // The new head is the node after the new tail
+////////        let newHead = newTail?.next
+////////
+////////        // Cut the list at the new tail
+////////        newTail?.next = nil
+////////
+////////        // Connect the old tail to the old head
+////////        tail?.next = head
+////////
+////////        return newHead
+////////    }
+////////}
+////////
+////////extension ListNode: Hashable {
+////////    // Hashable conformance
+////////    public func hash(into hasher: inout Hasher) {
+////////        hasher.combine(ObjectIdentifier(self))  // Hash based on memory address
+////////    }
+////////
+////////    public static func == (lhs: ListNode, rhs: ListNode) -> Bool {
+////////        return lhs === rhs  // Check if same object (reference equality)
+////////    }
+////////}
+////////
+////////public class Node {
+////////    public var val: Int
+////////    public var next: Node?
+////////    public var child: Node?
+////////    public init(_ val: Int) { self.val = val; self.next = nil; self.child = nil; }
+////////}
+////////
+////////public class ListNode {
+////////    public var val: Int
+////////    public var next: ListNode?
+////////    public init() { self.val = 0; self.next = nil; }
+////////    public init(_ val: Int) { self.val = val; self.next = nil; }
+////////    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+////////}
+////////
+////////class DSU {
+////////    var parent: [Int] // Parent of each node
+////////    var size: [Int] // Size of each group
+////////    init(_ parent: [Int], _ size: [Int]) {
+////////        self.parent = parent
+////////        self.size = size
+////////    }
+////////
+////////    init(_ n: Int) {
+////////        self.parent = Array(0..<n) // Each node is its own parent initially
+////////        self.size = Array(repeating: 1, count: n) // Each node is its own parent and size is 1 initially
+////////    }
+////////
+////////    func find(_ x: Int) -> Int {
+////////        if parent[x] != x {
+////////            parent[x] = find(parent[x])
+////////        }
+////////        return parent[x]
+////////    }
+////////    func union(_ x: Int, _ y: Int) {
+////////        let parentOfX = find(x)
+////////        let parentOfY = find(y)
+////////        if parentOfX == parentOfY {
+////////            return
+////////        }
+////////        if size[parentOfX] < size[parentOfY] {
+////////            parent[parentOfX] = parentOfY
+////////            size[parentOfY] += size[parentOfX]
+////////        } else {
+////////            parent[parentOfY] = parentOfX
+////////            size[parentOfX] += size[parentOfY]
+////////        }
+////////    }
+////////}
+////////
+////////let solution = Solution()
+//////////let nums = [1,0,-1,0,-2,2]
+//////////let target = 0
+//////////solution.fourSum(nums, target)
+////////
+////////
+//////
+////////public class Node {
+////////  public var val: Int
+////////  public var next: Node?
+////////  public var random: Node?
+////////  public init(_ val: Int) {
+////////      self.val = val
+////////      self.next = nil
+////////      self.random = nil
+////////  }
+////////}
+////////
+////////extension Node: Hashable {
+////////    public func hash(into hasher: inout Hasher) {
+////////        hasher.combine(ObjectIdentifier(self))
+////////    }
+////////
+////////    public static func == (lhs: Node, rhs: Node) -> Bool {
+////////        return lhs === rhs // reference equality
+////////    }
+////////}
+////////
+////////class Solution {
+////////    func copyRandomList(_ head: Node?) -> Node? {
+////////        guard let head = head else { return nil }
+////////
+////////        /* 1. O(n^2): Approach
+////////         var originalNodes: [Node] = []
+////////         var copyNodes: [Node] = []
+////////         var node : Node? = head
+////////         while let currNode = node {
+////////         originalNodes.append(currNode)
+////////         copyNodes.append(Node(currNode.val))
+////////         node = currNode.next
+////////         }
+////////
+////////         let n = originalNodes.count
+////////         for i in 0..<n {
+////////         if i < n-1 {
+////////         copyNodes[i].next = copyNodes[i+1]
+////////         }
+////////         if let randomOriginalNode = originalNodes[i].random {
+////////         // finding this randomOriginalNode in originalNode array
+////////         if let idx = originalNodes.firstIndex(where: { $0 === randomOriginalNode }){
+////////         copyNodes[i].random = copyNodes[idx]
+////////         }
+////////         }
+////////         }
+////////         return copyNodes.first
+////////         }
+////////         */
+////////        // Using Hashmap
+////////        var oldNodeToNewNodeMap: [Node: Node] = [:]
+////////        var currentNode: Node? = head
+////////        while let node = currentNode {
+////////            let newNode = Node(node.val)
+////////            oldNodeToNewNodeMap[node] = newNode
+////////            currentNode = node.next
+////////        }
+////////        // Set the next and random pointer now
+////////        currentNode = head
+////////        while let node = currentNode {
+////////            if let newNode = oldNodeToNewNodeMap[node] {
+////////                newNode.next = node.next == nil ? nil : oldNodeToNewNodeMap[node.next!]
+////////                newNode.random = node.random == nil ? nil : oldNodeToNewNodeMap[node.random!]
+////////            }
+////////            currentNode = node.next
+////////        }
+////////        return oldNodeToNewNodeMap[head]
+////////    }
+////////}
+//////
+//////class Solution {
+//////    //    func trap(_ height : [Int]) -> Int {
+//////    //        let n = height.count
+//////    //        //1. Recursive approach
+//////    //        //2. Add memoization
+//////    //       var leftMax = [Int:Int]()
+//////    //       var rightMax = [Int:Int]()
+//////    //        func maxLeft(_ index : Int) -> Int {
+//////    //            if index == 0 {
+//////    //                return 0
+//////    //            }
+//////    //    if let val = leftMax[index] { return val }
+//////    //            let val = max(height[index-1], maxLeft(index-1))
+//////    //            leftMax[index] = val
+//////    //            return val
+//////    //        }
+//////    //        func maxRight(_ index: Int)-> Int {
+//////    //            if index == n-1 {
+//////    //                return 0
+//////    //            }
+//////    //    if let val = rightMax[index] {return val}
+//////    //            let val = max(height[index+1], maxRight(index+1))
+//////    //            rightMax[index] = val
+//////    //            return val
+//////    //        }
+//////    //        var total = 0
+//////    //        for i in 0..<n {
+//////    //            let val = (min(maxLeft(i),maxRight(i))) - height[i]
+//////    //            if val > 0 {
+//////    //                total = total + val
+//////    //            }
+//////    //        }
+//////    //        return total
+//////    //    }
+//////    //    func trap(_ height: [Int]) -> Int {
+//////    //        //3. Using Dynamic Programming
+//////    //        let n = height.count
+//////    //        var leftMax: [Int] = Array(repeating: 0, count: n)
+//////    //        var rightMax: [Int] = Array(repeating: 0, count: n)
+//////    //        leftMax[0] = height[0]
+//////    //        for i in 1..<n {
+//////    //            leftMax[i] = max( leftMax[i-1], height[i-1] )
+//////    //        }
+//////    //
+//////    //
+//////    //        //through will go till 0
+//////    //        for i in stride(from:n-2, through:0, by: -1){
+//////    //            rightMax[i] = max(rightMax[i+1], height[i+1])
+//////    //        }
+//////    //
+//////    //
+//////    //        var total = 0
+//////    //        for i in 0..<n{
+//////    //            let val = min(leftMax[i], rightMax[i])-height[i]
+//////    //            if val > 0 {
+//////    //                total = total + val
+//////    //            }
+//////    //        }
+//////    //        return total
+//////    //
+//////    //    }
+//////    //    func trap(_ height: [Int]) -> Int {
+//////    //        //4. Using two pointer approach
+//////    //        let n = height.count
+//////    //        var left = 0, right = n-1, maxLeft = 0, maxRight = 0, total = 0
+//////    //        while left < right{
+//////    //            if height[left]<height[right] {
+//////    //                // left index storage
+//////    //                if height[left] >= maxLeft {
+//////    //                    maxLeft = height[left]
+//////    //                } else {
+//////    //                    total = total + (maxLeft - height[left])
+//////    //                }
+//////    //                left += 1
+//////    //            } else {
+//////    //                // right index storage
+//////    //                if height[right] >= maxRight {
+//////    //                    maxRight = height[right]
+//////    //                } else {
+//////    //                    total = total + (maxRight - height[right])
+//////    //                }
+//////    //                right -= 1
+//////    //            }
+//////    //        }
+//////    //        return total
+//////    //    }
+//////    /*
+//////     The Intuition Behind the Stack
+//////     Think of the stack as a way to keep track of potential left walls of a container that could hold water.
+//////     
+//////     What does the stack hold? The stack stores the indices of the bars. We always maintain the property that the heights of the bars corresponding to the indices in the stack are in decreasing or equal order from bottom to top. For example, stack = [index_of_height_5, index_of_height_3, index_of_height_2].
+//////     
+//////     When do we find water? We find trapped water when we encounter a bar that is taller than the bar at the top of the stack. This new, taller bar acts as a right wall.
+//////     
+//////     The bar we just popped from the stack (top) becomes the bottom of the container.
+//////     
+//////     The new top of the stack (after popping) becomes the left wall.
+//////     
+//////     Why calculate h * w? Once we have a left wall, a bottom, and a right wall, we've defined a "valley" or a "V" shape. The water trapped in this valley fills up like a rectangle.
+//////     
+//////     h (Height of water): The water can only fill up to the height of the shorter of the two walls (left and right). So, h = min(height[left_wall], height[right_wall]) - height[bottom]. We subtract the bottom's height because that space is already occupied by the bar itself.
+//////     
+//////     w (Width of water): This is simply the distance between the left and right walls. w = index_of_right_wall - index_of_left_wall - 1.
+//////     */
+//////    //    func trap(_ height: [Int]) -> Int {
+//////    //        var stack = [Int]()
+//////    //        var total = 0
+//////    //        for i in 0..<height.count {
+//////    //            //  i is the right wall
+//////    //            while !stack.isEmpty && height[i]>height[stack.last!] {
+//////    //                let top = stack.removeLast() // This is dip part of the valley
+//////    //                if stack.isEmpty { break }
+//////    //                let left = stack.last!
+//////    //                let height = min(height[i], height[left])-height[top]
+//////    //                let width = i - left - 1
+//////    //                total += height * width
+//////    //            }
+//////    //            stack.append(i)
+//////    //        }
+//////    //        return total
+//////    //    }
+//////    
+//////    func removeDuplicates(_ nums: inout [Int]) -> Int {
+//////        var start = 0, current = 0
+//////        let n = nums.count
+//////        while current < n {
+//////            if nums[start] != nums[current] && start < nums.count - 2 {
+//////                nums[start+1] =  nums[current]
+//////                start += 1
+//////            }
+//////            current += 1
+//////        }
+//////        print(nums)
+//////        return start+1
+//////    }
+//////    
+//////    func jobScheduling(_ jobs: [[Int]]) -> (jobCount: Int, maxProfit: Int) {
+//////        var jobs = jobs.sorted{ $0[2] > $1[2]}
+//////        let maxDeadline = jobs.map{$0[1]}.max() ?? 0
+//////        var time = Array(repeating: false, count: maxDeadline+1)
+//////        var profit = 0
+//////        var jobCount = 0
+//////        for job in jobs {
+//////            let deadline = job[1]
+//////            let profitForJob = job[2]
+//////            
+//////            for timeSlot in stride(from: deadline, to: 0, by: -1){
+//////                if !time[timeSlot] {
+//////                    jobCount += 1
+//////                    profit += profitForJob
+//////                    time[timeSlot] = true
+//////                    break
+//////                }
+//////            }
+//////        }
+//////        return (jobCount, profit)
+//////    }
+//////    
+//////    func fractionalKnapSack(_ value:[Int], _ weight:[Int], _ capacity:Int) -> Double {
+//////        // Greed approach: To maximize the value/weight ratio, value bigger and weight smaller
+//////        var items = [(ratio: Double, value: Int, weight: Int)]()
+//////        for i in 0..<value.count {
+//////            let ratio = Double(value[i])/Double(weight[i])
+//////            items.append((ratio, value[i], weight[i]))
+//////        }
+//////        items.sort{$0.ratio>$1.ratio}
+//////        var profit: Double = 0.0
+//////        var remainingCapacity = capacity
+//////        for item in items {
+//////            if remainingCapacity == 0 { break }
+//////            if item.weight <= remainingCapacity {
+//////                // take full
+//////                profit += Double(item.value)
+//////                remainingCapacity -= item.weight
+//////            } else {
+//////                let holdingCapacity = Double(item.weight)/Double(remainingCapacity)
+//////                profit += Double(item.value) * holdingCapacity
+//////                remainingCapacity = 0
+//////            }
+//////        }
+//////        return profit
+//////    }
+//////    
+//////    func coinChangeRecursive(_ coins: [Int], _ amount: Int) -> Int {
+//////        if amount == 0 {return 0}
+//////        if amount < 0 {return -1}
+//////        
+//////        var minCoins = Int.max
+//////        for coin in coins {
+//////            let minimumCoinsRequiredIfConsideringCoin = coinChangeRecursive(coins, amount - coin)
+//////            if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
+//////                minCoins = 1+minimumCoinsRequiredIfConsideringCoin
+//////            }
+//////        }
+//////        return (minCoins == Int.max) ? -1: minCoins
+//////    }
+//////
+//////    func coinChangeRecursiveWithMemoization(_ coins: [Int], _ amount: Int) -> Int {
+//////        var memo = [Int:Int]() //minimum number of coins required(value) of this amount (key)
+//////        func dp(_ rem: Int) -> Int {
+//////            if rem == 0 {return 0}
+//////            if rem < 0 {return -1}
+//////            if let cached = memo[rem] { return cached }
+//////            var minCoins = Int.max
+//////            for coin in coins {
+//////                let minimumCoinsRequiredIfConsideringCoin = dp(rem - coin)
+//////                if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
+//////                    minCoins = 1+minimumCoinsRequiredIfConsideringCoin
+//////                }
+//////            }
+//////            memo[rem] = (minCoins == Int.max) ? -1: minCoins
+//////            return memo[rem]!
+//////        }
+//////        return dp(amount)
+//////    }
+//////
+//////    func coinChangeDP(_ coins: [Int], _ amount: Int) -> Int {
+//////        if amount == 0 { return 0 }
+//////        var dp = Array(repeating: Int.max, count: amount + 1)
+//////        dp[0] = 0
+//////        for total in 1...amount {
+//////            for coin in coins {
+//////                if total >= coin && dp[total - coin] != Int.max {
+//////                    dp[total] = min(dp[total], 1+dp[total-coin])
+//////                }
+//////            }
+//////        }
+//////        return dp[amount] == Int.max ? -1 : dp[amount]
+//////    }
+//////
+//////    // assuming canonical denomination
+//////    func coingChangeGreedy( _ coins: [Int], _ amount: Int) -> Int{
+//////        let sortedCoins = coins.sorted(by: >)
+//////        var count  = 0
+//////        var amountLeft = amount
+//////        for coin in sortedCoins {
+//////            if amountLeft == 0 {break}
+//////            let use = amountLeft/coin
+//////            count += use
+//////            amountLeft -= use*coin
+//////        }
+//////        return amountLeft == 0 ? count : -1
+//////    }
+//////    
+//////    func findContentChildren(_ g: [Int], _ s: [Int]) -> Int {
+//////        var sortedGreed = g.sorted{$0<$1}
+//////        var sortedSize = s.sorted{$0<$1}
+//////        var gSize = g.count, sSize = s.count
+//////        var i=0, j=0
+//////        var answer = 0
+//////        while i<gSize && j<sSize {
+//////            if sortedGreed[i] <= sortedSize[j]{
+//////                answer += 1
+//////                //child is satisfied
+//////                i += 1
+//////            }
+//////            j += 1
+//////        }
+//////        return answer
+//////    }
+//////
+//////    func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+//////       // Pure recursive  solution vibe, either consider the element or not
+//////        var result = [[Int]]()
+//////        var current = [Int]()
+//////        let nums = nums.sorted()
+//////        let n = nums.count
+//////        func dfs(_ index: Int) {
+//////            result.append(current)
+//////            for i in index..<n {
+//////                if i != index && nums[i] == nums[i-1]{ continue } // i!=index makes sure that it's not the first time we are encountering this element to make the array of this size
+//////                current.append(nums[i])
+//////                dfs(i+1)
+//////                current.removeLast()
+//////            }
+//////        }
+//////        dfs(0)
+//////        return Array(result)
+//////    }
+//////    
+//////}
+//////
+//////let obj = Solution()
+//////var array = [0,0,1,1,1,2,2,3,3,4]
+//////let k = obj.removeDuplicates(&array)
+//////print(k)
+//////
 ////
 ////class Solution {
-////    func findDuplicate(_ nums: [Int]) -> Int {
-////        /*
-////        var slow = nums[0]
-////        var fast = nums[0]
-////        // Floyd Marshall Algorithm
-////        // finding intersection point ( can be inside the circle also )
-////        // initially both slow and fast are same, needs atleast one iteration here to happen for the while loop
-////        repeat {
-////            slow = nums[slow]
-////            fast = nums[nums[fast]]
-////        } while slow != fast
-////        // finding the entrance point of the cycle
-////        while slow != fast {
-////            slow = nums[slow]
-////            fast = nums[fast]
-////        }
-////        return slow
-////         */
-////        /*
-////         Using Bit Manipulation
-////         */
-////        var n = nums.count
-////        var result = 0
-////        for bit in 0..<32 {
-////            var count = 0
-////            var expectedCount = 0
-////            for num in nums {
-////                if num & (1<<bit) == 1 {
-////                    count += 1
-////                }
-////            }
-////            for val in 1...n {
-////                if val & (1<<bit) == 1 {
-////                    expectedCount += 1
-////                }
-////            }
-////            if count>expectedCount {
-////                result = result | 1<<bit
+////    // This prints all the subsequences : 2^n
+////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////    //    // Pure recursive  solution vibe, either consider the element or not
+////    //     var result = [[Int]]()
+////    //     var current = [Int]()
+////    //     let n = nums.count
+////    //     func dfs(_ index: Int){
+////    //         if index == n {
+////    //             result.append(current)
+////    //             return
+////    //         }
+////    //         // take the element
+////    //         current.append(nums[index])
+////    //         dfs(index+1)
+////    //         //skip the last element
+////    //         current.removeLast()
+////    //         dfs(index+1)
+////    //     }
+////    //     dfs(0)
+////    //     return result
+////    // }
+////    /*
+////    Below function will print the unique subsequences but here for example
+////    [4,4,4,1,4]
+////    it gives output:
+////    [[4],[4,4,4],[4,4,4,4],[1,4],[],[4,1,4],[4,1],[4,4,1,4],[4,4],[4,4,1],[1],[4,4,4,1],  [4,4,4,1,4]]
+////    But as you can see though if you want to preseve the order then yes [4,1,4] and [4,4,1] are different subsequences
+////    But if you don't want to presever the order then they are both same, thus we want to sort the array first so that all similar elements gets grouped together
+////    */
+////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////    //    // Pure recursive  solution vibe, either consider the element or not
+////    //     var result = Set<[Int]>()
+////    //     var current = [Int]()
+////    //     // let nums = nums.sorted()
+////    //     let n = nums.count
+////    //     func dfs(_ index: Int){
+////    //         if index == n {
+////    //             result.insert(current)
+////    //             return
+////    //         }
+////    //         // take the element
+////    //         current.append(nums[index])
+////    //         dfs(index+1)
+////    //         //skip the last element
+////    //         current.removeLast()
+////    //         dfs(index+1)
+////    //     }
+////    //     dfs(0)
+////    //     return Array(result)
+////    // }
+////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////    //    // Pure recursive  solution vibe, either consider the element or not
+////    //     var result = Set<[Int]>()
+////    //     var current = [Int]()
+////    //     let nums = nums.sorted()
+////    //     let n = nums.count
+////    //     func dfs(_ index: Int){
+////    //         if index == n {
+////    //             result.insert(current)
+////    //             return
+////    //         }
+////    //         // take the element
+////    //         current.append(nums[index])
+////    //         dfs(index+1)
+////    //         //skip the last element
+////    //         current.removeLast()
+////    //         dfs(index+1)
+////    //     }
+////    //     dfs(0)
+////    //     return Array(result)
+////    // }
+////
+////    // Can also solve without the Set<Int>(), solving within the recursion
+////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////    //    // Pure recursive  solution vibe, either consider the element or not
+////    //     var result = [[Int]]()
+////    //     var current = [Int]()
+////    //     let nums = nums.sorted()
+////    //     let n = nums.count
+////    //     func dfs(_ index: Int) {
+////    //         result.append(current)
+////    //         for i in index..<n {
+////    //             if i != index && nums[i] == nums[i-1]{ continue } // i!=index makes sure that it's not the first time we are encountering this element to make the array of this size
+////    //             current.append(nums[i])
+////    //             dfs(i+1)
+////    //             current.removeLast()
+////    //         }
+////    //     }
+////    //     dfs(0)
+////    //     return Array(result)
+////    // }
+////
+////    //Can also solve using bfs i.e. creating subsets of length 1 first, then 2 ...
+////    
+////    func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////        var queue : [([Int],Int)] = [([],0)]
+////        let n = nums.count
+////        let nums = nums.sorted(by: <)
+////        var result = [[Int]]()
+////        while !queue.isEmpty {
+////            let size = queue.count
+////            var (current, nextIndex) = queue.removeFirst()
+////            print((current,nextIndex))
+////            result.append(current)
+////            for i in nextIndex..<n {
+////                if i != nextIndex && nums[i] == nums[i-1] {continue}
+////                var next = current
+////                next.append(nums[i])
+////                queue.append((next,i+1))
 ////            }
 ////        }
 ////        return result
 ////    }
-////}
-////let solution = Solution()
-////var nums1 = [4,0,0,0,0,0]
-////var m = 1
-////var nums2 = [1,2,3,5,6]
-////var n = 5
-//////solution.merge(&nums1, m, nums2, n)
-////let result = solution.findDuplicate([1,3,2,4,2])
-////print(result)
-////
-////
-//
-//
-///*
-// 4 3 2 6 1 2
-//
-// 4 3 2      6 1 2
-//
-// 3 4   2      1 6    2
-//
-// 4   3   2      6  1    2
-//
-// inversionCount = 1, 2, 4,
-// */
-//
-////let dictionary = ["Swapnil":10] // this is a dictionary [String:Int] does not take optional key here , key can't be optional
-////let result = dictionary["Swapnil"] // result is an Int? optional because dictionary returns optional value
-////print(result) // Optional(10)
-////print(dictionary["Angela"])  // this return nil
-//
-////class A {
-////    var a:Int
-////    var b:Int
-////    init(a: Int, b: Int) {
-////        self.a = a
-////        self.b = b
-////    }
-////}
-////
-////var a = A(a: 5, b: 10)
-////print(a.a)
-//
-////let stringKey : String?
-////stringKey = "Swapnil"
-////if var unwrappedStringKey = stringKey {
-////    print(unwrappedStringKey)
+////  
+////    //Can also solve this question using bit manipulation
+////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
+////    //     var result = Set<[Int]>()
+////    //     let n = nums.count
+////    //     let nums = nums.sorted()
+////    //     var maxPossibleCombination = 1<<n
+////    //     for possibility in 0..<maxPossibleCombination {
+////    //         var subset = [Int]()
+////    //         for j in 0..<n {
+////    //             if (possibility & (1<<j)) != 0 {
+////    //                 subset.append(nums[j])
+////    //             }
+////    //         }
+////    //         result.insert(subset)
+////    //     }
+////    //     return Array(result)
+////    // }
+////    
 ////}
 //
-//
-////class Solution {
-////    func searchMatrix(_ matrix: [[Int]], _ target: Int) -> Bool {
-////        // consider this as 1D array and find the element through binary search.
-////        // for ith element in 1D array in 2D array it's represented as
-////        // row = i/n , col = i%n
-////        let m = matrix.count
-////        let n = matrix[0].count
-////        let start = 0
-////        let end = m*n - 1
-////        func binarySearch(_ start: Int, _ end: Int) -> Bool {
-////            if start > end {
-////                return false
+//class Solution {
+////    func combinationSum(_ candidates: [Int], _ target: Int) -> [[Int]] {
+////        var result = [[Int]]()
+////        var current = [Int]()
+////        let n = candidates.count
+////        func helper(_ index: Int, _ currentSum: Int){
+////            if currentSum == target {
+////                result.append(current)
+////                return
 ////            }
-////            let mid = (start + end)/2
-////            let row = mid/n
-////            let col = mid%n
-////            if matrix[row][col] == target {
-////                return true
-////            } else if matrix[row][col] < target {
-////                return binarySearch(mid+1, end)
-////            } else {
-////                return binarySearch(start, mid-1)
+////            if currentSum > target || index >= n {
+////                return
 ////            }
+////            // Case 1: Considering taking candidates[index] in the answer and finding both the branches
+////            current.append(candidates[index])
+////            helper(index, currentSum + candidates[index])
+////            // let answerWhenConsideringCurrElementAndDifferentBranch = helper(index+1, currentSum + target) -> This case will be covered within the next case only
+////            current.removeLast()
+////            // Case 2: Not considering current element
+////            helper(index+1, currentSum)
 ////        }
-////        return binarySearch(start, end)
+////        helper(0,0)
+////        return result
 ////    }
-////}
-////
-////let solution = Solution()
-////let matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]]
-////print(solution.searchMatrix(matrix, 3))
-//
-//class Solution {
-//    // Gives single majority element in the array i.e it's count is more than n/2
-//    //    func majorityElement(_ nums: [Int]) -> Int {
-//    //        var count = 1
-//    //        var candidate = nums[0]
-//    //        for i in 1..<nums.count {
-//    //            if nums[i] == candidate {
-//    //                count += 1
-//    //            } else {
-//    //                count -= 1
-//    //                if count == 0 {
-//    //                    candidate = nums[i]
-//    //                    count = 1
-//    //                }
-//    //            }
-//    //        }
-//    //        var sureCandidate = 0
-//    //        for num in nums {
-//    //            if num == candidate {
-//    //                sureCandidate += 1
-//    //            }
-//    //        }
-//    //        if sureCandidate > nums.count/2 {
-//    //            return candidate
-//    //        } else {
-//    //            return -1
-//    //        }
-//    //    }
-//    //    // Gives all majority elements in the array i.e their count is more than n/3
-//    //    func majorityElementII(_ nums: [Int]) -> [Int] {
-//    //        // Probable candidates are atmost 2, because if there are more than 2 elements then their count can't be more than n/3
-//    //        var count1 = 0, count2 = 0
-//    //        var candidate1 = -1, candidate2 = -1
-//    //        for j in 0..<nums.count {
-//    //            if nums[j] == candidate1 {
-//    //                count1 += 1
-//    //            } else if nums[j] == candidate2 {
-//    //                count2 += 1
-//    //            } else if count1 == 0 {
-//    //                candidate1 = nums[j]
-//    //                count1 = 1
-//    //            } else if count2 == 0 {
-//    //                candidate2 = nums[j]
-//    //                count2 = 1
-//    //            } else {
-//    //                count1 -= 1
-//    //                count2 -= 1
-//    //            }
-//    //        }
-//    //        // Now we have 2 candidates, we need to check their counts
-//    //        var ans = [Int]()
-//    //        var sureCandidateCount1 = 0, sureCandidateCount2 = 0
-//    //        for j in 0..<nums.count {
-//    //            if nums[j] == candidate1 {
-//    //                sureCandidateCount1 += 1
-//    //            } else if nums[j] == candidate2 {
-//    //                sureCandidateCount2 += 1
-//    //            }
-//    //        }
-//    //        if sureCandidateCount1 > nums.count/3 {
-//    //            ans.append(candidate1)
-//    //        }
-//    //        if sureCandidateCount2 > nums.count/3 && candidate2 != candidate1 {
-//    //            ans.append(candidate2)
-//    //        }
-//    //        return ans
-//    //    }
-//
-//    //    func reversePairs(_ nums: [Int]) -> Int {
-//    ////        var answer = 0
-//    ////        for i in 0..<nums.count {
-//    ////            for j in i+1..<nums.count {
-//    ////                if nums[i] > 2*nums[j] {
-//    ////                    answer += 1
-//    ////                }
-//    ////            }
-//    ////        }
-//    ////        return answer
-//    //        if nums.count <= 1 { return 0 }
-//    //        var nums = nums
-//    //        return mergeSortCount(&nums, 0, nums.count - 1)
-//    //    }
-//    //
-//    //    func mergeSortCount(_ nums:inout [Int], _ low: Int, _ high: Int) -> Int {
-//    //        if low >= high { return 0 }
-//    //        let mid = low + (high - low)/2
-//    //        var count = 0
-//    //        count += mergeSortCount(&nums, low, mid)
-//    //        count += mergeSortCount(&nums, mid + 1, high)
-//    //        count += countReversePairsBetweenTwoSortedArrays(&nums, low, mid, high)
-//    //        mergeHelper(&nums, low, mid, high)
-//    //        return count
-//    //    }
-//    //
-//    //    func countReversePairsBetweenTwoSortedArrays(_ nums:inout [Int], _ low: Int,_ mid: Int, _ high: Int) -> Int {
-//    //        var leftArray = Array(nums[low...mid])
-//    //        var rightArray = Array(nums[mid+1...high])
-//    //        var j = 0
-//    //        var count = 0
-//    //        for i in 0..<leftArray.count {
-//    //            while j < rightArray.count {
-//    //                let doubleValue = 2.0 * Double(rightArray[j])
-//    //                if Double(leftArray[i]) > doubleValue {
-//    //                    j += 1
-//    //                } else {
-//    //                    break
-//    //                }
-//    //            }
-//    //            count += j
-//    //        }
-//    //        return count
-//    //    }
-//    //
-//    //    func mergeHelper(_ nums:inout [Int], _ low: Int,_ mid: Int, _ high: Int) {
-//    //        var leftArray = Array(nums[low...mid])
-//    //        var rightArray = Array(nums[mid+1...high])
-//    //        var leftStart = 0, rightStart = 0 , index = low
-//    //        while leftStart < leftArray.count && rightStart < rightArray.count {
-//    //            if leftArray[leftStart] < rightArray[rightStart] {
-//    //                nums[index] = leftArray[leftStart]
-//    //                leftStart += 1
-//    //            } else {
-//    //                nums[index] = rightArray[rightStart]
-//    //                rightStart += 1
-//    //            }
-//    //            index += 1
-//    //        }
-//    //        while leftStart < leftArray.count {
-//    //            nums[index] = leftArray[leftStart]
-//    //            leftStart += 1
-//    //            index += 1
-//    //        }
-//    //        while rightStart < rightArray.count {
-//    //            nums[index] = rightArray[rightStart]
-//    //            rightStart += 1
-//    //            index += 1
-//    //        }
-//    //    }
-//    //    func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
-//    //        var hashMap: [Int: Int] = [:]
-//    //        for (index, value) in nums.enumerated() {
-//    //            if let otherIndex = hashMap[target - value] {
-//    //                return [otherIndex, index]
-//    //            }
-//    //            hashMap[value] = index
-//    //        }
-//    //        return []
-//    //    }
-//    //    func fourSum(_ nums: [Int], _ target: Int) -> [[Int]] {
-//    //        let nums = nums.sorted()
-//    //        return kSum(nums, target, 0, 4)
-//    //    }
-//    //    func kSum (_ nums: [Int], _ target: Int,_ start: Int, _ k: Int) -> [[Int]] {
-//    //        var result = [[Int]]()
-//    //        let n = nums.count
-//    //        if k == 2{
-//    //            // 2 pointer approach, act as base case
-//    //            var left = start
-//    //            var right = n - 1
-//    //            while left < right {
-//    //                if nums[left] + nums[right] == target {
-//    //                    result.append([nums[left], nums[right]])
-//    //                    /*
-//    //                     Need to skip duplicates
-//    //                     */
-//    //                    while left<right && nums[left] == nums[left + 1] {
-//    //                        left += 1
-//    //                    }
-//    //                    while left<right && nums[right] == nums[right - 1] {
-//    //                        right -= 1
-//    //                    }
-//    //                    left += 1
-//    //                    right -= 1
-//    //                } else if nums[left] + nums[right] < target {
-//    //                    left += 1
-//    //                } else {
-//    //                    right -= 1
-//    //                }
-//    //            }
-//    //            return result
-//    //        }
-//    //        var i = start
-//    //        while i < n - k + 1 {
-//    //            if i>start {
-//    //                if nums[i] == nums[i-1]{
-//    //                    i += 1
-//    //                    continue
-//    //                }
-//    //            }
-//    //            let restOfArrayResult = kSum(nums, target - nums[i], i + 1, k - 1)
-//    //            for restOfArray in restOfArrayResult {
-//    //                result.append([nums[i]] + restOfArray)
-//    //            }
-//    //            i += 1
-//    //        }
-//    //        return result
-//    //    }
-//    //    func longestConsecutive(_ nums: [Int]) -> Int {
-//    ///*
-//    //        var numSet = Set(nums) // Using set for O(1) lookup and Set is an unordered collection
-//    //        var longestStreak = 0
-//    //        for num in numSet {
-//    //            if !numSet.contains(num-1){
-//    //                //Starting a new sequence
-//    //                var currentNum = num
-//    //                var currentStreak = 1
-//    //                while numSet.contains(currentNum + 1) {
-//    //                    currentStreak += 1
-//    //                    currentNum += 1
-//    //                }
-//    //                longestStreak = max(longestStreak, currentStreak)
-//    //            }
-//    //        }
-//    //        return longestStreak // This is O(n) solution, even though we are using 2 loops, the inner loop will cover the consecutive elements once and outer loop won't cover those elements again, so it is O(n) in total.
-//    // */
-//    //        // Using DSU to find longest consecutive sequence
-//    //        let uniqueNums = Array(Set(nums))
-//    //        let n = uniqueNums.count
-//    //        var uniqueNumsToIndex: [Int: Int] = [:]
-//    //        for (index, num) in uniqueNums.enumerated() {
-//    //            uniqueNumsToIndex[num] = index
-//    //        }
-//    //
-//    //        var dsu = DSU(n)
-//    //
-//    //        // Union or grouping the consecutive numbers
-//    //        for num in uniqueNums{
-//    //            if let nextNumIndex = uniqueNumsToIndex[num + 1] {
-//    //                dsu.union(uniqueNumsToIndex[num]!, nextNumIndex)
-//    //            }
-//    //        }
-//    //        return dsu.size.max() ?? 0 // Return the size of the largest group
-//    //    }
-//    /*
-//     Longest consecutive subsequence
-//     Kadane
-//     K sum
-//     */
-//
-//    func subarraySum(_ nums: [Int], _ k: Int) -> Int {
-//        // needs to return the number of continuous subarrays whose sum equals to k
-//        /*
-//         // 1st approach is to use brute force, O(n^2) solution
-//         var prefixSum = Array(repeating: 0, count: nums.count)
-//         if nums.isEmpty {
-//         return 0
-//         }
-//         prefixSum[0] = nums[0]
-//         for i in 1..<nums.count {
-//         prefixSum[i] = prefixSum[i-1] + nums[i]
-//         }
-//         var count = 0
-//         for i in 0..<nums.count {
-//         for j in i..<nums.count {
-//         let subarray = Array(nums[i...j])  // just nums[i...j] will be a ArraySlice type and not an Array type
-//         let sum = subarray.reduce(0, +)
-//         if sum == k {
-//         count += 1
-//
-//         }
-//         }
-//         }
-//         return count
-//         */
-//        /*
-//         2nd approach is to use a hashmap to store the prefix sum and its count
-//         */
-//        var count = 0
-//        var currentSum = 0
-//        var prefixSumCount: [Int: Int] = [0:1] // number of times a prefix sum has occurred
-//        for i in 0..<nums.count {
-//            currentSum += nums[i]
-//            let targetSumExists = prefixSumCount[currentSum-k] ?? 0 // Check if there exists a prefix sum such that currentSum - prefixSum = k
-//            count += targetSumExists
-//            prefixSumCount[currentSum, default: 0] += 1 // Initialize if not present
-//        }
-//        return count
-//    }
-//
-//    func findLongestSubarrayWithSum(_ nums: [Int], _ k: Int) -> Int {
-//        // Returns the length of the longest subarray with sum equals to k
-//        var count = 0
-//        var currentSum = 0
-//        var prefixSumIndex: [Int: Int] = [0: -1] // Maps prefix sum to its first occurrence index
-//        for i  in 0..<nums.count {
-//            currentSum += nums[i]
-//            if let firstIndex = prefixSumIndex[currentSum - k] {
-//                count = max(count, i - firstIndex) // Update count if we found a longer subarray
+////    
+//    // Implementing using memoization
+//    func combinationSum(_ candidates: [Int], _ target: Int) -> [[Int]] {
+//        var current = [Int]()
+//        let n = candidates.count
+//        var memo = [String: [[Int]]]()
+//        func helper(_ index: Int, _ currentSum: Int) -> [[Int]] {
+//            let key = "\(index),\(currentSum)"
+//            var result = [[Int]]()
+//            if let cachedResult = memo[key] {
+//                return cachedResult
 //            }
-//            // Only add the prefix sum if it is not already present to ensure we get the longest subarray
-//            if prefixSumIndex[currentSum] == nil {
-//                prefixSumIndex[currentSum] = i
+//            if currentSum == target { return [[]] }
+//            if currentSum > target || index >= n { return [] }
+//            
+//            for path in helper(index, currentSum+candidates[index]){
+//                result.append(path + [candidates[index]])
+//            }
+//            
+//            for path in helper(index+1, currentSum){
+//                result.append(path)
+//            }
+//            memo[key] = result
+//            return result
+//        }
+//        return helper(0,0)
+//    }
+//    
+//    func combinationSumDP(_ candidates: [Int], _ target: Int) -> [[Int]] {
+//        var dp = Array(repeating: [[Int]](), count: target + 1)
+//        dp[0] = [[]]
+//        for cand in candidates {
+//            if cand <= target { // <--- fixes the runtime error
+//                for t in cand...target {
+//                    for comb in dp[t - cand] {
+//                        dp[t].append(comb + [cand])
+//                    }
+//                }
 //            }
 //        }
-//        return count
-//    }
-//
-//    func findSubarraysWithXorEqualsTok(_ nums: [Int], _ k: Int) -> Int {
-//        // if A XOR B = k, then A = k XOR B
-//        var count = 0
-//        var currentXor = 0
-//        var prefixXorCount: [Int: Int] = [0: 1] // Maps prefix XOR to its count
-//        for i in 0..<nums.count {
-//            currentXor ^= nums[i] // Update current XOR
-//            let targetXor = currentXor ^ k // Find the target XOR
-//            count += prefixXorCount[targetXor, default: 0] // Add the count of target XOR
-//            prefixXorCount[currentXor, default: 0] += 1 // Increment the count of current XOR
-//        }
-//        return count
-//    }
-//
-//    func lengthOfLongestSubstring(_ s: String) -> Int {
-//        // example string: aecbcdeaf : Answer = 6 , i.e. bcdeaf
-//        // Idea have a hashMap which tells the index , i.e last occurrence of a character and use sliding window concept
-//        var maxLength = 0
-//        var start = 0
-//        var lastSeenCharacters: [Character: Int] = [:]
-//        for (index,character) in s.enumerated() {
-//            if let lastSeenIndex = lastSeenCharacters[character] {
-//                start = max(start, lastSeenIndex + 1)
-//            }
-//            maxLength = max(maxLength, index - start + 1)
-//            lastSeenCharacters[character] = index
-//        }
-//        return maxLength
-//    }
-//
-//    func reverseList(_ head: ListNode?) -> ListNode? {
-//        /* 1st method iterative solution
-//         var prev: ListNode?
-//         var current = head
-//         while current != nil {
-//         let nextNode = current?.next
-//         current?.next = prev
-//         prev = current
-//         current = nextNode
-//         }
-//         return prev
-//         */
-//        //2nd method: Recursive solution
-//        if head == nil || head?.next == nil {
-//            return head
-//        }
-//        let newHead = reverseList(head?.next)
-//        head?.next?.next = head
-//        head?.next = nil
-//
-//        return newHead
-//    }
-//    func middleNode(_ head: ListNode?) -> ListNode? {
-//        /* 1st method: simply finding the number of elements and traversing again to get that
-//         var sizeOfLinkedList = 0
-//         var currentNode: ListNode? = head
-//         while(currentNode?.next != nil){
-//         sizeOfLinkedList += 1
-//         currentNode = currentNode?.next
-//         }
-//         var currentNodeForTraversal: ListNode? = head
-//         for _ in 0..<(sizeOfLinkedList/2) {
-//         currentNodeForTraversal = currentNodeForTraversal?.next
-//         }
-//         return currentNodeForTraversal
-//         */
-//        // 2nd method: 2 pointer slow/fast approach
-//        var slow: ListNode? = head
-//        var fast: ListNode? = head
-//        while fast != nil && fast?.next != nil {
-//            slow = slow?.next
-//            fast = fast?.next?.next
-//        }
-//        return slow
-//    }
-//    /*
-//     3rd method: Recursive solution for finding middle of Linked List
-//     func findMiddleUtil(_ node: ListNode?, _ n: inout Int, _ mid: inout ListNode?) {
-//     guard let node = node else {
-//     n = (n+1) / 2   // Set n to half on reaching end
-//     return
-//     }
-//     n += 1
-//     findMiddleUtil(node.next, &n, &mid)
-//     n -= 1
-//     if n == 0 {
-//     mid = node
-//     }
-//     }
-//
-//     func middleNode(_ head: ListNode?) -> ListNode? {
-//     var n = 0
-//     var mid: ListNode? = nil
-//     findMiddleUtil(head, &n, &mid)
-//     return mid
-//     }
-//     */
-//    func mergeTwoLists(_ list1: ListNode?, _ list2: ListNode?) -> ListNode? {
-//        let dummy = ListNode(0)
-//        var tail = dummy
-//        var node1 = list1
-//        var node2 = list2
-//
-//        while let n1 = node1, let n2 = node2 {
-//            if n1.val < n2.val {
-//                tail.next = n1
-//                node1 = n1.next
-//            } else {
-//                tail.next = n2
-//                node2 = n2.next
-//            }
-//            tail = tail.next!
-//        }
-//
-//        // One list may have leftovers
-//        tail.next = node1 ?? node2
-//        return dummy.next
-//    }
-//
-//    func removeNthFromEnd(_ head: ListNode?, _ n: Int) -> ListNode? {
-//        // Approach 1: Finding the length of the list and then removing the nth node from the end
-//        // Approach 2: Using two pointers (fast and slow) to find the nth node from the end, keep the fast n steps ahead of the slow pointer, when fast reaches the end, slow will be at the nth node from the end
-//        var dummy = ListNode(0)
-//        dummy.next = head
-//        var fast: ListNode? = dummy
-//        var slow: ListNode? = dummy
-//        for _ in 0..<n {
-//            fast = fast?.next
-//        }
-//        while fast?.next != nil {
-//            slow = slow?.next
-//            fast = fast?.next
-//        }
-//        slow?.next = slow?.next?.next
-//        return dummy.next
-//    }
-//
-//    func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
-//        /*
-//         You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
-//         You may assume the two numbers do not contain any leading zero, except the number 0 itself.
-//         */
-//        // Need to use the concept of carry here
-//        var carry = 0
-//        let dummyNode = ListNode(0)
-//        var p = dummyNode
-//        var list1 = l1, list2 = l2
-//        while (list1 != nil || list2 != nil) {
-//            let val1 = list1?.val ?? 0
-//            let val2 = list2?.val ?? 0
-//            let sum = val1 + val2 + carry
-//            let newNodeVal = sum / 10
-//            carry = sum % 10
-//            p.next = ListNode(newNodeVal)
-//            if let next = p.next {
-//                p = next
-//            }
-//            list1 = list1?.next
-//            list2 = list2?.next
-//        }
-//        return dummyNode.next
-//    }
-//
-//    func deleteNode(_ node: ListNode?) {
-//        var currentNode = node
-//        var nextNode = node?.next
-//        if currentNode != nil && nextNode != nil {
-//            currentNode?.val = nextNode?.val ?? 0
-//            currentNode?.next = nextNode?.next
-//        }
-//    }
-//
-//    func getIntersectionNode(_ headA: ListNode?, _ headB: ListNode?) -> ListNode? {
-//        // find length of both the linked list
-//        var currentA = headA, currentB = headB
-//        var lengthA = 0, lengthB = 0
-//        while currentA != nil {
-//            lengthA += 1
-//            currentA = currentA?.next
-//        }
-//        while currentB != nil {
-//            lengthB += 1
-//            currentB = currentB?.next
-//        }
-//        // Move the pointer of the longer list by the difference in lengths
-//        var pointerToAdvance = lengthA > lengthB ? headA : headB
-//        for _ in 0..<abs(lengthA - lengthB) {
-//            pointerToAdvance = pointerToAdvance?.next
-//        }
-//        // Now move both pointers until they meet
-//        var pointerA = lengthA > lengthB ? pointerToAdvance : headA
-//        var pointerB = lengthA > lengthB ? headB : pointerToAdvance
-//
-//        while pointerA !== pointerB {
-//            pointerA = pointerA?.next
-//            pointerB = pointerB?.next
-//        }
-//        return pointerA // or pointerB, both will be the same at this point
-//    }
-//
-//    func hasCycle(_ head: ListNode?) -> Bool {
-//        // Method 1: Using a set to store visited nodes
-//        /*
-//         var visitedNodes: Set<ListNode> = []
-//         var currentNode = head
-//         while currentNode != nil {
-//         if visitedNodes.contains(currentNode!) {
-//         return true // Cycle detected
-//         }
-//         visitedNodes.insert(currentNode!)
-//         currentNode = currentNode?.next
-//         }
-//         return false
-//         */
-//        // Method 2: Using Floyd's Cycle Detection Algorithm (Tortoise and Hare)
-//        var dummyNode : ListNode? = ListNode(0)
-//        dummyNode?.next = head
-//        var slow = dummyNode
-//        var fast = dummyNode
-//        // here initially both slow and fast are same, so need to move them at least once, using do while loop
-//        repeat {
-//            slow = slow?.next
-//            fast = fast?.next?.next
-//            if fast == nil || fast?.next == nil {
-//                return false // No cycle
-//            }
-//        } while slow != fast
-//        // Meaningful cycle detected, move slow pointer to head and check if it meets fast pointer
-//        slow = dummyNode
-//        while slow !== fast {
-//            slow = slow?.next
-//            fast = fast?.next
-//            if fast == nil || fast?.next == nil {
-//                return false // No cycle
-//            }
-//        }
-//        return true // Cycle detected : slow will point that intersection point
-//    }
-//
-//    func reverseKGroup(_ head: ListNode?, _ k: Int) -> ListNode? {
-//        // Intuition: Recursion
-//        var currentNode: ListNode? = head
-//
-//        // Checking if k nodes do exist in Linked List
-//        for _ in 0..<k {
-//            if currentNode == nil {
-//                return head
-//            }
-//            currentNode = currentNode?.next
-//        }
-//
-//        // Reverse the first k nodes
-//        var prev: ListNode? = nil
-//        var current = head
-//        var count = 0
-//        for _ in 0..<k {
-//            let nextNode = current?.next
-//            current?.next = prev
-//            prev = current
-//            current = nextNode
-//        }
-//
-//        // head is the new tail, previous is the new head
-//        if let originalHead = head {
-//            originalHead.next = reverseKGroup(current, k)
-//        }
-//
-//        return prev
-//    }
-//
-//    func isPalindrome(_ head: ListNode?) -> Bool {
-//        // first find the middle of the linked list
-//        // reverse the second half of linked list
-//        // traverse if equal till the end : yes
-//        // restore the order of second half to original list
-//        if head == nil || head?.next == nil {
-//            return true
-//        }
-//
-//        var middleNode = middleNode(head)
-//        // reverse the second half
-//        var secondHalfHead: ListNode? = reverseList(middleNode?.next)
-//
-//        var firstHalfNode: ListNode? = head
-//        var isPalindrome = true
-//
-//        while isPalindrome && secondHalfHead != nil {
-//            if firstHalfNode?.val != secondHalfHead?.val {
-//                isPalindrome = false
-//            }
-//            firstHalfNode = firstHalfNode?.next
-//            secondHalfHead = secondHalfHead?.next
-//        }
-//
-//        // restore the second half again
-//        firstHalfNode?.next = reverseList(middleNode)
-//        return isPalindrome
-//    }
-//
-//    func mergeTwoSortedLinkedList(_ list1: Node?, _ list2: Node?) -> Node? {
-//        var dummy = Node(0)
-//        var tail: Node? = dummy
-//        var node1 = list1
-//        var node2 = list2
-//        while node1 != nil && node2 != nil {
-//            if node1!.val < node2!.val {
-//                tail?.child = node1
-//                node1 = node1?.child
-//            } else {
-//                tail?.child = node2
-//                node2 = node2?.child
-//            }
-//            tail = tail?.child
-//        }
-//        tail?.child = node1 ?? node2
-//        return dummy.child
-//    }
-//
-//    func flatten(_ head: Node?) -> Node? {
-//        if head == nil || head?.next == nil {
-//                return head
-//        }
-//
-//        var flattenedNext: Node? = flatten(head?.next)
-//
-//        head?.next = nil
-//        let mergedLinkedListHead = mergeTwoSortedLinkedList(head, flattenedNext)
-//
-//        return mergedLinkedListHead
-//    }
-//
-//    func lengthOfListNode(_ head: ListNode?) -> Int {
-//        if head == nil { return 0 }
-//        var currNode = head
-//        var answer = 0
-//        while currNode != nil {
-//            answer += 1
-//            currNode = currNode?.next
-//        }
-//        return answer
-//    }
-//
-//    func rotateRight(_ head: ListNode?, _ k: Int) -> ListNode? {
-//        if head == nil || head?.next == nil || k == 0 {
-//            return head
-//        }
-//
-//        let length = lengthOfListNode(head)
-//
-//        // Handle cases where no rotation is needed
-//        let correctedK = k % length
-//        if correctedK == 0 {
-//            return head
-//        }
-//
-//        // Find the old tail (last node)
-//        var tail: ListNode? = head
-//        while tail?.next != nil {
-//            tail = tail?.next
-//        }
-//
-//        // Find the new tail, which is at position (length - k - 1)
-//        var newTail = head
-//        for _ in 0..<(length - correctedK - 1) {
-//            newTail = newTail?.next
-//        }
-//
-//        // The new head is the node after the new tail
-//        let newHead = newTail?.next
-//
-//        // Cut the list at the new tail
-//        newTail?.next = nil
-//
-//        // Connect the old tail to the old head
-//        tail?.next = head
-//
-//        return newHead
-//    }
-//}
-//
-//extension ListNode: Hashable {
-//    // Hashable conformance
-//    public func hash(into hasher: inout Hasher) {
-//        hasher.combine(ObjectIdentifier(self))  // Hash based on memory address
-//    }
-//
-//    public static func == (lhs: ListNode, rhs: ListNode) -> Bool {
-//        return lhs === rhs  // Check if same object (reference equality)
-//    }
-//}
-//
-//public class Node {
-//    public var val: Int
-//    public var next: Node?
-//    public var child: Node?
-//    public init(_ val: Int) { self.val = val; self.next = nil; self.child = nil; }
-//}
-//
-//public class ListNode {
-//    public var val: Int
-//    public var next: ListNode?
-//    public init() { self.val = 0; self.next = nil; }
-//    public init(_ val: Int) { self.val = val; self.next = nil; }
-//    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
-//}
-//
-//class DSU {
-//    var parent: [Int] // Parent of each node
-//    var size: [Int] // Size of each group
-//    init(_ parent: [Int], _ size: [Int]) {
-//        self.parent = parent
-//        self.size = size
-//    }
-//
-//    init(_ n: Int) {
-//        self.parent = Array(0..<n) // Each node is its own parent initially
-//        self.size = Array(repeating: 1, count: n) // Each node is its own parent and size is 1 initially
-//    }
-//
-//    func find(_ x: Int) -> Int {
-//        if parent[x] != x {
-//            parent[x] = find(parent[x])
-//        }
-//        return parent[x]
-//    }
-//    func union(_ x: Int, _ y: Int) {
-//        let parentOfX = find(x)
-//        let parentOfY = find(y)
-//        if parentOfX == parentOfY {
-//            return
-//        }
-//        if size[parentOfX] < size[parentOfY] {
-//            parent[parentOfX] = parentOfY
-//            size[parentOfY] += size[parentOfX]
-//        } else {
-//            parent[parentOfY] = parentOfX
-//            size[parentOfX] += size[parentOfY]
-//        }
-//    }
-//}
-//
-//let solution = Solution()
-////let nums = [1,0,-1,0,-2,2]
-////let target = 0
-////solution.fourSum(nums, target)
-//
-//
-
-//public class Node {
-//  public var val: Int
-//  public var next: Node?
-//  public var random: Node?
-//  public init(_ val: Int) {
-//      self.val = val
-//      self.next = nil
-//      self.random = nil
-//  }
-//}
-//
-//extension Node: Hashable {
-//    public func hash(into hasher: inout Hasher) {
-//        hasher.combine(ObjectIdentifier(self))
-//    }
-//
-//    public static func == (lhs: Node, rhs: Node) -> Bool {
-//        return lhs === rhs // reference equality
-//    }
-//}
-//
-//class Solution {
-//    func copyRandomList(_ head: Node?) -> Node? {
-//        guard let head = head else { return nil }
-//
-//        /* 1. O(n^2): Approach
-//         var originalNodes: [Node] = []
-//         var copyNodes: [Node] = []
-//         var node : Node? = head
-//         while let currNode = node {
-//         originalNodes.append(currNode)
-//         copyNodes.append(Node(currNode.val))
-//         node = currNode.next
-//         }
-//
-//         let n = originalNodes.count
-//         for i in 0..<n {
-//         if i < n-1 {
-//         copyNodes[i].next = copyNodes[i+1]
-//         }
-//         if let randomOriginalNode = originalNodes[i].random {
-//         // finding this randomOriginalNode in originalNode array
-//         if let idx = originalNodes.firstIndex(where: { $0 === randomOriginalNode }){
-//         copyNodes[i].random = copyNodes[idx]
-//         }
-//         }
-//         }
-//         return copyNodes.first
-//         }
-//         */
-//        // Using Hashmap
-//        var oldNodeToNewNodeMap: [Node: Node] = [:]
-//        var currentNode: Node? = head
-//        while let node = currentNode {
-//            let newNode = Node(node.val)
-//            oldNodeToNewNodeMap[node] = newNode
-//            currentNode = node.next
-//        }
-//        // Set the next and random pointer now
-//        currentNode = head
-//        while let node = currentNode {
-//            if let newNode = oldNodeToNewNodeMap[node] {
-//                newNode.next = node.next == nil ? nil : oldNodeToNewNodeMap[node.next!]
-//                newNode.random = node.random == nil ? nil : oldNodeToNewNodeMap[node.random!]
-//            }
-//            currentNode = node.next
-//        }
-//        return oldNodeToNewNodeMap[head]
+//        return dp[target]
 //    }
 //}
 
 class Solution {
-    //    func trap(_ height : [Int]) -> Int {
-    //        let n = height.count
-    //        //1. Recursive approach
-    //        //2. Add memoization
-    //       var leftMax = [Int:Int]()
-    //       var rightMax = [Int:Int]()
-    //        func maxLeft(_ index : Int) -> Int {
-    //            if index == 0 {
-    //                return 0
-    //            }
-    //    if let val = leftMax[index] { return val }
-    //            let val = max(height[index-1], maxLeft(index-1))
-    //            leftMax[index] = val
-    //            return val
-    //        }
-    //        func maxRight(_ index: Int)-> Int {
-    //            if index == n-1 {
-    //                return 0
-    //            }
-    //    if let val = rightMax[index] {return val}
-    //            let val = max(height[index+1], maxRight(index+1))
-    //            rightMax[index] = val
-    //            return val
-    //        }
-    //        var total = 0
-    //        for i in 0..<n {
-    //            let val = (min(maxLeft(i),maxRight(i))) - height[i]
-    //            if val > 0 {
-    //                total = total + val
-    //            }
-    //        }
-    //        return total
-    //    }
-    //    func trap(_ height: [Int]) -> Int {
-    //        //3. Using Dynamic Programming
-    //        let n = height.count
-    //        var leftMax: [Int] = Array(repeating: 0, count: n)
-    //        var rightMax: [Int] = Array(repeating: 0, count: n)
-    //        leftMax[0] = height[0]
-    //        for i in 1..<n {
-    //            leftMax[i] = max( leftMax[i-1], height[i-1] )
-    //        }
-    //
-    //
-    //        //through will go till 0
-    //        for i in stride(from:n-2, through:0, by: -1){
-    //            rightMax[i] = max(rightMax[i+1], height[i+1])
-    //        }
-    //
-    //
-    //        var total = 0
-    //        for i in 0..<n{
-    //            let val = min(leftMax[i], rightMax[i])-height[i]
-    //            if val > 0 {
-    //                total = total + val
-    //            }
-    //        }
-    //        return total
-    //
-    //    }
-    //    func trap(_ height: [Int]) -> Int {
-    //        //4. Using two pointer approach
-    //        let n = height.count
-    //        var left = 0, right = n-1, maxLeft = 0, maxRight = 0, total = 0
-    //        while left < right{
-    //            if height[left]<height[right] {
-    //                // left index storage
-    //                if height[left] >= maxLeft {
-    //                    maxLeft = height[left]
-    //                } else {
-    //                    total = total + (maxLeft - height[left])
-    //                }
-    //                left += 1
-    //            } else {
-    //                // right index storage
-    //                if height[right] >= maxRight {
-    //                    maxRight = height[right]
-    //                } else {
-    //                    total = total + (maxRight - height[right])
-    //                }
-    //                right -= 1
-    //            }
-    //        }
-    //        return total
-    //    }
-    /*
-     The Intuition Behind the Stack
-     Think of the stack as a way to keep track of potential left walls of a container that could hold water.
-     
-     What does the stack hold? The stack stores the indices of the bars. We always maintain the property that the heights of the bars corresponding to the indices in the stack are in decreasing or equal order from bottom to top. For example, stack = [index_of_height_5, index_of_height_3, index_of_height_2].
-     
-     When do we find water? We find trapped water when we encounter a bar that is taller than the bar at the top of the stack. This new, taller bar acts as a right wall.
-     
-     The bar we just popped from the stack (top) becomes the bottom of the container.
-     
-     The new top of the stack (after popping) becomes the left wall.
-     
-     Why calculate h * w? Once we have a left wall, a bottom, and a right wall, we've defined a "valley" or a "V" shape. The water trapped in this valley fills up like a rectangle.
-     
-     h (Height of water): The water can only fill up to the height of the shorter of the two walls (left and right). So, h = min(height[left_wall], height[right_wall]) - height[bottom]. We subtract the bottom's height because that space is already occupied by the bar itself.
-     
-     w (Width of water): This is simply the distance between the left and right walls. w = index_of_right_wall - index_of_left_wall - 1.
-     */
-    //    func trap(_ height: [Int]) -> Int {
-    //        var stack = [Int]()
-    //        var total = 0
-    //        for i in 0..<height.count {
-    //            //  i is the right wall
-    //            while !stack.isEmpty && height[i]>height[stack.last!] {
-    //                let top = stack.removeLast() // This is dip part of the valley
-    //                if stack.isEmpty { break }
-    //                let left = stack.last!
-    //                let height = min(height[i], height[left])-height[top]
-    //                let width = i - left - 1
-    //                total += height * width
-    //            }
-    //            stack.append(i)
-    //        }
-    //        return total
-    //    }
-    
-    func removeDuplicates(_ nums: inout [Int]) -> Int {
-        var start = 0, current = 0
-        let n = nums.count
-        while current < n {
-            if nums[start] != nums[current] && start < nums.count - 2 {
-                nums[start+1] =  nums[current]
-                start += 1
-            }
-            current += 1
-        }
-        print(nums)
-        return start+1
-    }
-    
-    func jobScheduling(_ jobs: [[Int]]) -> (jobCount: Int, maxProfit: Int) {
-        var jobs = jobs.sorted{ $0[2] > $1[2]}
-        let maxDeadline = jobs.map{$0[1]}.max() ?? 0
-        var time = Array(repeating: false, count: maxDeadline+1)
-        var profit = 0
-        var jobCount = 0
-        for job in jobs {
-            let deadline = job[1]
-            let profitForJob = job[2]
-            
-            for timeSlot in stride(from: deadline, to: 0, by: -1){
-                if !time[timeSlot] {
-                    jobCount += 1
-                    profit += profitForJob
-                    time[timeSlot] = true
-                    break
-                }
-            }
-        }
-        return (jobCount, profit)
-    }
-    
-    func fractionalKnapSack(_ value:[Int], _ weight:[Int], _ capacity:Int) -> Double {
-        // Greed approach: To maximize the value/weight ratio, value bigger and weight smaller
-        var items = [(ratio: Double, value: Int, weight: Int)]()
-        for i in 0..<value.count {
-            let ratio = Double(value[i])/Double(weight[i])
-            items.append((ratio, value[i], weight[i]))
-        }
-        items.sort{$0.ratio>$1.ratio}
-        var profit: Double = 0.0
-        var remainingCapacity = capacity
-        for item in items {
-            if remainingCapacity == 0 { break }
-            if item.weight <= remainingCapacity {
-                // take full
-                profit += Double(item.value)
-                remainingCapacity -= item.weight
-            } else {
-                let holdingCapacity = Double(item.weight)/Double(remainingCapacity)
-                profit += Double(item.value) * holdingCapacity
-                remainingCapacity = 0
-            }
-        }
-        return profit
-    }
-    
-    func coinChangeRecursive(_ coins: [Int], _ amount: Int) -> Int {
-        if amount == 0 {return 0}
-        if amount < 0 {return -1}
+//    func partition(_ s: String) -> [[String]] {
+//        var result = [[String]]()
+//        var current = [String]()
+//        let n = s.count
+//        func helper(_ index: Int) {
+//            if index == n {
+//                result.append(current)
+//                return
+//            }
+//            for i in index..<n {
+//                // Need to make sure substring start...i is a Palindrome
+//                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
+//                if isPalindrome(substring) {
+//                    current.append(substring)
+//                    helper(i+1)
+//                    current.removeLast()
+//                }
+//            }
+//        }
+//        helper(0)
+//        return result
+//    }
+    // Can apply memoization to above code
+//    func partition(_ s: String) -> [[String]] {
+//        var memo = [String: [[String]]]()
+//        let n = s.count
+//        func helper(_ index: Int) -> [[String]] {
+//            let key = "\(index)"
+//            if let cachedResult = memo[key] {
+//                return cachedResult
+//            }
+//            var result = [[String]]()
+//            if index == n {
+//                return [[]]
+//            }
+//            for i in index..<n {
+//                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
+//                if isPalindrome(substring) {
+//                    var tempResult = helper(i+1)
+//                    for path in tempResult {
+//                        var newPath = path
+//                        newPath.insert(substring, at: 0)
+//                        result.append(newPath)
+//                    }
+//                }
+//            }
+//            memo[key] = result
+//            return result
+//        }
+//        return helper(0)
+//    }
+    // can apply iterative Dynamic Programming to above code
+    func partition(_ s: String) -> [[String]] {
+        let n = s.count
+        let arr = Array(s)
+        // dp[i]: all palindromic partitions of s[0..<i]
+        var dp = Array(repeating: [[String]](), count: n + 1)
+        dp[0] = [[]] // one way to partition the empty string
         
-        var minCoins = Int.max
-        for coin in coins {
-            let minimumCoinsRequiredIfConsideringCoin = coinChangeRecursive(coins, amount - coin)
-            if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
-                minCoins = 1+minimumCoinsRequiredIfConsideringCoin
-            }
-        }
-        return (minCoins == Int.max) ? -1: minCoins
-    }
-
-    func coinChangeRecursiveWithMemoization(_ coins: [Int], _ amount: Int) -> Int {
-        var memo = [Int:Int]() //minimum number of coins required(value) of this amount (key)
-        func dp(_ rem: Int) -> Int {
-            if rem == 0 {return 0}
-            if rem < 0 {return -1}
-            if let cached = memo[rem] { return cached }
-            var minCoins = Int.max
-            for coin in coins {
-                let minimumCoinsRequiredIfConsideringCoin = dp(rem - coin)
-                if minimumCoinsRequiredIfConsideringCoin >= 0 && minCoins>minimumCoinsRequiredIfConsideringCoin  {
-                    minCoins = 1+minimumCoinsRequiredIfConsideringCoin
-                }
-            }
-            memo[rem] = (minCoins == Int.max) ? -1: minCoins
-            return memo[rem]!
-        }
-        return dp(amount)
-    }
-
-    func coinChangeDP(_ coins: [Int], _ amount: Int) -> Int {
-        if amount == 0 { return 0 }
-        var dp = Array(repeating: Int.max, count: amount + 1)
-        dp[0] = 0
-        for total in 1...amount {
-            for coin in coins {
-                if total >= coin && dp[total - coin] != Int.max {
-                    dp[total] = min(dp[total], 1+dp[total-coin])
+        // Precompute palindrome substrings, isPal[i][j] : if substring from i...j is a palindrome or not
+        var isPal = Array(repeating: Array(repeating: false, count: n), count: n)
+        for length in 1...n {
+            for start in 0...(n - length) {
+                let end = start + length - 1
+                if arr[start] == arr[end] && (length <= 2 || isPal[start + 1][end - 1]) {
+                    isPal[start][end] = true
                 }
             }
         }
-        return dp[amount] == Int.max ? -1 : dp[amount]
-    }
-
-    // assuming canonical denomination
-    func coingChangeGreedy( _ coins: [Int], _ amount: Int) -> Int{
-        let sortedCoins = coins.sorted(by: >)
-        var count  = 0
-        var amountLeft = amount
-        for coin in sortedCoins {
-            if amountLeft == 0 {break}
-            let use = amountLeft/coin
-            count += use
-            amountLeft -= use*coin
+        
+        for i in 1...n { // for each possible end index (exclusive)
+            for j in 0..<i { // for each possible start index
+                if isPal[j][i - 1] {
+                    let word = String(arr[j..<i])
+                    for partition in dp[j] {
+                        dp[i].append(partition + [word])
+                    }
+                }
+            }
         }
-        return amountLeft == 0 ? count : -1
+        return dp[n]
     }
 
+    
+    func isPalindrome(_ s: String) -> Bool {
+        var left = 0
+        var right = s.count - 1
+        while left < right {
+            if s[s.index(s.startIndex, offsetBy: left)] != s[s.index(s.startIndex, offsetBy: right)] {
+                // for s[left] != s[right] -> 'subscript(_:)' is unavailable: cannot subscript String with an Int, use a String.Index instead.
+                return false
+            }
+            left += 1
+            right -= 1
+        }
+        return true
+    }
+    
+    func getPermutation(_ n: Int, _ k: Int) -> String {
+        var fact = 1
+        var nums = (1...n).map{String($0)}
+        var answer = ""
+        for i in 1..<n{
+            fact = fact * i
+        }
+        var k = k-1
+        while(true){
+            answer = answer + String(nums[k/fact])
+            nums.remove(at: k/fact)
+            if k == 0 { break }
+            k = k%fact
+            fact = fact/nums.count
+        }
+        return answer
+    }
+    
+//    func solveSudoku(_ board: inout [[Character]]) {
+//        let n = board.count
+//        
+//        func isSafe(_ row: Int, _ col: Int, _ num: Character) -> Bool {
+//            for k in 0..<n {
+//                if board[row][k] == num {
+//                    return false
+//                }
+//                if board[k][col] == num {
+//                    return false
+//                }
+//            } // need to check till n because there's a possibility of having a character present on an index we have yet not explored yet
+//            
+//            // need to check which 3 x 3 block this row, col exists in
+//            let boxRowStart = (row/3) * 3 // example : row = 7, col = 6 (7/3 will give 2 and 2*3 will give 6 i.e. last box slot)
+//            let boxColStart = (col/3) * 3
+//            for i in boxRowStart..<boxRowStart+3 {
+//                for j in boxColStart..<boxColStart+3 {
+//                    if board[i][j] == num {
+//                        return false
+//                    }
+//                }
+//            }
+//            return true
+//        }
+//        
+//        // we will solve this cell by cell from top-left to right-bottom (row major)
+//        func backtrack(_ row: Int,_ col: Int) -> Bool {
+//            if row == n {
+//                return true // solved
+//            }
+//            
+//            let nextRow = col == n-1 ? row+1 : row //If col is n-1 i.e. last col, switch to new row
+//            let nextCol = col == n-1 ? 0 : col+1
+//            
+//            if board[row][col] != "." {
+//                return backtrack(nextRow, nextCol) //already filled
+//            }
+//            
+//            for number in 1...9 {
+//                let characterNumber = Character(String(number))
+//                if isSafe(row, col, characterNumber){
+//                    board[row][col] = characterNumber
+//                    if backtrack(nextRow, nextCol){
+//                        return true // we don't need to find and explore further solutions since we have gotten our desired result
+//                    }
+//                    board[row][col] = "." //backtrack
+//                }
+//            }
+//            return false
+//        }
+//
+//        _ = backtrack(0, 0)
+//    }
+    
+    // can use hashing to find isSafe
+    func solveSudoku(_ board: inout [[Character]]) {
+        let n = board.count
+        
+        // var rowUsed[i][d] will have a boolean value i.e if this digit d exist in this ith row or not
+        var rowUsed : [[Bool]] = Array(repeating: Array(repeating: false, count: 10), count: n)
+        var colUsed : [[Bool]] = Array(repeating: Array(repeating: false, count: 10), count: n)
+        var boxUsed : [[Bool]] = Array(repeating: Array(repeating: false, count: 9), count: n) // var boxUsed[b][d] will have boolean value i.e. if digit d exist in this specific box or not
+        
+        for i in 0..<n {
+            for j in 0..<n {
+                if board[i][j] != "." {
+                    let num = Int(String(board[i][j]))!
+                    rowUsed[i][num] = true
+                    colUsed[j][num] = true
+                    let b = (i/3) * 3 + (j/3)
+                    boxUsed[b][num] = true
+                }
+            }
+        }
+        
+        
+        // we will solve this cell by cell from top-left to right-bottom (row major)
+        func backtrack(_ row: Int,_ col: Int) -> Bool {
+            if row == n {
+                return true // solved
+            }
+            
+            let nextRow = col == n-1 ? row+1 : row //If col is n-1 i.e. last col, switch to new row
+            let nextCol = col == n-1 ? 0 : col+1
+            
+            if board[row][col] != "." {
+                return backtrack(nextRow, nextCol) //already filled
+            }
+            
+            for number in 1...9 {
+                let characterNumber = Character(String(number))
+                if rowUsed[row][number] == false && colUsed[col][number] == false && boxUsed[(row/3) * 3 + (col/3)][number] == false{
+                    board[row][col] = characterNumber
+                    
+                    let b = (row/3) * 3 + (col/3)
+                    
+                    rowUsed[row][number] = true
+                    colUsed[col][number] = true
+                    boxUsed[b][number] = true
+                    
+                    if backtrack(nextRow, nextCol){
+                        return true // we don't need to find and explore further solutions since we have gotten our desired result
+                    }
+                    
+                    rowUsed[row][number] = false
+                    colUsed[col][number] = false
+                    boxUsed[b][number] = false
+                    
+                    board[row][col] = "." //backtrack
+                }
+            }
+            return false
+        }
 
+        _ = backtrack(0, 0)
+    }
+    
+    
+    // edges: list of undirected edges [u, v]
+    // m: maximum number of colors allowed
+    // n: number of vertices (0..n-1)
+    
+    func graphColoringWithAtmostMColors(_ edges: [[Int]], _ m: Int, _ n: Int ) -> Bool {
+        // reference : https://www.youtube.com/watch?v=wuVwUK25Rfc&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=60
+        // building adjacency list first
+        var adj = Array(repeating: [Int](), count: n)
+        for edge in edges {
+            let u = edge[0]
+            let v = edge[1]
+            adj[u].append(v)
+            adj[v].append(u)
+        }
+        
+        var color = Array(repeating: 0, count: n)
+        //color[u] will represent which color is assigned to uth vertex as of now
+        // color[u] == 0, means uncolored and 1...m are the assigned color
+        
+        func isSafe(_ u: Int, _ c: Int) -> Bool {
+            for v in adj[u] {
+                if c == color[v] { return false }
+            }
+            return true
+        }
+        
+        func backTracking(_ u: Int) -> Bool {
+            if u == n {
+                return true // have successfully assigned the colors to all the nodes
+            }
+            // lets check for each color and rather than traversing the graph let's travel to each of the vertices and check it's adjacent
+            
+            for c in 1...m {
+                if color[u] == 0 && isSafe(u, c) {
+                    color[u] = c
+                    if backTracking(u+1) {
+                        return true
+                    }
+                    color[u] = 0
+                }
+            }
+            return false
+        }
+        return backTracking(0)
+    }
 }
-
-let obj = Solution()
-var array = [0,0,1,1,1,2,2,3,3,4]
-let k = obj.removeDuplicates(&array)
-print(k)
-
