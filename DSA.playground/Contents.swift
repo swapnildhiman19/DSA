@@ -1,3 +1,4 @@
+import Foundation
 ////////import Foundation
 //////////
 //////////class Solution {
@@ -1712,4 +1713,390 @@ class Solution {
         }
         return backTracking(0)
     }
+    
+    func findPath(_ grid: [[Int]]) -> [String] {
+        // your code goes here
+        /*
+         Problem Statement: Given a grid of dimensions n x n. A rat is placed at coordinates (0, 0) and wants to reach at coordinates (n-1, n-1).
+         Find all possible paths that rat can take to travel from (0, 0) to (n-1, n-1). The directions in which rat can move are 'U' (up) , 'D' (down) , 'L' (left) , 'R' (right).
+         The value 0 in grid denotes that the cell is blocked and rat cannot use that cell for travelling, whereas value 1 represents that rat can travel through the cell. If the cell (0, 0) has 0 value, then mouse cannot move to any other cell.
+         Note :
+         In a path no cell can be visited more than once.
+         If there is no possible path then return empty vector.
+         */
+        let n = grid.count
+        
+        var answer : [String] = []
+        var currentPath : String = ""
+        
+        var visited = Array(repeating: Array(repeating: false, count: n), count: n)
+        
+        func isSafe(_ row: Int, _ col: Int) -> Bool {
+            return row >= 0 && row < n && col >= 0 && col < n && grid[row][col] == 1 && !visited[row][col]
+        }
+        
+        func backTrack(_ row: Int,_ col: Int,_ ch: String) {
+            if !isSafe(row, col) {
+                return
+            }
+            
+            currentPath.append(ch)
+            visited[row][col] = true
+            
+            if row == n-1 && col == n-1 {
+                answer.append(currentPath)
+            } else {
+                
+                // will explore all four directions, for example if we go down i.e. (row+1,c) and there exists the paths to reach (n-1,n-1) then for all the paths add the "D" at first of that path
+                backTrack(row+1, col, "D")
+                backTrack(row, col+1, "R")
+                backTrack(row-1, col, "U")
+                backTrack(row, col-1, "L")
+            }
+            
+            if !currentPath.isEmpty {
+                currentPath.removeLast()
+            }
+            visited[row][col] = false
+        }
+        if grid[0][0] == 1 {
+            backTrack(0,0,"")
+        }
+        return answer
+    }
+    
+    // 1st approach
+//    func canSegment(_ s: String, _ wordDict: [String], _ idx: Int) -> Bool {
+//        if s.isEmpty { return true }
+//        if idx == wordDict.count { return false }
+//        
+//        let word = wordDict[idx]
+//        var range = s.range(of: word)
+//        while let r = range {
+//            // Remove this occurrence of word in s
+//            var newStr = s
+//            newStr.removeSubrange(r)
+//            // Recur: Try to segment what's left, using the next word
+//            if canSegment(newStr, wordDict, idx + 1) { return true }
+//            // Find another occurrence of this word further along
+//            range = s.range(of: word, range: r.upperBound..<s.endIndex)
+//        }
+//        // Try skipping this word entirely
+//        return canSegment(s, wordDict, idx + 1)
+//    }
+    
+    //2nd approach: Iterating through s and checking for prefix it exists in wordDict
+//    func canSegment(_ s: String, _ wordDict: [String]) -> Bool {
+//        let wordSet = Set(wordDict)
+//        let sArr = Array(s)
+//        let n = sArr.count
+//        var memo = [Int: Bool]()
+//        func dfs(_ start: Int) -> Bool {
+//            if start == n {
+//                return true
+//            }
+//            if let cached = memo[start] {
+//                return cached
+//            }
+//            for end in start+1..<n {
+//                let word = String(sArr[start...end])
+//                if wordSet.contains(word) && dfs(end+1) {
+//                    memo[start] = true
+//                    return true
+//                }
+//            }
+//            memo[start] = false
+//            return false
+//        }
+//       return dfs(0)
+//    }
+    
+    //3rd approach: Iterative DP
+    func canSegment(_ s: String, _ wordDict: [String]) -> Bool {
+        let wordSet = Set(wordDict)
+        let sArr = Array(s)
+        let n = sArr.count
+        var dp = Array(repeating: false, count: n+1)
+        //dp[i] means if the prefix s[0..<i] can be segmented or not
+        dp[0] = true // comparing to 2nd approach i means start here
+        for i in 1...n {
+            for j in 0..<i {
+                let word = String(sArr[j..<i])
+                if dp[j] && wordSet.contains(word) {
+                    dp[i] = true
+                    break
+                }
+            }
+        }
+        return dp[n]
+    }
+    
+//    func nthRoot(_ m: Int, _ n:Int) -> Int {
+//        var result = 1
+//        var factor = 2
+//        var m = m
+//        
+//        while factor * factor <= m {
+//            var power = 0
+//            while m % factor == 0 {
+//                m /= factor
+//                power += 1
+//            }
+//            if power > 0 {
+//                if (power % n) != 0 {
+//                    return -1
+//                }
+//                result *= Int(pow(Double(factor), Double(power)/Double(n)))
+//            }
+//            factor += 1
+//        }
+//        
+//        if m > 1 {
+//            return -1
+//        }
+//        
+//        // Cross-verify it
+//        if Int(pow(Double(result), Double(n))) == m {
+//            return result
+//        }
+//        return -1
+//    }
+    
+    /*
+     Intuition Behind Binary Search for Nth Root
+     Why does binary search make sense?
+
+     The answer, if it exists, is an integer X such that X^N = M.
+
+     Any possible X must be in the range [1, M] (since X^N = M, and for N > 1, negative roots aren’t considered for this problem).
+
+     As X increases, X^N grows monotonically (always increases), so the function is strictly increasing for X ≥ 1.
+
+     Therefore, can apply binary search!
+
+     If X^N < M, look to the right (bigger X).
+
+     If X^N > M, look to the left (smaller X).
+
+     If X^N == M, you found the answer.
+
+
+     */
+    
+    func nthRoot(_ m:Int, _ n:Int) -> Int {
+        var left = 1
+        var right = m
+        /*
+         Why not just use pow(Double, Double) in Swift?
+         Problems with pow(Double, Double) for integer Nth root search:
+
+         Floating-point imprecision:
+         pow(Double, Double) returns a floating-point result, which can introduce rounding errors, especially for big numbers or higher roots. For example, pow(256.0, 0.25) should be 4, but due to floating-point imprecision, you might get 3.999999... or 4.0000001, and converting these to Int might cause the check if mid^N == M to fail.
+
+         Overflow avoidance:
+         When working with large integers (for example, testing 64^6), directly computing using Int multiplication avoids intermediate overflows and floating-point inaccuracies. pow(Double, Double) might silently overflow or provide an incorrect result due to loss of precision.
+         */
+        func power(_ base: Int, _ e: Int) -> Int{
+            var result = 1
+            var e = e
+            while e>0 {
+                result *= base
+                if result > m { return m+1 } //early breakout
+                e -= 1
+            }
+            return result
+        }
+        
+        while left <= right {
+            let mid = (left + right) / 2
+            let val = power(mid, n)
+            if val == m {
+                return mid
+            } else if val < m {
+                left = mid + 1
+            } else {
+                right = mid - 1
+            }
+        }
+        
+        return -1
+    }
+    
+    
+//    func medianOfRowSortedMatrix(_ matrix: [[Int]]) -> Int {
+//        
+//        // Since these matrix are row wise sorted and not globally sorted
+//        /* Approach 1:
+//         a. Flatten the matrix
+//         b. Sort this matrix
+//         c. Find the middle value
+//        */
+//        
+//        /*
+//         Approach 2:
+//         a. We know that median is that value where all the elements on it's left are less than equal to it, here number of those elements will be ((n*m)+1)/2
+//         b. left = min( all the values present on 0th column ), right = max( all the values present on last column), median will lie in between these values
+//         c. For this mid, find number of elements present less than or equal to this value. Here go to each row, since each row is sorted use Binary Search to find the upperBound of this element in comparison to currMid value, add that into count
+//         */
+//        
+//        let n = matrix.count
+//        let m = matrix[0].count
+//        let desiredCount = ((n*m)+1)/2
+//        
+////        func findNumberOfElementsLessThan(_ mid: Int) -> Int {
+////            var count = 0
+////            for row in matrix {
+////                // Find the upperBound for this mid
+////                var l = 0 , r = m-1
+////                while l <= r {
+////                    let m = (l+r)/2
+////                    if row[m] <= mid {
+////                        l = m+1
+////                    } else {
+////                        r = m-1
+////                    }
+////                }
+////                count += l
+////            }
+////            return count
+////        }
+//        let findNumberOfElementsLessThan: (Int) -> Int = { mid in
+//            var count = 0
+//            for row in matrix {
+//                // Find the upperBound for this mid
+//                var l = 0 , r = m-1
+//                while l <= r {
+//                    let m = (l+r)/2
+//                    if row[m] <= mid {
+//                        l = m+1
+//                    } else {
+//                        r = m-1
+//                    }
+//                }
+//                count += l
+//            }
+//            return count
+//        }
+//        
+//        // left will be the minimum of all the elements present on 0th column of the matrix
+//        var left = matrix.map { $0[0] }.min()!
+//        var right = matrix.map { $0[m-1] }.max()!
+//        
+//        while left < right {
+//            let mid = (left + right)/2
+//            let val = findNumberOfElementsLessThan(mid)
+//            if val == desiredCount {
+//                return mid
+//            } else if val < desiredCount {
+//                left = mid + 1
+//            } else {
+//                right = mid
+//            }
+//        }
+//        return left
+//    }
+    
+    
+    // Can implement thinking of using higher order function like map
+    /*
+     // Higher-Order Function: Takes a matrix and a way to count elements <= mid
+     func medianOfMatrix(matrix: [[Int]], countFunc: (Int) -> Int) -> Int {
+         let n = matrix.count
+         let m = matrix[0].count
+         let desiredCount = (n * m + 1) / 2 // Median's position
+
+         // Set initial search range
+         var left = matrix.map { $0 }.min()!
+         var right = matrix.map { $0[m-1] }.max()!
+
+         while left < right {
+             let mid = (left + right) / 2
+             let count = countFunc(mid)
+             if count < desiredCount {
+                 left = mid + 1
+             } else {
+                 right = mid
+             }
+         }
+         return left
+     }
+
+     // Example: Standard row-wise count function using a closure
+     let matrix = [
+         [1, 3, 8],
+         [2, 3, 4],
+         [1, 2, 5]
+     ]
+
+     // Defines how to count number of elements <= `mid`
+     let rowCountFunc: (Int) -> Int = { mid in
+         var count = 0
+         for row in matrix {
+             var l = 0, r = row.count - 1
+             while l <= r {
+                 let m = (l + r) / 2
+                 if row[m] <= mid {
+                     l = m + 1
+                 } else {
+                     r = m - 1
+                 }
+             }
+             count += l
+         }
+         return count
+     }
+
+     // Call the higher-order function with the closure
+     let median = medianOfMatrix(matrix: matrix, countFunc: rowCountFunc)
+     print(median) // Output: 3
+     */
+    
+    func singleNonDuplicate(_ nums: [Int]) -> Int {
+        // https://www.youtube.com/watch?v=PzszoiY5XMQ&t=15s
+        
+        /*
+         Approach 1 : XOR of all the numbers, a^a = 0 , a^0 = a , in the end you will get the unique element
+         Approach 2:
+         1,1,2,3,3,4,4
+         Answer = 2
+         
+         Left side of 2 observation
+         if we observe on left side of 2 we have pair (1,1) which have index 0,1 i.e. first element of the pair is on even index and second element of the pair is on odd index
+         
+         Right side of 2 observation
+         pair (3,3), first element of the pair is on odd index . Second element of the pair is on even index
+         
+         Xor of odd element with 1 => previous even 5 (101) ^ 1 => 100 i.e. 4
+         Xor of even element with 1 => next odd 4(100) ^ 1 => 101 i.e. 5
+         */
+        
+        var l = 0, r = nums.count - 2
+        while l < r {
+//            let mid = (l + r) / 2
+             let mid = (l + r) >> 2
+            //check whether mid lies of left part of the answer or on right part of the answer
+            if nums[mid] == nums[mid^1] {
+                // I am on right side
+                l = mid + 1
+            } else {
+                r = mid - 1
+            }
+        }
+        return l
+    }
+    
 }
+
+//let solution = Solution()
+//print(solution.findPath([ [1, 0, 0, 0] , [1, 1, 0, 1], [1, 1, 0, 0], [0, 1, 1, 1] ]))
+
+//let word = "Swapnil"
+//let s = "qwertySwapnilqwerty"
+//
+//if let range = s.range(of: word) {
+//    print("Found '\(word)' at range \(range)")     // prints: Found 'u' at range ...
+//    print("Substring is:", s[range])               // prints: Substring is: u
+//}
+
+let solution = Solution()
+//print(solution.medianOfRowSortedMatrix([ [1, 4, 9], [2, 5, 6], [3, 7, 8] ] ))
