@@ -1030,19 +1030,19 @@ import Foundation
 //////    /*
 //////     The Intuition Behind the Stack
 //////     Think of the stack as a way to keep track of potential left walls of a container that could hold water.
-//////     
+//////
 //////     What does the stack hold? The stack stores the indices of the bars. We always maintain the property that the heights of the bars corresponding to the indices in the stack are in decreasing or equal order from bottom to top. For example, stack = [index_of_height_5, index_of_height_3, index_of_height_2].
-//////     
+//////
 //////     When do we find water? We find trapped water when we encounter a bar that is taller than the bar at the top of the stack. This new, taller bar acts as a right wall.
-//////     
+//////
 //////     The bar we just popped from the stack (top) becomes the bottom of the container.
-//////     
+//////
 //////     The new top of the stack (after popping) becomes the left wall.
-//////     
+//////
 //////     Why calculate h * w? Once we have a left wall, a bottom, and a right wall, we've defined a "valley" or a "V" shape. The water trapped in this valley fills up like a rectangle.
-//////     
+//////
 //////     h (Height of water): The water can only fill up to the height of the shorter of the two walls (left and right). So, h = min(height[left_wall], height[right_wall]) - height[bottom]. We subtract the bottom's height because that space is already occupied by the bar itself.
-//////     
+//////
 //////     w (Width of water): This is simply the distance between the left and right walls. w = index_of_right_wall - index_of_left_wall - 1.
 //////     */
 //////    //    func trap(_ height: [Int]) -> Int {
@@ -1062,7 +1062,7 @@ import Foundation
 //////    //        }
 //////    //        return total
 //////    //    }
-//////    
+//////
 //////    func removeDuplicates(_ nums: inout [Int]) -> Int {
 //////        var start = 0, current = 0
 //////        let n = nums.count
@@ -1076,7 +1076,7 @@ import Foundation
 //////        print(nums)
 //////        return start+1
 //////    }
-//////    
+//////
 //////    func jobScheduling(_ jobs: [[Int]]) -> (jobCount: Int, maxProfit: Int) {
 //////        var jobs = jobs.sorted{ $0[2] > $1[2]}
 //////        let maxDeadline = jobs.map{$0[1]}.max() ?? 0
@@ -1086,7 +1086,7 @@ import Foundation
 //////        for job in jobs {
 //////            let deadline = job[1]
 //////            let profitForJob = job[2]
-//////            
+//////
 //////            for timeSlot in stride(from: deadline, to: 0, by: -1){
 //////                if !time[timeSlot] {
 //////                    jobCount += 1
@@ -1098,7 +1098,7 @@ import Foundation
 //////        }
 //////        return (jobCount, profit)
 //////    }
-//////    
+//////
 //////    func fractionalKnapSack(_ value:[Int], _ weight:[Int], _ capacity:Int) -> Double {
 //////        // Greed approach: To maximize the value/weight ratio, value bigger and weight smaller
 //////        var items = [(ratio: Double, value: Int, weight: Int)]()
@@ -1123,11 +1123,11 @@ import Foundation
 //////        }
 //////        return profit
 //////    }
-//////    
+//////
 //////    func coinChangeRecursive(_ coins: [Int], _ amount: Int) -> Int {
 //////        if amount == 0 {return 0}
 //////        if amount < 0 {return -1}
-//////        
+//////
 //////        var minCoins = Int.max
 //////        for coin in coins {
 //////            let minimumCoinsRequiredIfConsideringCoin = coinChangeRecursive(coins, amount - coin)
@@ -1184,7 +1184,7 @@ import Foundation
 //////        }
 //////        return amountLeft == 0 ? count : -1
 //////    }
-//////    
+//////
 //////    func findContentChildren(_ g: [Int], _ s: [Int]) -> Int {
 //////        var sortedGreed = g.sorted{$0<$1}
 //////        var sortedSize = s.sorted{$0<$1}
@@ -1220,7 +1220,7 @@ import Foundation
 //////        dfs(0)
 //////        return Array(result)
 //////    }
-//////    
+//////
 //////}
 //////
 //////let obj = Solution()
@@ -1323,7 +1323,7 @@ import Foundation
 ////    // }
 ////
 ////    //Can also solve using bfs i.e. creating subsets of length 1 first, then 2 ...
-////    
+////
 ////    func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
 ////        var queue : [([Int],Int)] = [([],0)]
 ////        let n = nums.count
@@ -1343,7 +1343,7 @@ import Foundation
 ////        }
 ////        return result
 ////    }
-////  
+////
 ////    //Can also solve this question using bit manipulation
 ////    // func subsetsWithDup(_ nums: [Int]) -> [[Int]] {
 ////    //     var result = Set<[Int]>()
@@ -1361,7 +1361,7 @@ import Foundation
 ////    //     }
 ////    //     return Array(result)
 ////    // }
-////    
+////
 ////}
 //
 //class Solution {
@@ -1388,7 +1388,7 @@ import Foundation
 ////        helper(0,0)
 ////        return result
 ////    }
-////    
+////
 //    // Implementing using memoization
 //    func combinationSum(_ candidates: [Int], _ target: Int) -> [[Int]] {
 //        var current = [Int]()
@@ -1402,11 +1402,11 @@ import Foundation
 //            }
 //            if currentSum == target { return [[]] }
 //            if currentSum > target || index >= n { return [] }
-//            
+//
 //            for path in helper(index, currentSum+candidates[index]){
 //                result.append(path + [candidates[index]])
 //            }
-//            
+//
 //            for path in helper(index+1, currentSum){
 //                result.append(path)
 //            }
@@ -1415,7 +1415,7 @@ import Foundation
 //        }
 //        return helper(0,0)
 //    }
-//    
+//
 //    func combinationSumDP(_ candidates: [Int], _ target: Int) -> [[Int]] {
 //        var dp = Array(repeating: [[Int]](), count: target + 1)
 //        dp[0] = [[]]
@@ -1433,57 +1433,57 @@ import Foundation
 //}
 
 class Solution {
-//    func partition(_ s: String) -> [[String]] {
-//        var result = [[String]]()
-//        var current = [String]()
-//        let n = s.count
-//        func helper(_ index: Int) {
-//            if index == n {
-//                result.append(current)
-//                return
-//            }
-//            for i in index..<n {
-//                // Need to make sure substring start...i is a Palindrome
-//                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
-//                if isPalindrome(substring) {
-//                    current.append(substring)
-//                    helper(i+1)
-//                    current.removeLast()
-//                }
-//            }
-//        }
-//        helper(0)
-//        return result
-//    }
+    //    func partition(_ s: String) -> [[String]] {
+    //        var result = [[String]]()
+    //        var current = [String]()
+    //        let n = s.count
+    //        func helper(_ index: Int) {
+    //            if index == n {
+    //                result.append(current)
+    //                return
+    //            }
+    //            for i in index..<n {
+    //                // Need to make sure substring start...i is a Palindrome
+    //                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
+    //                if isPalindrome(substring) {
+    //                    current.append(substring)
+    //                    helper(i+1)
+    //                    current.removeLast()
+    //                }
+    //            }
+    //        }
+    //        helper(0)
+    //        return result
+    //    }
     // Can apply memoization to above code
-//    func partition(_ s: String) -> [[String]] {
-//        var memo = [String: [[String]]]()
-//        let n = s.count
-//        func helper(_ index: Int) -> [[String]] {
-//            let key = "\(index)"
-//            if let cachedResult = memo[key] {
-//                return cachedResult
-//            }
-//            var result = [[String]]()
-//            if index == n {
-//                return [[]]
-//            }
-//            for i in index..<n {
-//                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
-//                if isPalindrome(substring) {
-//                    var tempResult = helper(i+1)
-//                    for path in tempResult {
-//                        var newPath = path
-//                        newPath.insert(substring, at: 0)
-//                        result.append(newPath)
-//                    }
-//                }
-//            }
-//            memo[key] = result
-//            return result
-//        }
-//        return helper(0)
-//    }
+    //    func partition(_ s: String) -> [[String]] {
+    //        var memo = [String: [[String]]]()
+    //        let n = s.count
+    //        func helper(_ index: Int) -> [[String]] {
+    //            let key = "\(index)"
+    //            if let cachedResult = memo[key] {
+    //                return cachedResult
+    //            }
+    //            var result = [[String]]()
+    //            if index == n {
+    //                return [[]]
+    //            }
+    //            for i in index..<n {
+    //                let substring = String(s[s.index(s.startIndex, offsetBy: index)..<s.index(s.startIndex, offsetBy: i+1)])
+    //                if isPalindrome(substring) {
+    //                    var tempResult = helper(i+1)
+    //                    for path in tempResult {
+    //                        var newPath = path
+    //                        newPath.insert(substring, at: 0)
+    //                        result.append(newPath)
+    //                    }
+    //                }
+    //            }
+    //            memo[key] = result
+    //            return result
+    //        }
+    //        return helper(0)
+    //    }
     // can apply iterative Dynamic Programming to above code
     func partition(_ s: String) -> [[String]] {
         let n = s.count
@@ -1515,7 +1515,7 @@ class Solution {
         }
         return dp[n]
     }
-
+    
     
     func isPalindrome(_ s: String) -> Bool {
         var left = 0
@@ -1549,60 +1549,60 @@ class Solution {
         return answer
     }
     
-//    func solveSudoku(_ board: inout [[Character]]) {
-//        let n = board.count
-//        
-//        func isSafe(_ row: Int, _ col: Int, _ num: Character) -> Bool {
-//            for k in 0..<n {
-//                if board[row][k] == num {
-//                    return false
-//                }
-//                if board[k][col] == num {
-//                    return false
-//                }
-//            } // need to check till n because there's a possibility of having a character present on an index we have yet not explored yet
-//            
-//            // need to check which 3 x 3 block this row, col exists in
-//            let boxRowStart = (row/3) * 3 // example : row = 7, col = 6 (7/3 will give 2 and 2*3 will give 6 i.e. last box slot)
-//            let boxColStart = (col/3) * 3
-//            for i in boxRowStart..<boxRowStart+3 {
-//                for j in boxColStart..<boxColStart+3 {
-//                    if board[i][j] == num {
-//                        return false
-//                    }
-//                }
-//            }
-//            return true
-//        }
-//        
-//        // we will solve this cell by cell from top-left to right-bottom (row major)
-//        func backtrack(_ row: Int,_ col: Int) -> Bool {
-//            if row == n {
-//                return true // solved
-//            }
-//            
-//            let nextRow = col == n-1 ? row+1 : row //If col is n-1 i.e. last col, switch to new row
-//            let nextCol = col == n-1 ? 0 : col+1
-//            
-//            if board[row][col] != "." {
-//                return backtrack(nextRow, nextCol) //already filled
-//            }
-//            
-//            for number in 1...9 {
-//                let characterNumber = Character(String(number))
-//                if isSafe(row, col, characterNumber){
-//                    board[row][col] = characterNumber
-//                    if backtrack(nextRow, nextCol){
-//                        return true // we don't need to find and explore further solutions since we have gotten our desired result
-//                    }
-//                    board[row][col] = "." //backtrack
-//                }
-//            }
-//            return false
-//        }
-//
-//        _ = backtrack(0, 0)
-//    }
+    //    func solveSudoku(_ board: inout [[Character]]) {
+    //        let n = board.count
+    //
+    //        func isSafe(_ row: Int, _ col: Int, _ num: Character) -> Bool {
+    //            for k in 0..<n {
+    //                if board[row][k] == num {
+    //                    return false
+    //                }
+    //                if board[k][col] == num {
+    //                    return false
+    //                }
+    //            } // need to check till n because there's a possibility of having a character present on an index we have yet not explored yet
+    //
+    //            // need to check which 3 x 3 block this row, col exists in
+    //            let boxRowStart = (row/3) * 3 // example : row = 7, col = 6 (7/3 will give 2 and 2*3 will give 6 i.e. last box slot)
+    //            let boxColStart = (col/3) * 3
+    //            for i in boxRowStart..<boxRowStart+3 {
+    //                for j in boxColStart..<boxColStart+3 {
+    //                    if board[i][j] == num {
+    //                        return false
+    //                    }
+    //                }
+    //            }
+    //            return true
+    //        }
+    //
+    //        // we will solve this cell by cell from top-left to right-bottom (row major)
+    //        func backtrack(_ row: Int,_ col: Int) -> Bool {
+    //            if row == n {
+    //                return true // solved
+    //            }
+    //
+    //            let nextRow = col == n-1 ? row+1 : row //If col is n-1 i.e. last col, switch to new row
+    //            let nextCol = col == n-1 ? 0 : col+1
+    //
+    //            if board[row][col] != "." {
+    //                return backtrack(nextRow, nextCol) //already filled
+    //            }
+    //
+    //            for number in 1...9 {
+    //                let characterNumber = Character(String(number))
+    //                if isSafe(row, col, characterNumber){
+    //                    board[row][col] = characterNumber
+    //                    if backtrack(nextRow, nextCol){
+    //                        return true // we don't need to find and explore further solutions since we have gotten our desired result
+    //                    }
+    //                    board[row][col] = "." //backtrack
+    //                }
+    //            }
+    //            return false
+    //        }
+    //
+    //        _ = backtrack(0, 0)
+    //    }
     
     // can use hashing to find isSafe
     func solveSudoku(_ board: inout [[Character]]) {
@@ -1663,7 +1663,7 @@ class Solution {
             }
             return false
         }
-
+        
         _ = backtrack(0, 0)
     }
     
@@ -1766,50 +1766,50 @@ class Solution {
     }
     
     // 1st approach
-//    func canSegment(_ s: String, _ wordDict: [String], _ idx: Int) -> Bool {
-//        if s.isEmpty { return true }
-//        if idx == wordDict.count { return false }
-//        
-//        let word = wordDict[idx]
-//        var range = s.range(of: word)
-//        while let r = range {
-//            // Remove this occurrence of word in s
-//            var newStr = s
-//            newStr.removeSubrange(r)
-//            // Recur: Try to segment what's left, using the next word
-//            if canSegment(newStr, wordDict, idx + 1) { return true }
-//            // Find another occurrence of this word further along
-//            range = s.range(of: word, range: r.upperBound..<s.endIndex)
-//        }
-//        // Try skipping this word entirely
-//        return canSegment(s, wordDict, idx + 1)
-//    }
+    //    func canSegment(_ s: String, _ wordDict: [String], _ idx: Int) -> Bool {
+    //        if s.isEmpty { return true }
+    //        if idx == wordDict.count { return false }
+    //
+    //        let word = wordDict[idx]
+    //        var range = s.range(of: word)
+    //        while let r = range {
+    //            // Remove this occurrence of word in s
+    //            var newStr = s
+    //            newStr.removeSubrange(r)
+    //            // Recur: Try to segment what's left, using the next word
+    //            if canSegment(newStr, wordDict, idx + 1) { return true }
+    //            // Find another occurrence of this word further along
+    //            range = s.range(of: word, range: r.upperBound..<s.endIndex)
+    //        }
+    //        // Try skipping this word entirely
+    //        return canSegment(s, wordDict, idx + 1)
+    //    }
     
     //2nd approach: Iterating through s and checking for prefix it exists in wordDict
-//    func canSegment(_ s: String, _ wordDict: [String]) -> Bool {
-//        let wordSet = Set(wordDict)
-//        let sArr = Array(s)
-//        let n = sArr.count
-//        var memo = [Int: Bool]()
-//        func dfs(_ start: Int) -> Bool {
-//            if start == n {
-//                return true
-//            }
-//            if let cached = memo[start] {
-//                return cached
-//            }
-//            for end in start+1..<n {
-//                let word = String(sArr[start...end])
-//                if wordSet.contains(word) && dfs(end+1) {
-//                    memo[start] = true
-//                    return true
-//                }
-//            }
-//            memo[start] = false
-//            return false
-//        }
-//       return dfs(0)
-//    }
+    //    func canSegment(_ s: String, _ wordDict: [String]) -> Bool {
+    //        let wordSet = Set(wordDict)
+    //        let sArr = Array(s)
+    //        let n = sArr.count
+    //        var memo = [Int: Bool]()
+    //        func dfs(_ start: Int) -> Bool {
+    //            if start == n {
+    //                return true
+    //            }
+    //            if let cached = memo[start] {
+    //                return cached
+    //            }
+    //            for end in start+1..<n {
+    //                let word = String(sArr[start...end])
+    //                if wordSet.contains(word) && dfs(end+1) {
+    //                    memo[start] = true
+    //                    return true
+    //                }
+    //            }
+    //            memo[start] = false
+    //            return false
+    //        }
+    //       return dfs(0)
+    //    }
     
     //3rd approach: Iterative DP
     func canSegment(_ s: String, _ wordDict: [String]) -> Bool {
@@ -1831,56 +1831,56 @@ class Solution {
         return dp[n]
     }
     
-//    func nthRoot(_ m: Int, _ n:Int) -> Int {
-//        var result = 1
-//        var factor = 2
-//        var m = m
-//        
-//        while factor * factor <= m {
-//            var power = 0
-//            while m % factor == 0 {
-//                m /= factor
-//                power += 1
-//            }
-//            if power > 0 {
-//                if (power % n) != 0 {
-//                    return -1
-//                }
-//                result *= Int(pow(Double(factor), Double(power)/Double(n)))
-//            }
-//            factor += 1
-//        }
-//        
-//        if m > 1 {
-//            return -1
-//        }
-//        
-//        // Cross-verify it
-//        if Int(pow(Double(result), Double(n))) == m {
-//            return result
-//        }
-//        return -1
-//    }
+    //    func nthRoot(_ m: Int, _ n:Int) -> Int {
+    //        var result = 1
+    //        var factor = 2
+    //        var m = m
+    //
+    //        while factor * factor <= m {
+    //            var power = 0
+    //            while m % factor == 0 {
+    //                m /= factor
+    //                power += 1
+    //            }
+    //            if power > 0 {
+    //                if (power % n) != 0 {
+    //                    return -1
+    //                }
+    //                result *= Int(pow(Double(factor), Double(power)/Double(n)))
+    //            }
+    //            factor += 1
+    //        }
+    //
+    //        if m > 1 {
+    //            return -1
+    //        }
+    //
+    //        // Cross-verify it
+    //        if Int(pow(Double(result), Double(n))) == m {
+    //            return result
+    //        }
+    //        return -1
+    //    }
     
     /*
      Intuition Behind Binary Search for Nth Root
      Why does binary search make sense?
-
+     
      The answer, if it exists, is an integer X such that X^N = M.
-
+     
      Any possible X must be in the range [1, M] (since X^N = M, and for N > 1, negative roots aren’t considered for this problem).
-
+     
      As X increases, X^N grows monotonically (always increases), so the function is strictly increasing for X ≥ 1.
-
+     
      Therefore, can apply binary search!
-
+     
      If X^N < M, look to the right (bigger X).
-
+     
      If X^N > M, look to the left (smaller X).
-
+     
      If X^N == M, you found the answer.
-
-
+     
+     
      */
     
     func nthRoot(_ m:Int, _ n:Int) -> Int {
@@ -1889,10 +1889,10 @@ class Solution {
         /*
          Why not just use pow(Double, Double) in Swift?
          Problems with pow(Double, Double) for integer Nth root search:
-
+         
          Floating-point imprecision:
          pow(Double, Double) returns a floating-point result, which can introduce rounding errors, especially for big numbers or higher roots. For example, pow(256.0, 0.25) should be 4, but due to floating-point imprecision, you might get 3.999999... or 4.0000001, and converting these to Int might cause the check if mid^N == M to fail.
-
+         
          Overflow avoidance:
          When working with large integers (for example, testing 64^6), directly computing using Int multiplication avoids intermediate overflows and floating-point inaccuracies. pow(Double, Double) might silently overflow or provide an incorrect result due to loss of precision.
          */
@@ -1923,129 +1923,129 @@ class Solution {
     }
     
     
-//    func medianOfRowSortedMatrix(_ matrix: [[Int]]) -> Int {
-//        
-//        // Since these matrix are row wise sorted and not globally sorted
-//        /* Approach 1:
-//         a. Flatten the matrix
-//         b. Sort this matrix
-//         c. Find the middle value
-//        */
-//        
-//        /*
-//         Approach 2:
-//         a. We know that median is that value where all the elements on it's left are less than equal to it, here number of those elements will be ((n*m)+1)/2
-//         b. left = min( all the values present on 0th column ), right = max( all the values present on last column), median will lie in between these values
-//         c. For this mid, find number of elements present less than or equal to this value. Here go to each row, since each row is sorted use Binary Search to find the upperBound of this element in comparison to currMid value, add that into count
-//         */
-//        
-//        let n = matrix.count
-//        let m = matrix[0].count
-//        let desiredCount = ((n*m)+1)/2
-//        
-////        func findNumberOfElementsLessThan(_ mid: Int) -> Int {
-////            var count = 0
-////            for row in matrix {
-////                // Find the upperBound for this mid
-////                var l = 0 , r = m-1
-////                while l <= r {
-////                    let m = (l+r)/2
-////                    if row[m] <= mid {
-////                        l = m+1
-////                    } else {
-////                        r = m-1
-////                    }
-////                }
-////                count += l
-////            }
-////            return count
-////        }
-//        let findNumberOfElementsLessThan: (Int) -> Int = { mid in
-//            var count = 0
-//            for row in matrix {
-//                // Find the upperBound for this mid
-//                var l = 0 , r = m-1
-//                while l <= r {
-//                    let m = (l+r)/2
-//                    if row[m] <= mid {
-//                        l = m+1
-//                    } else {
-//                        r = m-1
-//                    }
-//                }
-//                count += l
-//            }
-//            return count
-//        }
-//        
-//        // left will be the minimum of all the elements present on 0th column of the matrix
-//        var left = matrix.map { $0[0] }.min()!
-//        var right = matrix.map { $0[m-1] }.max()!
-//        
-//        while left < right {
-//            let mid = (left + right)/2
-//            let val = findNumberOfElementsLessThan(mid)
-//            if val == desiredCount {
-//                return mid
-//            } else if val < desiredCount {
-//                left = mid + 1
-//            } else {
-//                right = mid
-//            }
-//        }
-//        return left
-//    }
+    func medianOfRowSortedMatrix(_ matrix: [[Int]]) -> Int {
+        
+        // Since these matrix are row wise sorted and not globally sorted
+        /* Approach 1:
+         a. Flatten the matrix
+         b. Sort this matrix
+         c. Find the middle value
+         */
+        
+        /*
+         Approach 2:
+         a. We know that median is that value where all the elements on it's left are less than equal to it, here number of those elements will be ((n*m)+1)/2
+         b. left = min( all the values present on 0th column ), right = max( all the values present on last column), median will lie in between these values
+         c. For this mid, find number of elements present less than or equal to this value. Here go to each row, since each row is sorted use Binary Search to find the upperBound of this element in comparison to currMid value, add that into count
+         */
+        
+        let n = matrix.count
+        let m = matrix[0].count
+        let desiredCount = ((n*m)+1)/2
+        
+        //        func findNumberOfElementsLessThan(_ mid: Int) -> Int {
+        //            var count = 0
+        //            for row in matrix {
+        //                // Find the upperBound for this mid
+        //                var l = 0 , r = m-1
+        //                while l <= r {
+        //                    let m = (l+r)/2
+        //                    if row[m] <= mid {
+        //                        l = m+1
+        //                    } else {
+        //                        r = m-1
+        //                    }
+        //                }
+        //                count += l
+        //            }
+        //            return count
+        //        }
+        let findNumberOfElementsLessThan: (Int) -> Int = { mid in
+            var count = 0
+            for row in matrix {
+                // Find the upperBound for this mid
+                var l = 0 , r = m-1
+                while l <= r {
+                    let m = (l+r)/2
+                    if row[m] <= mid {
+                        l = m+1
+                    } else {
+                        r = m-1
+                    }
+                }
+                count += l
+            }
+            return count
+        }
+        
+        // left will be the minimum of all the elements present on 0th column of the matrix
+        var left = matrix.map { $0[0] }.min()!
+        var right = matrix.map { $0[m-1] }.max()!
+        
+        while left < right {
+            let mid = (left + right)/2
+            let val = findNumberOfElementsLessThan(mid)
+            if val == desiredCount {
+                return mid
+            } else if val < desiredCount {
+                left = mid + 1
+            } else {
+                right = mid
+            }
+        }
+        return left
+    }
     
     
     // Can implement thinking of using higher order function like map
     /*
      // Higher-Order Function: Takes a matrix and a way to count elements <= mid
      func medianOfMatrix(matrix: [[Int]], countFunc: (Int) -> Int) -> Int {
-         let n = matrix.count
-         let m = matrix[0].count
-         let desiredCount = (n * m + 1) / 2 // Median's position
-
-         // Set initial search range
-         var left = matrix.map { $0 }.min()!
-         var right = matrix.map { $0[m-1] }.max()!
-
-         while left < right {
-             let mid = (left + right) / 2
-             let count = countFunc(mid)
-             if count < desiredCount {
-                 left = mid + 1
-             } else {
-                 right = mid
-             }
-         }
-         return left
+     let n = matrix.count
+     let m = matrix[0].count
+     let desiredCount = (n * m + 1) / 2 // Median's position
+     
+     // Set initial search range
+     var left = matrix.map { $0 }.min()!
+     var right = matrix.map { $0[m-1] }.max()!
+     
+     while left < right {
+     let mid = (left + right) / 2
+     let count = countFunc(mid)
+     if count < desiredCount {
+     left = mid + 1
+     } else {
+     right = mid
      }
-
+     }
+     return left
+     }
+     
      // Example: Standard row-wise count function using a closure
      let matrix = [
-         [1, 3, 8],
-         [2, 3, 4],
-         [1, 2, 5]
+     [1, 3, 8],
+     [2, 3, 4],
+     [1, 2, 5]
      ]
-
+     
      // Defines how to count number of elements <= `mid`
      let rowCountFunc: (Int) -> Int = { mid in
-         var count = 0
-         for row in matrix {
-             var l = 0, r = row.count - 1
-             while l <= r {
-                 let m = (l + r) / 2
-                 if row[m] <= mid {
-                     l = m + 1
-                 } else {
-                     r = m - 1
-                 }
-             }
-             count += l
-         }
-         return count
+     var count = 0
+     for row in matrix {
+     var l = 0, r = row.count - 1
+     while l <= r {
+     let m = (l + r) / 2
+     if row[m] <= mid {
+     l = m + 1
+     } else {
+     r = m - 1
      }
-
+     }
+     count += l
+     }
+     return count
+     }
+     
      // Call the higher-order function with the closure
      let median = medianOfMatrix(matrix: matrix, countFunc: rowCountFunc)
      print(median) // Output: 3
@@ -2072,8 +2072,8 @@ class Solution {
         
         var l = 0, r = nums.count - 2
         while l < r {
-//            let mid = (l + r) / 2
-             let mid = (l + r) >> 2
+            //            let mid = (l + r) / 2
+            let mid = (l + r) >> 2
             //check whether mid lies of left part of the answer or on right part of the answer
             if nums[mid] == nums[mid^1] {
                 // I am on right side
@@ -2085,6 +2085,525 @@ class Solution {
         return l
     }
     
+    //Searching in rotated sorted array
+    // Approach 1 : Using Index Mapping
+    /*
+     [4,5,6,7,8,0,1,2] target = 6
+     first find the pivot element i.e. 0 , it's index = 5 . 3 times left rotated ( using Binary Search in O (logn)
+     
+     realArray = [4,5,6,7,8,0,1,2]
+     
+     virtualSortedArray (VSA) = [0,1,2,4,5,6,7,8]
+     
+     indexFromRealArray = ( mid from VSA + pivot ) % n
+     example 1:
+     
+     indexFromRealArray = 6 = ( 1 (index of 1 in VSA) + 5 (pivot) ) % 8
+     
+     Now we will do the binary search on virtual Sorted array and will map to real Array index
+     */
+    //    func search(_ nums: [Int], _ target: Int) -> Int {
+    //
+    //        let n = nums.count
+    //
+    //        func findPivotIndex() -> Int {
+    //            // finding the index of smallest number
+    //            var l = 0, r = n - 1
+    //            while l < r {
+    //                let mid = (l + r) / 2
+    //                if nums[mid] > nums[r] {
+    //                    l = mid + 1
+    //                } else {
+    //                    r = mid
+    //                }
+    //            }
+    //            return l
+    //        }
+    //
+    //        let pivotIndex = findPivotIndex()
+    //
+    //        var l = 0, r = n - 1
+    //
+    //        while l <= r {
+    //            let midFromVirtualSortedArray = (l + r) / 2
+    //            let indexFromRealArray = (midFromVirtualSortedArray + pivotIndex) % n
+    //
+    //            if nums[indexFromRealArray] == target {
+    //                return indexFromRealArray
+    //            } else if nums[indexFromRealArray] < target {
+    //                l = midFromVirtualSortedArray + 1
+    //            } else {
+    //                r = midFromVirtualSortedArray - 1
+    //            }
+    //        }
+    //        return -1
+    //    }
+    // 2nd Approach :
+    /*
+     We know that [4,5,6,7,8,0,1,2] always atleast one half of the mid will always be sorted
+     
+     (4,5) is sorted
+     (6,7,8,0,1,2) is unsorted
+     
+     4,5,6,7,8,0 is unsorted
+     1,2 is sorted
+     
+     if nums[mid] > nums[low] i.e. left part is sorted and nums[mid] > target > nums[low] . Need to search in the left part of the array
+     */
+    func search(_ nums: [Int], _ target: Int) -> Int {
+        let n = nums.count
+        var l = 0, r = n - 1
+        while l < r {
+            let mid = (l + r) / 2
+            if nums[mid] == target {
+                return mid
+            } else if nums[l] <= nums[mid] {
+                // left part is sorted
+                if nums[l] <= target && target < nums[mid] {
+                    r = mid //search in left part
+                } else {
+                    l = mid + 1
+                }
+            } else if nums[mid] < nums[r] {
+                // right part is sorted
+                if nums[mid] < target && target <= nums[r] {
+                    l = mid + 1
+                } else {
+                    r = mid
+                }
+            }
+        }
+        return -1
+    }
+    
+    // This solution won't work if the elements are sparse and not dense
+    // [1,2,1e6]
+    // [4,5,1e2]
+    // Same for 2D matrix rowWise also if the elements are not dense, doing binary search won't work there
+    // func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+    //     // quite similar to finding median in row sorted Matrix i.e. medianOfRowSortedMatrix
+    //     var left = min(nums1.first!, nums2.first!)
+    //     var right = max(nums1.last!, nums2.last!)
+    
+    //     let n = nums1.count
+    //     let m = nums2.count
+    
+    //     func countLesserThanOrEqual(_ middle: Double) -> Int {
+    //         var count = 0
+    //         var left = 0, right = n-1
+    //         while left < right {
+    //             let mid = (left+right)/2
+    //             if Double(nums1[mid]) <= middle {
+    //                 left = mid + 1
+    //             } else {
+    //                 right = mid
+    //             }
+    //         }
+    //         count += left
+    //         left = 0
+    //         right = m-1
+    //         while left < right {
+    //             let mid = (left+right)/2
+    //             if Double(nums2[mid]) <= middle {
+    //                 left = mid + 1
+    //             } else {
+    //                 right = mid
+    //             }
+    //         }
+    //         count += left
+    //         return count
+    //     }
+    
+    //     while left < right {
+    //         var middle = Double(left+right)/2
+    //         // Ideal median is such that there are exactly (n+m)/2 elements lesser than this middle value
+    //         var desiredValueCount = (n+m)/2
+    
+    //         let actualCount = countLesserThanOrEqual(middle)
+    //         if actualCount == desiredValueCount {
+    //             return middle
+    //         } else if actualCount < desiredValueCount {
+    //             left = Int(middle) + 1
+    //         } else {
+    //             right = Int(middle)
+    //         }
+    //     }
+    //     return Double(left)
+    // }
+    //    func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+    //        let nums3 = (nums1+nums2).sorted()
+    //        let n = nums3.count
+    //        if n % 2 == 1 {
+    //           return Double(nums3[n/2])
+    //        } else {
+    //           return Double(nums3[n/2 - 1] + nums3[n/2]) / 2.0
+    //        }
+    //    }
+    // No need of storing the entire array, just need to know the n/2 and n/2 - 1 element
+//    func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+//        var count = 0 // tracker for the index we are looking if incase we were filling new array
+//        let n = nums1.count+nums2.count
+//        var ind2 = n/2
+//        var ind1 = ind2 - 1
+//        var i = 0, j = 0
+//        var ind1el = -1, ind2el = -1
+//        
+//        while i<nums1.count && j<nums2.count {
+//            if nums1[i] < nums2[j] {
+//                if count == ind2 { ind2el = nums1[i] }
+//                if count == ind1 { ind1el = nums1[i] }
+//                i += 1
+//                count += 1
+//            } else {
+//                if count == ind2 { ind2el = nums2[j] }
+//                if count == ind1 { ind1el = nums2[j] }
+//                j += 1
+//                count += 1
+//            }
+//        }
+//        
+//        while i<nums1.count {
+//            if count == ind2 { ind2el = nums1[i] }
+//            if count == ind1 { ind1el = nums1[i] }
+//            i += 1
+//            count += 1
+//        }
+//        
+//        while j<nums2.count {
+//            if count == ind2 { ind2el = nums2[j] }
+//            if count == ind1 { ind1el = nums2[j] }
+//            j += 1
+//            count += 1
+//        }
+//        
+//        if n%2 == 1 {
+//            return Double(ind2el)
+//        }
+//        else {
+//            return Double(ind1el+ind2el)/2.0
+//        }
+//    }
+    // Using Binary Search on Partition [IMP]: https://www.youtube.com/watch?v=F9c7LpRZWVQ
+    func findMedianSortedArrays(_ nums1: [Int], _ nums2: [Int]) -> Double {
+        let n1 = nums1.count , n2 = nums2.count, n = n1 + n2
+        if n1 > n2 { return findMedianSortedArrays(nums2, nums1) } // first array always the smaller array
+        var low = 0
+        var high = n1
+        
+        var left = (n1+n2+1)/2 // number of elements required on the left
+        
+        while low <= high {
+            var mid1 = (low+high)>>1
+            var mid2 = left - mid1
+            var l1 = Int.min, l2 = Int.min, r1 = Int.max, r2 = Int.max
+            
+            if mid1 < n1 { r1 = nums1[mid1] }
+            if mid2 < n2 { r2 = nums2[mid2] }
+            if mid1 - 1 >= 0 { l1 = nums1[mid1-1] }
+            if mid2 - 1 >= 0 { l2 = nums2[mid2-1] }
+            
+            if l1 <= r2 && l2 <= r1 {
+                // valid split
+                if n % 2 == 1 { return Double(max(l1, l2))}
+                else {
+                    return Double(max(l1, l2) + min(r1, r2)) / 2.0
+                }
+            } else if l1 > r2 {
+                high = mid1 - 1
+            } else {
+                low = mid1 + 1
+            }
+        }
+        return 0.0
+    }
+    
+    func findkThElementSortedArrays(_ nums1: [Int], _ nums2: [Int], _ k: Int) -> Int {
+        //This sounds like the similar approach to how we solved finding the median of two sorted arrays using binary search on the partition
+        // Example:
+        /*
+         nums1 = 1 2 5 7 9 11
+         nums2 = 3 4 6 8
+         k = 8
+         
+         nums1 + nums2 . sorted = 1 2 3 4 5 6 7 8 9 11
+         Answer = 8 (at 7th index)
+         
+         
+         I know that in combined sorted array there will be 7 elements on the left for this
+         let's take binary search over that
+         
+         l = 0 , r = 7
+         mid = 3
+         
+         I'm saying let's have 3 elements from nums1 and 7-3 elements from nums2 and check if it's the valid partition
+         
+          1 2 5| 7 9 11
+        3 4 6 8| Int_max
+         valid partition : NO : (8>7) l2>r1 thus try moving towards right
+         
+         right = mid+1 = 4
+         ...
+         
+         one solution we will get will be
+         1 2 5 7 | 9 11
+           3 4 6 | 8
+         valid partition: YES : 7<8 and 6<9 -> Answer is 8 (r2)
+         */
+        let n1 = nums1.count, n2 = nums2.count
+        if n1 > n2 { return findkThElementSortedArrays(nums2, nums1, k) } //Doing binary search on smallest array
+        
+        var left = max(0, k - n2), right = max(k, n1)
+        
+        while left <= right {
+            var mid = (left + right)>>1
+            
+            let cut1 = mid
+            let cut2 = k - mid
+            
+            // trying to take mid elements from nums1 and k-1-mid from nums2
+            var l1 = Int.min, l2 = Int.min, r1 = Int.max, r2 = Int.max
+            
+            l1 = (cut1 == 0) ? Int.min : nums1[cut1-1]
+            l2 = (cut2 == 0) ? Int.min : nums2[cut2-1]
+            r1 = (cut1 == n1) ? Int.max : nums1[cut1]
+            r2 = (cut2 == n2) ? Int.max : nums2[cut2]
+            
+            if l1 <= r2 && l2 <= r1 {
+                //valid cut
+                return max(l1,l2)
+            } else if l1 > r2 {
+                // Too many from nums1
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        }
+        return -1
+    }
+    
+//    func bookAllocationRecursive(_ nums: [Int], _ k: Int) -> Int {
+//        /*
+//         This question I want to build and understand the concept, before jumping directly to the most optimized solution.
+//         First for the basic approach I was thinking about using Recursion.
+//         For m students we have m-1 partition. Now as per my understanding question boils down to find the max Sum of each of the elements residing in the partition to be the minimum, so that burden on each student is minimum given that we need to cover the entire syllabus i.e. all the books.
+//         Now for this I was thinking about using recursion and exploring all the partitions, type of pseudoCode
+//         maximumPagesAssignedToASingleStudent
+//         func( nums, students, index, currSumPages ) {
+//         if students == 0 && index == n {
+//         return max(currSumPages, maximumPagesAssignedToASingleStudent)
+//         }
+//         2 cases either I can do the partition at index i by considering that into sum or I won't do the partition there, and since I want minimum of these so that burden on each student is minimum
+//         min( func(nums, students, index+1, currSumPages), func(nums, students-1 , index+1, currSumPages+nums[index] )
+//         }
+//         Ofcourse there will be some tweaking in the pseudo code that needs to be done, but using it to illustrate my approach.
+//         I want to build and understand this approach first, after that I want to explore how to use memoization over that, then the iterative DP solution for this.
+//         After that in the end I will see if a standard optimal solution exist for this ( some sort of Greedy approach ).
+//         */
+//        let n = nums.count
+//        func helper(_ index: Int, _ currentSum: Int, _ studentsLeft : Int) -> Int {
+//            if index == n {
+//                return studentsLeft == 1 ? currentSum : Int.max
+//            }
+//            
+//            if studentsLeft == 0 {
+//                return Int.max
+//            }
+//            
+//            // Since assignment needs to be continous i.e. if students is assigned book 2, needs to have book 0,1 also
+//            
+//            let newSum = currentSum + nums[index]
+//            
+//            var result1 = helper(index+1, newSum, studentsLeft)
+//
+//            var result2 = Int.max
+//            
+//            if studentsLeft > 1 {
+//                // here we are doing the partition
+//                result2 = max(currentSum, helper(index+1, nums[index], studentsLeft-1))
+//            }
+//            return min(result1, result2)
+//        }
+//        return helper(0,0,k)
+//    }
+    
+    // Understanding closure for recursive approach
+//    func bookAllocationRecursive(_ nums: [Int], _ m: Int) -> Int {
+//        
+//        // Step 1: Declare the variable with explicit type
+//        var closureHelper : (([Int], Int, Int, Int) -> Int)!
+//        
+//        // Step 2: Assign the closure implementation
+//        closureHelper = { nums, index, studentsLeft, currentSum in
+//            // Base case: processed all books
+//            if index == nums.count {
+//                return studentsLeft == 1 ? currentSum : Int.max
+//            }
+//            
+//            if studentsLeft == 0 {
+//                return Int.max
+//            }
+//            
+//            let newSum = currentSum + nums[index]
+//            
+//            // Now closureHelper exists and can be called!
+//            let continueWithCurrent = closureHelper(nums, index + 1, studentsLeft, newSum)
+//            
+//            let startNewStudent = studentsLeft > 1 ?
+//                max(currentSum, closureHelper(nums, index + 1, studentsLeft - 1, nums[index])) :
+//                Int.max
+//            
+//            return min(continueWithCurrent, startNewStudent)
+//        }
+//        
+//        return closureHelper(nums, 0, m, 0)
+//    }
+//    
+//        func bookAllocationMemo(_ nums: [Int], _ k: Int) -> Int {
+//            let n = nums.count
+//            // Thinking about having memoization of index, students
+//            var memo : [String:Int] = [:]
+//            
+//            
+//            func helper(_ index: Int, _ currentSum: Int, _ studentsLeft : Int) -> Int {
+//                let key = "\(index)\(currentSum)\(studentsLeft)"
+//                
+//                if let cachedResult = memo[key] {
+//                    return cachedResult
+//                }
+//                
+//                if index == n {
+//                    memo[key] = studentsLeft == 1 ? currentSum : Int.max
+//                    return memo[key]!
+//                }
+//    
+//                if studentsLeft == 0 {
+//                    memo[key] = Int.max
+//                    return Int.max
+//                }
+//    
+//                // Since assignment needs to be continous i.e. if students is assigned book 2, needs to have book 0,1 also
+//    
+//                let newSum = currentSum + nums[index]
+//    
+//                var result1 = helper(index+1, newSum, studentsLeft)
+//    
+//                var result2 = Int.max
+//    
+//                if studentsLeft > 1 {
+//                    // here we are doing the partition
+//                    result2 = max(currentSum, helper(index+1, nums[index], studentsLeft-1))
+//                }
+//                memo[key] = min(result1, result2)
+//                return min(result1, result2)
+//            }
+//            return helper(0,0,k)
+//        }
+    
+    func bookAllocationDP(_ nums: [Int], _ m: Int) -> Int {
+        
+        let n = nums.count
+        if m > n {
+           return -1 //Number of students are greater than number of books
+        }
+        
+        // dp[i][j] : Minimum of maximum pages when allocating the first i books to j students
+        var dp = Array(repeating: Array(repeating: Int.max, count: m+1), count: n+1)
+        // our answer will be dp[k][n]
+        
+        // Calculate the prefix sum to keep it handy
+        
+        var prefixSumArray = Array(repeating: 0, count: n+1)
+        for i in 1...n {
+            prefixSumArray[i] = prefixSumArray[i-1] + nums[i-1]
+        }
+        
+        dp[0][0] = 0 // 0 books to 0 students : load 0
+        
+        for i in 1...n {
+            for j in 1...min(i,m){
+                // Observation since in memo: Using three variable in string we are using three loops here
+                // Check all the possible positions for last partition
+                // Taking decision for the last jth student
+                for k in j-1..<i { // j-1 books have been assigned that's the starting point for last partition,
+                    // Ensures j-1 students get at least 1 book each
+                    if dp[k][j-1] != Int.max {
+                        dp[i][j] = min(dp[i][j],max(dp[k][j-1], prefixSumArray[i]-prefixSumArray[k]))
+                    }
+                }
+            }
+        }
+        return dp[n][m]
+    }
+    
+    //https://www.youtube.com/watch?v=gYmWHvRHu-s&list=PLgUwDviBIf0p4ozDR_kJJkONnb1wdx2Ma&index=70
+    func bookAllocationBinarySearchOptimal(_ nums: [Int], _ m: Int) -> Int {
+        let n = nums.count
+        if m > n { return -1 }
+        
+        // Search space: [max(nums), sum(nums)]
+        let low = nums.max()!        // At least one student gets the largest book
+        let high = nums.reduce(0, +)  // One student gets all books
+        
+        var result = -1
+        var left = low, right = high
+        
+        var canAllocate : (Int) -> Bool = {
+            maxLoad in
+            var studentsUsed = 1
+            var currentLoad = 0
+            
+            for pages in nums {
+                if pages > maxLoad { return false }  // Single book exceeds limit
+                
+                if currentLoad + pages > maxLoad {
+                    // Start new student
+                    studentsUsed += 1
+                    currentLoad = pages
+                    
+                    if studentsUsed > m { return false }
+                } else {
+                    currentLoad += pages
+                }
+            }
+            
+            return studentsUsed <= m
+            
+        }
+        
+        // Binary search on the answer
+        while left <= right {  // Exact search pattern
+            let mid = (left + right) / 2
+            
+            if canAllocate(mid) {
+                result = mid          // Valid allocation found
+                right = mid - 1       // Try for smaller maximum
+            } else {
+                left = mid + 1        // Need larger maximum
+            }
+        }
+        
+        return result
+    }
+
+    func canAllocate(_ nums: [Int], _ m: Int, _ maxLoad: Int) -> Bool {
+        var studentsUsed = 1
+        var currentLoad = 0
+        
+        for pages in nums {
+            if pages > maxLoad { return false }  // Single book exceeds limit
+            
+            if currentLoad + pages > maxLoad {
+                // Start new student
+                studentsUsed += 1
+                currentLoad = pages
+                
+                if studentsUsed > m { return false }
+            } else {
+                currentLoad += pages
+            }
+        }
+        return studentsUsed <= m
+    }
 }
 
 //let solution = Solution()
@@ -2100,3 +2619,7 @@ class Solution {
 
 let solution = Solution()
 //print(solution.medianOfRowSortedMatrix([ [1, 4, 9], [2, 5, 6], [3, 7, 8] ] ))
+//print(solution.search([4,5,6,7,8,0,1,2], 0))
+//print(solution.bookAllocationRecursive([12, 34, 67, 90], 2))
+//print(solution.bookAllocationDP([12, 34, 67, 90], 2))
+print(solution.bookAllocationBinarySearchOptimal([12, 34, 67, 90], 2))
