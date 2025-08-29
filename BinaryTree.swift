@@ -156,3 +156,12 @@ print("Let's build a binary tree!")
 let root = buildTree(nil)
 print("\nLevel order traversal of your tree:")
 printTree(root)
+
+
+          12
+       /      \
+      -10    - 13
+      / \       \
+     9   72      45
+    / \         /  \
+   -3  8       -4   96

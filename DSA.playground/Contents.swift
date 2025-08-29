@@ -3210,135 +3210,521 @@
  * }
  */
 
-protocol BinaryMatrix {
-    func get(_ row: Int, _ col: Int) -> Int
-    func dimensions() -> [Int]
-}
+//protocol BinaryMatrix {
+//    func get(_ row: Int, _ col: Int) -> Int
+//    func dimensions() -> [Int]
+//}
+//
+//class Solution {
+//    func leftMostColumnWithOne(_ binaryMatrix: BinaryMatrix) -> Int {
+//        let dims = binaryMatrix.dimensions()
+//        let numRows = dims[0]
+//        let numCols = dims[1]
+//        
+//        var ans = numCols
+//        
+//        // Your code here:
+//        // Find the leftmost column with at least a 1
+//        // You may use BinaryMatrix.get(row, col) and BinaryMatrix.dimensions()
+//        // Be sure not to exceed 1000 calls to get()
+//        
+//        //Approach 1: Using Binary Search on each row to find the lowerBound of 1 and find the minimum of index acheived in the way : O (M logN )
+//        /*
+//         for row in 0..<numRows {
+//         var l = 0 , r = numCols - 1
+//         while l < r {
+//         let mid = (l + r)>>1
+//         if binaryMatrix.get(row,mid) == 1 {
+//         r = mid
+//         } else {
+//         l = mid + 1
+//         }
+//         }
+//         
+//         // l could be possible 1
+//         if binaryMatrix.get(row, l) == 1 {
+//         ans = min(ans,l)
+//         }
+//         }
+//         */
+//        
+//        //Approach 2 : O(M+N)
+//        var row = 0 , col = numCols - 1
+//        
+//        func isSafe(_ r: Int, _ c: Int) -> Bool {
+//            return r >= 0 && r<numRows && c>=0 && c<numCols
+//        }
+//        
+//        while isSafe(row,col) {
+//            if binaryMatrix.get(row,col) == 1 {
+//                ans = min(ans, col)
+//                col -= 1
+//            } else {
+//                row += 1
+//            }
+//        }
+//        return ans == numCols ? -1 : ans
+//    }
+//    
+//    func spiralOrder(_ matrix: [[Int]]) -> [Int] {
+//        let m = matrix.count
+//        let n = matrix[0].count
+//
+//        var result = [Int]()
+//
+//        func dfsHelper(_ top: Int, _ left: Int, _ right: Int, _ bottom: Int) {
+//
+//             // Base case
+//             if left > right || top > bottom { return }
+//
+//             // Traverse all four directions for the boundaries
+//             // Top row
+//             for j in left...right {
+//                result.append(matrix[top][j])
+//             }
+//
+//             // Last column
+//             for i in top...bottom {
+//                result.append(matrix[i][right])
+//             }
+//
+//             // Last row right to left
+//             for j in stride(from: right, through: left, by:-1) {
+//                result.append(matrix[bottom][j])
+//             }
+//
+//             // First col from bottom to top
+//             for i in stride(from: bottom, through: top, by: -1) {
+//                result.append(matrix[i][left])
+//             }
+//
+//             dfsHelper(top+1, left+1, right-1, bottom-1)
+//        }
+//        dfsHelper(0,0,n-1,m-1)
+//        return result
+//    }
+//}
+//
+//
+//class Dequeue<T> {
+//    private var data = [T]()
+//    
+//    var isEmpty : Bool { data.isEmpty }
+//    var count: Int { data.count }
+//    
+//    //append, prepend, popFront, popBack
+//    func append(_ element: T){
+//        data.append(element)
+//    }
+//    
+//    func prepend(_ element: T){
+//        data.insert(element, at: 0)
+//    }
+//    
+//    @discardableResult
+//    func popFront() -> T? {
+//        return data.isEmpty ? nil : data.removeFirst()
+//    }
+//    
+//    @discardableResult
+//    func popBack() -> T? {
+//        if !data.isEmpty {
+//            return data.removeLast()
+//        }
+//        return nil
+//    }
+//    
+//    func first() -> T? { data.first }
+//    
+//    func last() -> T? { data.last }
+//}
+
+
+//class Solution {
+//    func fullJustify(_ words: [String], _ maxWidth: Int) -> [String] {
+//        var output : [String] = []
+//        var currWords : [String] = []
+//        var currLength = 0
+//        
+//        var idx = 0
+//        
+//        //Helps in placing the white spaces evenly
+//        func justifyHelper(_ isLastLine: Bool) {
+//            // currWords = ["This", "is", "an"]
+//            // currWordds.count = 3
+//            // Totatl number of character
+//            let characterCount = currWords.reduce(0) { partialResult, str in
+//                partialResult + str.count
+//            }
+//            let totalSpacesRequired = maxWidth - characterCount
+//            print("totatSpacesRequired for \(currWords) is \(totalSpacesRequired)")
+//            var line = ""
+//            if isLastLine || currWords.count == 1 {
+//                // last line or single word
+//                line = currWords.joined(separator: " ")
+//                // line - "This "
+//                // Adding the extra spaces now at end
+//                let extra = maxWidth - line.count
+//                if extra > 0 {
+//                    line += String(repeating: " ", count: extra)
+//                }
+//            } else {
+//                // example currWords = ["This", "is", "an"]
+//                // line = "This is an" - number of white slots = 3 - 1 = 2
+//                let numberOfWhiteSlots = currWords.count - 1
+//                let evenSpaces = totalSpacesRequired / numberOfWhiteSlots
+//                var oddExtraSpaces = totalSpacesRequired % numberOfWhiteSlots // These are basically extra spaces left which will go the left aligned space
+//                
+//                for j in 0..<currWords.count {
+//                    line += currWords[j]
+//                    if j != currWords.count - 1 {
+//                        line += String(repeating: " ", count: evenSpaces + ((oddExtraSpaces > 0) ? 1 : 0) )
+//                        if oddExtraSpaces > 0 {
+//                            oddExtraSpaces -= 1
+//                        }
+//                    }
+//                }
+//            }
+//            output.append(line)
+//        }
+//        
+//        while idx<words.count {
+//            let word = words[idx]
+//            print("Current word \(word)")
+//            if currWords.isEmpty {
+//                if word.count <= maxWidth {
+//                    currWords.append(word)
+//                    currLength += word.count
+//                    print("first if case : \(currWords)")
+//                }
+//            }
+//            else if currLength + 1 + word.count <= maxWidth {
+//                currWords.append(word)
+//                currLength += 1 + word.count
+//                print("second if case: \(currWords)")
+//            } else {
+//                // handle the current line and then switch to new line
+//                print("third if case: \(currWords)")
+//                justifyHelper(false)
+//                currWords = [word]
+//                currLength = word.count
+//            }
+//            idx += 1
+//        }
+//        justifyHelper(true)
+//        return output
+//    }
+//}
+
+//let solution = Solution()
+//print(solution.fullJustify(["This", "is", "an", "example", "of", "text", "justification."], 16))
+
+
+//class Solution {
+////    func findWords(_ board: [[Character]], _ words: [String]) -> [String] {
+////        var visited = Array(repeating: Array(repeating: false, count: board[0].count), count: board.count)
+////        var output = Set<String>()
+////        var wordSet = Set(words)
+////        
+////        let m = board.count
+////        let n = board[0].count
+////        
+////        let directions = [(0,1),(1,0),(-1,0),(0,-1)]
+////        
+////        func dfsHelper(_ r: Int, _ c: Int, _ currWord: String){
+////            if wordSet.contains(currWord) {
+////                output.insert(currWord)
+////            }
+////            
+////            for direction in directions {
+////                let newR = r + direction.0
+////                let newC = c + direction.1
+////                if newR >= 0 && newC>=0 && newR<m && newC<n {
+////                    if !visited[newR][newC]  {
+////                        visited[newR][newC] = true
+////                        dfsHelper(newR,newC, currWord+String(board[newR][newC]))
+////                        visited[newR][newC] = false
+////                    }
+////                }
+////            }
+////        }
+////        
+////        for i in 0..<m {
+////            for j in 0..<n {
+////                if !visited[i][j] {
+////                    visited[i][j] = true
+////                    dfsHelper(i,j, String(board[i][j]))
+////                    visited[i][j] = false
+////                }
+////            }
+////        }
+////        return Array(output)
+////    }
+//    
+//    func findWords(_ board: [[Character]], _ words: [String]) -> [String] {
+//        
+//        //Build the trie data structure over words
+//        let root = TrieNode()
+//        for word in words {
+//            var node = root
+//            for wordCharacter in word {
+//                if node.children[wordCharacter] == nil {
+//                    node.children[wordCharacter] = TrieNode()
+//                }
+//                node = node.children[wordCharacter]!
+//            }
+//            node.word = word
+//        }
+//        
+//        let directions = [(0,1),(1,0),(-1,0),(0,-1)]
+//        let m = board.count
+//        let n = board[0].count
+//        var visited = Array(repeating: Array(repeating: false, count: n), count: m)
+//        var output = Set<String>()
+//        
+//        func dfsHelper(_ r: Int, _ c: Int, _ node: TrieNode){
+//            //Early pruning
+//            let ch = board[r][c]
+//            
+//            guard let newNode = node.children[ch] else {
+//                return
+//            }
+//            
+//            if let foundWord = newNode.word {
+//                output.insert(foundWord)
+//            }
+//            
+//            for direction in directions {
+//                let newR = r + direction.0
+//                let newC = c + direction.1
+//                if newR >= 0 && newC >= 0 && newR < m && newC < n {
+//                    if !visited[newR][newC]{
+//                        visited[newR][newC] = true
+//                        dfsHelper(newR,newC,newNode)
+//                        visited[newR][newC] = false
+//                    }
+//                }
+//            }
+//        }
+//        
+//        for i in 0..<m {
+//            for j in 0..<n {
+//                if !visited[i][j] {
+//                    visited[i][j] = true
+//                    dfsHelper(i,j,root)
+//                    visited[i][j] = false
+//                }
+//            }
+//        }
+//        
+//        return Array(output)
+//    }
+//}
+//
+//class TrieNode {
+//    var children : [Character: TrieNode] = [:]
+//    var word : String? = nil
+//}
 
 class Solution {
-    func leftMostColumnWithOne(_ binaryMatrix: BinaryMatrix) -> Int {
-        let dims = binaryMatrix.dimensions()
-        let numRows = dims[0]
-        let numCols = dims[1]
+    
+    func buildAdjList(_ words:[String]) -> ([Character: Set<Character>]) {
+        var adjList = [Character:Set<Character>]()
+        let n = words.count
         
-        var ans = numCols
-        
-        // Your code here:
-        // Find the leftmost column with at least a 1
-        // You may use BinaryMatrix.get(row, col) and BinaryMatrix.dimensions()
-        // Be sure not to exceed 1000 calls to get()
-        
-        //Approach 1: Using Binary Search on each row to find the lowerBound of 1 and find the minimum of index acheived in the way : O (M logN )
-        /*
-         for row in 0..<numRows {
-         var l = 0 , r = numCols - 1
-         while l < r {
-         let mid = (l + r)>>1
-         if binaryMatrix.get(row,mid) == 1 {
-         r = mid
-         } else {
-         l = mid + 1
-         }
-         }
-         
-         // l could be possible 1
-         if binaryMatrix.get(row, l) == 1 {
-         ans = min(ans,l)
-         }
-         }
-         */
-        
-        //Approach 2 : O(M+N)
-        var row = 0 , col = numCols - 1
-        
-        func isSafe(_ r: Int, _ c: Int) -> Bool {
-            return r >= 0 && r<numRows && c>=0 && c<numCols
-        }
-        
-        while isSafe(row,col) {
-            if binaryMatrix.get(row,col) == 1 {
-                ans = min(ans, col)
-                col -= 1
-            } else {
-                row += 1
+        for word in words {
+            for ch in word {
+                if adjList[ch] == nil {
+                    adjList[ch] = []
+                }
             }
         }
-        return ans == numCols ? -1 : ans
+        
+        for i in 0..<n-1{
+            let (first,second) = (words[i],words[i+1])
+            let minLength = min(first.count, second.count)
+            var found = false
+            for j in 0..<minLength {
+                let a = first[first.index(first.startIndex, offsetBy: j)] //Can solve using Array(firstWord)
+                let b = second[second.index(second.startIndex, offsetBy: j)]
+                if a != b {
+                    adjList[a, default: []].insert(b)
+                    found = true
+                    break
+                }
+            }
+            // abc , ab -> Invalid case, wrong order given to use
+            if !found && first.count > second.count {
+                return [:]
+            }
+        }
+        
+        return adjList
     }
     
-    func spiralOrder(_ matrix: [[Int]]) -> [Int] {
-        let m = matrix.count
-        let n = matrix[0].count
-
-        var result = [Int]()
-
-        func dfsHelper(_ top: Int, _ left: Int, _ right: Int, _ bottom: Int) {
-
-             // Base case
-             if left > right || top > bottom { return }
-
-             // Traverse all four directions for the boundaries
-             // Top row
-             for j in left...right {
-                result.append(matrix[top][j])
-             }
-
-             // Last column
-             for i in top...bottom {
-                result.append(matrix[i][right])
-             }
-
-             // Last row right to left
-             for j in stride(from: right, through: left, by:-1) {
-                result.append(matrix[bottom][j])
-             }
-
-             // First col from bottom to top
-             for i in stride(from: bottom, through: top, by: -1) {
-                result.append(matrix[i][left])
-             }
-
-             dfsHelper(top+1, left+1, right-1, bottom-1)
+    func alienOrder(_ words: [String]) -> String {
+        var adjList = buildAdjList(words)
+        if adjList.isEmpty { return "" }
+        /*
+         1. Using DFS and external stack
+         */
+        var state: [Character:Int] = [:] //nil: unvisited, 1: visiting, 2: visited -> in directional graph we need three states to detect a cycle
+        var stackResult = [Character]()
+        var hasCycle =  false
+        
+        func dfs(_ ch: Character) {
+            if hasCycle { return }
+            
+            if let s = state[ch] {
+                if s==1 {
+                    hasCycle = true // found a cycle
+                }
+                return // possible values can 1,2 here i.e. visiting or visited
+            }
+            
+            state[ch] = 1
+            for neighbor in adjList[ch] ?? [] {
+                dfs(neighbor)
+                if hasCycle {return}
+            }
+            state[ch] = 2 //visited
+            stackResult.append(ch)
         }
-        dfsHelper(0,0,n-1,m-1)
-        return result
+        
+        for ch in adjList.keys {
+            if state[ch] == nil {
+                dfs(ch)
+                if hasCycle {
+                    return ""
+                }
+            }
+        }
+        return String(stackResult.reversed())
+    }
+    
+    func alienOrderUsingBFSKahnsAlgorithm(_ words:[String]) -> String {
+        var adjList = buildAdjList(words)
+        var indegree = [Character:Int]()
+        
+        // Initialize indegree for every character
+        for (ch, neighbors) in adjList {
+            if indegree[ch] == nil { indegree[ch] = 0 }
+            for neighbor in neighbors {
+                if indegree[neighbor] == nil { indegree[neighbor] = 0 }
+            }
+        }
+        
+        // Build indegree counts
+        for (ch, neighbors) in adjList {
+            for neighbor in neighbors {
+                indegree[neighbor]! += 1
+            }
+        }
+        
+        var queue = [Character]()
+        var output = [Character]()
+        
+        // Insert those chars which have indegree == 0
+        for (key,value) in indegree {
+            if value == 0 {
+                queue.append(key)
+            }
+        }
+        
+        while !queue.isEmpty {
+            var zeroInDegreeChar = queue.removeFirst()
+            output.append(zeroInDegreeChar)
+            
+            for neighbor in adjList[zeroInDegreeChar] ?? [] {
+                indegree[neighbor]! -= 1
+                if indegree[neighbor] == 0 {
+                    queue.append(neighbor)
+                }
+            }
+        }
+        
+        return output.count == indegree.count ? String(output) : ""
+    }
+    
+    func topoSort(_ adjList: [Int:[Int]], _ n: Int) -> [Int]{
+        /* 1. Topological sorting : https://www.youtube.com/watch?v=5lZ0iJMrUMk Using DFS, external stack and visited array, assuming Graph is DAG
+         If there's an edge from u to v , in order u should comes before v
+         */
+        /*
+        var visited = Array(repeating: false, count: adjList.count)
+        var stack = [Int]()
+        
+        func dfsHelper(_ node:Int){
+            visited[node] = true
+            for neighboor in adjList[node] ?? [] {
+                if !visited[neighboor]{
+                    dfsHelper(neighboor)
+                }
+            }
+            // Push back after visiting all the descendants (post order)
+            stack.append(node)
+        }
+        
+        for node in 0..<n {
+            if !visited[node]{
+                dfsHelper(node)
+            }
+        }
+        
+        // stack stores node stores the reverse topological order
+        return stack.reversed()
+         */
+        /*
+         2. Using BFS (Kahn's Algorithm) using indegree array: https://www.youtube.com/watch?v=73sneFXuTEg
+         Insert all the nodes with in degree == 0 in the queue, take them out and reduce the in degree of adjacent nodes by 1 , once their in degree becomes 0 insert them in the queue
+         How it works step-by-step (what your code does):
+         Compute in-degrees for all nodes.
+
+         Queue up all nodes that have in-degree 0 initially.
+
+         Pop nodes from the queue:
+
+         Add the node to your result list (that’s the next in order).
+
+         For each neighbor, decrement its in-degree.
+
+         If a neighbor's in-degree reaches 0, queue it up.
+
+         When the queue is empty, if you sorted all nodes, output contains a valid topological order.
+
+
+         */
+        var indegree = Array(repeating: 0, count: n)
+        for i in 0..<n {
+            for element in adjList[i] ?? []{
+                indegree[element] += 1
+            }
+        }
+        
+        var queue: [Int] = []
+        for i in 0..<n {
+            if indegree[i] == 0 {
+                queue.append(i)
+            }
+        }
+        
+        var output = [Int]()
+        while !queue.isEmpty {
+            var node = queue.removeFirst()
+            output.append(node)
+            // node is in your topo sort
+            // so please remove it from the indegree
+            for neighbor in adjList[node] ?? [] {
+                indegree[neighbor] -= 1
+                if indegree[neighbor] == 0 {
+                    queue.append(neighbor)
+                }
+            }
+        }
+        if output.count != n {
+            // Cycle detected (not a DAG)
+            return []
+        }
+        return output
     }
 }
-
-
-class Dequeue<T> {
-    private var data = [T]()
-    
-    var isEmpty : Bool { data.isEmpty }
-    var count: Int { data.count }
-    
-    //append, prepend, popFront, popBack
-    func append(_ element: T){
-        data.append(element)
-    }
-    
-    func prepend(_ element: T){
-        data.insert(element, at: 0)
-    }
-    
-    @discardableResult
-    func popFront() -> T? {
-        return data.isEmpty ? nil : data.removeFirst()
-    }
-    
-    @discardableResult
-    func popBack() -> T? {
-        if !data.isEmpty {
-            return data.removeLast()
-        }
-        return nil
-    }
-    
-    func first() -> T? { data.first }
-    
-    func last() -> T? { data.last }
-}
-
-
-let solution = Solution()
-print(solution.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
