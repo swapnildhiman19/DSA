@@ -1,4 +1,4 @@
-//import Foundation
+import Foundation
 //////////import Foundation
 ////////////
 ////////////class Solution {
@@ -3526,205 +3526,462 @@
 //    var word : String? = nil
 //}
 
+//class Solution {
+//    
+//    func buildAdjList(_ words:[String]) -> ([Character: Set<Character>]) {
+//        var adjList = [Character:Set<Character>]()
+//        let n = words.count
+//        
+//        for word in words {
+//            for ch in word {
+//                if adjList[ch] == nil {
+//                    adjList[ch] = []
+//                }
+//            }
+//        }
+//        
+//        for i in 0..<n-1{
+//            let (first,second) = (words[i],words[i+1])
+//            let minLength = min(first.count, second.count)
+//            var found = false
+//            for j in 0..<minLength {
+//                let a = first[first.index(first.startIndex, offsetBy: j)] //Can solve using Array(firstWord)
+//                let b = second[second.index(second.startIndex, offsetBy: j)]
+//                if a != b {
+//                    adjList[a, default: []].insert(b)
+//                    found = true
+//                    break
+//                }
+//            }
+//            // abc , ab -> Invalid case, wrong order given to use
+//            if !found && first.count > second.count {
+//                return [:]
+//            }
+//        }
+//        
+//        return adjList
+//    }
+//    
+//    func alienOrder(_ words: [String]) -> String {
+//        var adjList = buildAdjList(words)
+//        if adjList.isEmpty { return "" }
+//        /*
+//         1. Using DFS and external stack
+//         */
+//        var state: [Character:Int] = [:] //nil: unvisited, 1: visiting, 2: visited -> in directional graph we need three states to detect a cycle
+//        var stackResult = [Character]()
+//        var hasCycle =  false
+//        
+//        func dfs(_ ch: Character) {
+//            if hasCycle { return }
+//            
+//            if let s = state[ch] {
+//                if s==1 {
+//                    hasCycle = true // found a cycle
+//                }
+//                return // possible values can 1,2 here i.e. visiting or visited
+//            }
+//            
+//            state[ch] = 1
+//            for neighbor in adjList[ch] ?? [] {
+//                dfs(neighbor)
+//                if hasCycle {return}
+//            }
+//            state[ch] = 2 //visited
+//            stackResult.append(ch)
+//        }
+//        
+//        for ch in adjList.keys {
+//            if state[ch] == nil {
+//                dfs(ch)
+//                if hasCycle {
+//                    return ""
+//                }
+//            }
+//        }
+//        return String(stackResult.reversed())
+//    }
+//    
+//    func alienOrderUsingBFSKahnsAlgorithm(_ words:[String]) -> String {
+//        var adjList = buildAdjList(words)
+//        var indegree = [Character:Int]()
+//        
+//        // Initialize indegree for every character
+//        for (ch, neighbors) in adjList {
+//            if indegree[ch] == nil { indegree[ch] = 0 }
+//            for neighbor in neighbors {
+//                if indegree[neighbor] == nil { indegree[neighbor] = 0 }
+//            }
+//        }
+//        
+//        // Build indegree counts
+//        for (ch, neighbors) in adjList {
+//            for neighbor in neighbors {
+//                indegree[neighbor]! += 1
+//            }
+//        }
+//        
+//        var queue = [Character]()
+//        var output = [Character]()
+//        
+//        // Insert those chars which have indegree == 0
+//        for (key,value) in indegree {
+//            if value == 0 {
+//                queue.append(key)
+//            }
+//        }
+//        
+//        while !queue.isEmpty {
+//            var zeroInDegreeChar = queue.removeFirst()
+//            output.append(zeroInDegreeChar)
+//            
+//            for neighbor in adjList[zeroInDegreeChar] ?? [] {
+//                indegree[neighbor]! -= 1
+//                if indegree[neighbor] == 0 {
+//                    queue.append(neighbor)
+//                }
+//            }
+//        }
+//        
+//        return output.count == indegree.count ? String(output) : ""
+//    }
+//    
+//    func topoSort(_ adjList: [Int:[Int]], _ n: Int) -> [Int]{
+//        /* 1. Topological sorting : https://www.youtube.com/watch?v=5lZ0iJMrUMk Using DFS, external stack and visited array, assuming Graph is DAG
+//         If there's an edge from u to v , in order u should comes before v
+//         */
+//        /*
+//        var visited = Array(repeating: false, count: adjList.count)
+//        var stack = [Int]()
+//        
+//        func dfsHelper(_ node:Int){
+//            visited[node] = true
+//            for neighboor in adjList[node] ?? [] {
+//                if !visited[neighboor]{
+//                    dfsHelper(neighboor)
+//                }
+//            }
+//            // Push back after visiting all the descendants (post order)
+//            stack.append(node)
+//        }
+//        
+//        for node in 0..<n {
+//            if !visited[node]{
+//                dfsHelper(node)
+//            }
+//        }
+//        
+//        // stack stores node stores the reverse topological order
+//        return stack.reversed()
+//         */
+//        /*
+//         2. Using BFS (Kahn's Algorithm) using indegree array: https://www.youtube.com/watch?v=73sneFXuTEg
+//         Insert all the nodes with in degree == 0 in the queue, take them out and reduce the in degree of adjacent nodes by 1 , once their in degree becomes 0 insert them in the queue
+//         How it works step-by-step (what your code does):
+//         Compute in-degrees for all nodes.
+//
+//         Queue up all nodes that have in-degree 0 initially.
+//
+//         Pop nodes from the queue:
+//
+//         Add the node to your result list (that’s the next in order).
+//
+//         For each neighbor, decrement its in-degree.
+//
+//         If a neighbor's in-degree reaches 0, queue it up.
+//
+//         When the queue is empty, if you sorted all nodes, output contains a valid topological order.
+//
+//
+//         */
+//        var indegree = Array(repeating: 0, count: n)
+//        for i in 0..<n {
+//            for element in adjList[i] ?? []{
+//                indegree[element] += 1
+//            }
+//        }
+//        
+//        var queue: [Int] = []
+//        for i in 0..<n {
+//            if indegree[i] == 0 {
+//                queue.append(i)
+//            }
+//        }
+//        
+//        var output = [Int]()
+//        while !queue.isEmpty {
+//            var node = queue.removeFirst()
+//            output.append(node)
+//            // node is in your topo sort
+//            // so please remove it from the indegree
+//            for neighbor in adjList[node] ?? [] {
+//                indegree[neighbor] -= 1
+//                if indegree[neighbor] == 0 {
+//                    queue.append(neighbor)
+//                }
+//            }
+//        }
+//        if output.count != n {
+//            // Cycle detected (not a DAG)
+//            return []
+//        }
+//        return output
+//    }
+//}
+
+//class Solution {
+////    func nearestPalindromic(_ n : String) -> String {
+////        let length = n.count
+////        let num = Int(n)!
+////        var candidates = Set<Int>()
+////        
+////        // Edge palindromes (one more and one less digit)
+////        candidates.insert(Int(pow(10, Double(length))) + 1)
+////        if n.count > 1 {
+////            candidates.insert(Int(pow(10, Double(length - 1))) - 1)
+////        } else {
+////            candidates.insert(0) // For single-digit n
+////        }
+////        
+////        // Mirror, bump up, and bump down from middle
+////        addMirroredValuePalindrome(num, &candidates, length)
+////        addIncreasedMiddleValuePalindrome(num, &candidates)
+////        addDecreasedMiddleValuePalindrome(num, &candidates)
+////        
+////        // Remove itself
+////        candidates.remove(num)
+////        
+////        // Pick closest with rules
+////        var result = -1
+////        for c in candidates {
+////            if result == -1 ||
+////                abs(c - num) < abs(result - num) ||
+////                (abs(c - num) == abs(result - num) && c < result) {
+////                result = c
+////            }
+////        }
+////        return String(result)
+////    }
+////    // ...helpers as above...
+////    func addMirroredValuePalindrome(_ num: Int, _ candidates: inout Set<Int>, _ length: Int) {
+////        let s = String(num)
+////        let chars = Array(s)
+////        let halfLen = (length + 1) / 2
+////        var half = String(chars.prefix(halfLen))
+////        
+////        // Mirror function: create a palindrome by copying left to right
+////        var mirrored: [Character]
+////        if length % 2 == 0 {
+////            // Even length, mirror full half to right (e.g., "12" => "1221")
+////            mirrored = Array(half + String(half.reversed()))
+////        } else {
+////            // Odd length, mirror all but central char (e.g., "123" => "121")
+////            mirrored = Array(half + String(half.dropLast().reversed()))
+////        }
+////        
+////        let palindromeNum = Int(String(mirrored))!
+////        candidates.insert(palindromeNum)
+////    }
+////
+////    
+////    func addIncreasedMiddleValuePalindrome(_ num: Int, _ candidates: inout Set<Int>) {
+////        let s = String(num)
+////        var chars = Array(s)
+////        let halfLen = (chars.count + 1) / 2
+////        var halfNum = Int(String(chars.prefix(halfLen)))! + 1
+////        let half = String(halfNum)
+////        var mirrored: [Character]
+////        if chars.count % 2 == 0 {
+////            mirrored = Array(half + String(half.reversed()))
+////        } else {
+////            mirrored = Array(half + String(half.dropLast().reversed()))
+////        }
+////        if let palindromeNum = Int(String(mirrored)) {
+////            candidates.insert(palindromeNum)
+////        }
+////    }
+////
+////    func addDecreasedMiddleValuePalindrome(_ num: Int, _ candidates: inout Set<Int>) {
+////        let s = String(num)
+////        var chars = Array(s)
+////        let halfLen = (chars.count + 1) / 2
+////        var halfNum = Int(String(chars.prefix(halfLen)))! - 1
+////        let half = String(halfNum)
+////        // Handle underflow: e.g., 100.. -> 99.., pad zeros to left if needed
+////        var halfPad = half
+////        while halfPad.count < halfLen {
+////            halfPad = "0" + halfPad
+////        }
+////        var mirrored: [Character]
+////        if chars.count % 2 == 0 {
+////            mirrored = Array(halfPad + String(halfPad.reversed()))
+////        } else {
+////            mirrored = Array(halfPad + String(halfPad.dropLast().reversed()))
+////        }
+////        if let palindromeNum = Int(String(mirrored)) {
+////            candidates.insert(palindromeNum)
+////        }
+////    }
+//
+//    func nearestPalindromic(_ n: String) -> String {
+//        let number = Int(n)!
+//        let length = n.count
+//        
+//        var candidates = Set<Int>()
+//        
+//        //Cases like 99 -> 101
+//        var nextSmallestPalindromeWithOneExtraDigit = Int(powl(10,Double(length)) + 1)
+//        candidates.insert(nextSmallestPalindromeWithOneExtraDigit)
+//        
+//        //Cases like 101,102 -> 99 = 10^(len-1)-1
+//        if length>1 {
+//            var prevBiggestPalindromeWithOneLessDigit = Int(powl(10, Double(length-1)-1))
+//            candidates.insert(prevBiggestPalindromeWithOneLessDigit)
+//        } else {
+//            candidates.insert(0)
+//        }
+//        
+//        addMirrorHalf(length, number, &candidates)
+//        addOneFromMiddle(length, number, &candidates)
+//        decreaseOneFromMiddle(length, number, &candidates)
+//        
+//        var ans = -1
+//        for candidate in candidates {
+//            if abs(candidate-number) < abs(ans-number) ||
+//                ans == -1 ||
+//                (abs(candidate-number) == abs(ans-number) && candidate < ans ) {
+//                ans = candidate
+//            }
+//        }
+//        return String(ans)
+//    }
+//    
+//    func addMirrorHalf(_ len: Int, _ number: Int, _ candidates: inout Set<Int>) {
+//        let s = String(number)
+//        var stringArray = Array(s)
+//        var halfLength = (len+1)/2
+//        var output: [Character]
+//        var half = String(stringArray.prefix(halfLength))
+//        
+//        //1234 -> 12 + 21 -> 1221
+//        if len % 2 == 0 {
+//            output = Array(half+half.reversed())
+//        } else {
+//        //12345 -> 123 -> 12 + 3 + 21
+//            output = Array(half + half.dropLast().reversed())
+//        }
+//        let answer = Int(String(output))!
+//        candidates.insert(answer)
+//    }
+//    
+//    func addOneFromMiddle(_ len: Int, _ number: Int, _ candidates: inout Set<Int>){
+//        //12345 -> 123 -> 12 + (3->4) + 21 -> 12421
+//        //1234 -> 1 + 23 + 4 -> 1 + 33 + 4 -> 1334
+//        let s = String(number)
+//        var stringArray = Array(s)
+//        var halfLength = (len+1)/2
+//        var output: [Character]
+//        var half = String(stringArray.prefix(halfLength))
+//        var halfNumber = Int(half)! + 1
+//        half = String(halfNumber)
+//        
+//        if len % 2 == 0 {
+//            output = Array(half + half.reversed())
+//        } else {
+//            output = Array(half + half.dropLast().reversed())
+//        }
+//        
+//        let answer = Int(String(output))!
+//        candidates.insert(answer)
+//    }
+//    
+//    func decreaseOneFromMiddle(_ len: Int, _ number: Int, _ candidates: inout Set<Int>){
+//                let s = String(number)
+//                var chars = Array(s)
+//                let halfLen = (chars.count + 1) / 2
+//                var halfNum = Int(String(chars.prefix(halfLen)))! - 1
+//                let half = String(halfNum)
+//                // Handle underflow: e.g., 100.. -> 99.., pad zeros to left if needed
+//                var halfPad = half
+//                print("decrement half: \(half)")
+//                while halfPad.count < halfLen {
+//                    halfPad = "0" + halfPad
+//                }
+//                print("decrement half pad: \(halfPad)")
+//                var mirrored: [Character]
+//                if chars.count % 2 == 0 {
+//                    mirrored = Array(halfPad + String(halfPad.reversed()))
+//                } else {
+//                    mirrored = Array(halfPad + String(halfPad.dropLast().reversed()))
+//                }
+//                if let palindromeNum = Int(String(mirrored)) {
+//                    print("decrement palindromeNum made: \(palindromeNum)")
+//                    candidates.insert(palindromeNum)
+//                }
+//    }
+//}
+//
+//let solution = Solution()
+//print(solution.nearestPalindromic("100"))
+
+
 class Solution {
-    
-    func buildAdjList(_ words:[String]) -> ([Character: Set<Character>]) {
-        var adjList = [Character:Set<Character>]()
-        let n = words.count
+    func nearestPalindromic(_ n: String) -> String {
+        let num = Int(n)!
+        let len = n.count
+        var candidates = Set<Int>()
         
-        for word in words {
-            for ch in word {
-                if adjList[ch] == nil {
-                    adjList[ch] = []
-                }
-            }
-        }
+        // 99->101, 100->99
+        candidates.insert(Int(pow(10, Double(len))+1))
+        candidates.insert(Int(pow(10, Double(len-1))-1))
         
-        for i in 0..<n-1{
-            let (first,second) = (words[i],words[i+1])
-            let minLength = min(first.count, second.count)
-            var found = false
-            for j in 0..<minLength {
-                let a = first[first.index(first.startIndex, offsetBy: j)] //Can solve using Array(firstWord)
-                let b = second[second.index(second.startIndex, offsetBy: j)]
-                if a != b {
-                    adjList[a, default: []].insert(b)
-                    found = true
-                    break
-                }
-            }
-            // abc , ab -> Invalid case, wrong order given to use
-            if !found && first.count > second.count {
-                return [:]
-            }
-        }
+        let halfLen = (len+1)/2
+        var prefix = Int(n.prefix(halfLen))!
         
-        return adjList
-    }
-    
-    func alienOrder(_ words: [String]) -> String {
-        var adjList = buildAdjList(words)
-        if adjList.isEmpty { return "" }
-        /*
-         1. Using DFS and external stack
-         */
-        var state: [Character:Int] = [:] //nil: unvisited, 1: visiting, 2: visited -> in directional graph we need three states to detect a cycle
-        var stackResult = [Character]()
-        var hasCycle =  false
-        
-        func dfs(_ ch: Character) {
-            if hasCycle { return }
+        //Middle element manipulation -1, 0(just mirroring), +1
+        for i in -1...1 {
+            // 1234 -> 1221(pure mirror), 1331, 1111
+            // 12345 -> 12321, 12421, 12121
             
-            if let s = state[ch] {
-                if s==1 {
-                    hasCycle = true // found a cycle
-                }
-                return // possible values can 1,2 here i.e. visiting or visited
+            var half = String(prefix + i)
+            print("half \(half)")
+            
+            //padding with zerores if needed -> 10
+            /*
+             Need to handle that change
+             */
+            while half.count < halfLen {
+                half = "0" + half
             }
             
-            state[ch] = 1
-            for neighbor in adjList[ch] ?? [] {
-                dfs(neighbor)
-                if hasCycle {return}
-            }
-            state[ch] = 2 //visited
-            stackResult.append(ch)
-        }
-        
-        for ch in adjList.keys {
-            if state[ch] == nil {
-                dfs(ch)
-                if hasCycle {
-                    return ""
-                }
-            }
-        }
-        return String(stackResult.reversed())
-    }
-    
-    func alienOrderUsingBFSKahnsAlgorithm(_ words:[String]) -> String {
-        var adjList = buildAdjList(words)
-        var indegree = [Character:Int]()
-        
-        // Initialize indegree for every character
-        for (ch, neighbors) in adjList {
-            if indegree[ch] == nil { indegree[ch] = 0 }
-            for neighbor in neighbors {
-                if indegree[neighbor] == nil { indegree[neighbor] = 0 }
-            }
-        }
-        
-        // Build indegree counts
-        for (ch, neighbors) in adjList {
-            for neighbor in neighbors {
-                indegree[neighbor]! += 1
-            }
-        }
-        
-        var queue = [Character]()
-        var output = [Character]()
-        
-        // Insert those chars which have indegree == 0
-        for (key,value) in indegree {
-            if value == 0 {
-                queue.append(key)
-            }
-        }
-        
-        while !queue.isEmpty {
-            var zeroInDegreeChar = queue.removeFirst()
-            output.append(zeroInDegreeChar)
+            var palindrome: String
             
-            for neighbor in adjList[zeroInDegreeChar] ?? [] {
-                indegree[neighbor]! -= 1
-                if indegree[neighbor] == 0 {
-                    queue.append(neighbor)
-                }
+            if len % 2 == 0 {
+                palindrome = half + String(half.reversed())
+            }
+            else {
+                palindrome = half + String(half.dropLast().reversed())
+            }
+            
+            if let palNum = Int(palindrome) {
+                candidates.insert(palNum)
             }
         }
         
-        return output.count == indegree.count ? String(output) : ""
-    }
-    
-    func topoSort(_ adjList: [Int:[Int]], _ n: Int) -> [Int]{
-        /* 1. Topological sorting : https://www.youtube.com/watch?v=5lZ0iJMrUMk Using DFS, external stack and visited array, assuming Graph is DAG
-         If there's an edge from u to v , in order u should comes before v
-         */
-        /*
-        var visited = Array(repeating: false, count: adjList.count)
-        var stack = [Int]()
+        candidates.remove(num)
         
-        func dfsHelper(_ node:Int){
-            visited[node] = true
-            for neighboor in adjList[node] ?? [] {
-                if !visited[neighboor]{
-                    dfsHelper(neighboor)
-                }
-            }
-            // Push back after visiting all the descendants (post order)
-            stack.append(node)
-        }
-        
-        for node in 0..<n {
-            if !visited[node]{
-                dfsHelper(node)
+        var answer = -1
+        for candidate in candidates {
+            if answer == -1 ||
+                abs(candidate-num) < abs(answer-num) ||
+                (abs(candidate-num) == abs(answer-num) && candidate<answer)
+            {
+                answer = candidate
             }
         }
-        
-        // stack stores node stores the reverse topological order
-        return stack.reversed()
-         */
-        /*
-         2. Using BFS (Kahn's Algorithm) using indegree array: https://www.youtube.com/watch?v=73sneFXuTEg
-         Insert all the nodes with in degree == 0 in the queue, take them out and reduce the in degree of adjacent nodes by 1 , once their in degree becomes 0 insert them in the queue
-         How it works step-by-step (what your code does):
-         Compute in-degrees for all nodes.
-
-         Queue up all nodes that have in-degree 0 initially.
-
-         Pop nodes from the queue:
-
-         Add the node to your result list (that’s the next in order).
-
-         For each neighbor, decrement its in-degree.
-
-         If a neighbor's in-degree reaches 0, queue it up.
-
-         When the queue is empty, if you sorted all nodes, output contains a valid topological order.
-
-
-         */
-        var indegree = Array(repeating: 0, count: n)
-        for i in 0..<n {
-            for element in adjList[i] ?? []{
-                indegree[element] += 1
-            }
-        }
-        
-        var queue: [Int] = []
-        for i in 0..<n {
-            if indegree[i] == 0 {
-                queue.append(i)
-            }
-        }
-        
-        var output = [Int]()
-        while !queue.isEmpty {
-            var node = queue.removeFirst()
-            output.append(node)
-            // node is in your topo sort
-            // so please remove it from the indegree
-            for neighbor in adjList[node] ?? [] {
-                indegree[neighbor] -= 1
-                if indegree[neighbor] == 0 {
-                    queue.append(neighbor)
-                }
-            }
-        }
-        if output.count != n {
-            // Cycle detected (not a DAG)
-            return []
-        }
-        return output
+        return String(answer)
     }
 }
+
+let solution = Solution()
+print(solution.nearestPalindromic("10"))
