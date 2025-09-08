@@ -509,22 +509,171 @@ import Foundation
 //print(adder(3))   // always prints 0 + 7 = 7
 //print(adder(10))  // always prints 0 + 7 = 7
 
-func capture() -> [()->Void] {
-    var output = [()->Void]()
-    for i in 0...2 {
-        var value = i
-//        func valueCaptured () -> Int {
-//            print("Closure \(i): My captured value is \(i)")
-//            return value
+//func capture() -> [()->Void] {
+//    var output = [()->Void]()
+//    for i in 0...2 {
+//        var value = i
+////        func valueCaptured () -> Int {
+////            print("Closure \(i): My captured value is \(i)")
+////            return value
+////        }
+//        output.append { [index = i] in
+//            print("Closure \(index): My captured value is \(index)")
 //        }
-        output.append { [index = i] in
-            print("Closure \(index): My captured value is \(index)")
-        }
-    }
-    return output
+//    }
+//    return output
+//}
+//
+//let closures = capture()
+//for closure in closures {
+//    closure()
+//}
+
+//
+//  main.swift
+//  Understanding Protocols and Delegates
+//
+//  Created by Swapnil Dhiman on 24/06/25.
+//
+
+//protocol AdvancedLifeSupport {
+//    func performCPR() //Any person adopting this protocol must know how to perform CPR
+//}
+//// This class holds the authority to trigger the bleep to notify to perform CPR
+//class EmergencyCallHandler {
+//    var delegate: AdvancedLifeSupport?
+//
+//    func assessSituation() {
+//        print("Can you tell me what happened ?")
+//    }
+//
+//    func triggerMedicalEmergency(){
+//        print("Medical Emergency, whoever is on call or whoever is carrying the pager please perform CPR")
+//        delegate?.performCPR()
+//    }
+//}
+//
+////Defining Delegate (the person who can take this job)
+//class Paramedic: AdvancedLifeSupport {
+//
+//    init(handler: EmergencyCallHandler){
+//        // I am going to listen the notifications from EmergencyCallHandler
+//        handler.delegate = self
+//    }
+//
+//    func performCPR() {
+//        print("Paramedic performed the CPR successfully")
+//    }
+//}
+//
+//class Doctor: AdvancedLifeSupport {
+//
+//    init(handler: EmergencyCallHandler){
+//        // I am going to listen the notifications from EmergencyCallHandler
+//        handler.delegate = self
+//    }
+//
+//    func performCPR() {
+//        print("Doctor performed the CPR successfully")
+//    }
+//
+//    func useStethescope() {
+//        print("Doctor using stetchoscope")
+//    }
+//}
+//
+//class Surgeon: Doctor {
+//    override func performCPR() {
+//        super.performCPR()
+//        print("Surgeon does extra steps")
+//    }
+//}
+//
+//class Nurse: AdvancedLifeSupport {
+//    var handler: EmergencyCallHandler?
+////    handler.delegate = self // This is wrong needs to be done inside the function
+//    func performCPR() {
+//        print("Nurse can perform CPR too")
+//    }
+//}
+//
+//let emilio = EmergencyCallHandler()
+//// When person starts his shift
+////let pete = Paramedic(handler: emilio)
+////let susovan = Doctor(handler: emilio)
+//let swapnil = Surgeon(handler: emilio)
+//let nurse = Nurse()
+//// nurse.handler = emilio
+//// nurse.handler.delegate = nurse : This is valid
+//emilio.assessSituation()
+//emilio.triggerMedicalEmergency()
+//
+
+
+class Shape {
+    func area() -> Double { return 0 } // Must supply useless default
+    // BAD: forced to add perimeter or other methods here for ALL shapes!
+    // func perimeter() -> Double { return 0 }
 }
 
-let closures = capture()
-for closure in closures {
-    closure()
+class Circle: Shape {
+    var radius: Double
+    init(radius: Double) { self.radius = radius }
+    override func area() -> Double { .pi * radius * radius }
 }
+
+class Rectangle: Shape {
+    var len: Double, width: Double
+    init(len: Double, width: Double) { self.len = len; self.width = width }
+    override func area() -> Double { len * width }
+}
+
+class Triangle: Shape {
+    var base: Double, height: Double, sideA: Double, sideB: Double, sideC: Double
+    init(base: Double, height: Double, a: Double, b: Double, c: Double) {
+        self.base = base; self.height = height
+        self.sideA = a; self.sideB = b; self.sideC = c
+    }
+    override func area() -> Double { 0.5 * base * height }
+    // Only triangle needs perimeter:
+    func perimeter() -> Double { sideA + sideB + sideC }
+}
+
+/*
+ Q1
+ class Animal {
+     func speak() { print("Some sound") }
+ }
+ class Dog: Animal {
+     override func speak() { print("Woof") }
+ }
+ class Fish: Animal { }
+
+ If I want only Fish to Swim ( which is sort of a capability ) I would prefer protocol here so
+ protocol canSwim {
+  func swim()
+ }
+ 
+ extension Fish : canSwim {
+  func swim () {
+    print("Fish can swim" )
+    }
+ }
+ 
+ if I would have added func swim in base class that would give Dog also the capability to swim.
+ 
+ Q2. protocol CanSpeak { func speak() }
+ protocol CanSwim { func swim() }
+ class Dog: CanSpeak { func speak() {print("dog is speaking")} }
+ class Fish: CanSpeak, CanSwim { func speak() {print("Fish is speaking")}
+ func swim() { print("Fish is swimming") }
+ }
+
+ Q3. extension CanSpeak {
+  func speak() {print("Animal is speaking")}
+ }
+ 
+ Q4. Adding new protocol named canRun
+ */
+
+

@@ -3924,64 +3924,1017 @@ import Foundation
 //let solution = Solution()
 //print(solution.nearestPalindromic("100"))
 
+//
+//class Solution {
+//    func nearestPalindromic(_ n: String) -> String {
+//        let num = Int(n)!
+//        let len = n.count
+//        var candidates = Set<Int>()
+//        
+//        // 99->101, 100->99
+//        candidates.insert(Int(pow(10, Double(len))+1))
+//        candidates.insert(Int(pow(10, Double(len-1))-1))
+//        
+//        let halfLen = (len+1)/2
+//        var prefix = Int(n.prefix(halfLen))!
+//        
+//        //Middle element manipulation -1, 0(just mirroring), +1
+//        for i in -1...1 {
+//            // 1234 -> 1221(pure mirror), 1331, 1111
+//            // 12345 -> 12321, 12421, 12121
+//            
+//            var half = String(prefix + i)
+//            print("half \(half)")
+//            
+//            //padding with zerores if needed -> 10
+//            /*
+//             Need to handle that change
+//             */
+//            while half.count < halfLen {
+//                half = "0" + half
+//            }
+//            
+//            var palindrome: String
+//            
+//            if len % 2 == 0 {
+//                palindrome = half + String(half.reversed())
+//            }
+//            else {
+//                palindrome = half + String(half.dropLast().reversed())
+//            }
+//            
+//            if let palNum = Int(palindrome) {
+//                candidates.insert(palNum)
+//            }
+//        }
+//        
+//        candidates.remove(num)
+//        
+//        var answer = -1
+//        for candidate in candidates {
+//            if answer == -1 ||
+//                abs(candidate-num) < abs(answer-num) ||
+//                (abs(candidate-num) == abs(answer-num) && candidate<answer)
+//            {
+//                answer = candidate
+//            }
+//        }
+//        return String(answer)
+//    }
+//    
+////    func topKFrequent(_ words: [String], _ k: Int) -> [String] {
+////        var hashMap : [String:Int] = [:] //Frequency
+////        for word in words {
+////            hashMap[word, default: 0] += 1
+////        }
+////        var maxHeap : [(String,Int)] = []
+////        //keeps the string with maximum character on the top
+////        
+////        for (key,value) in hashMap {
+////            maxHeap.append((key,value))
+////        }
+////        
+////        maxHeap.sort {$0.1 > $1.1}
+////        
+////        var output = [String]()
+////        
+////        var count = k
+////        while (count != 0) {
+////            output.append(maxHeap.removeFirst().0)
+////            count -= 1
+////        }
+////        
+////        return output
+////    }
+//    func topKFrequent(_ words: [String], _ k: Int) -> [String] {
+//         var hashMap: [String: Int] = [:]
+//         for word in words {
+//             hashMap[word, default: 0] += 1
+//         }
+//         // Build an array of words and sort it with custom rules
+//         let sortedWords = hashMap.keys.sorted {
+//             let freq1 = hashMap[$0]!
+//             let freq2 = hashMap[$1]!
+//             if freq1 == freq2 {
+//                 return $0 < $1 // lexicographical order
+//             } else {
+//                 return freq1 > freq2 // descending frequency
+//             }
+//         }
+//         return Array(sortedWords.prefix(k))
+//     }
+//}
+//
+//let solution = Solution()
+//print(solution.nearestPalindromic("10"))
 
-class Solution {
-    func nearestPalindromic(_ n: String) -> String {
-        let num = Int(n)!
-        let len = n.count
-        var candidates = Set<Int>()
-        
-        // 99->101, 100->99
-        candidates.insert(Int(pow(10, Double(len))+1))
-        candidates.insert(Int(pow(10, Double(len-1))-1))
-        
-        let halfLen = (len+1)/2
-        var prefix = Int(n.prefix(halfLen))!
-        
-        //Middle element manipulation -1, 0(just mirroring), +1
-        for i in -1...1 {
-            // 1234 -> 1221(pure mirror), 1331, 1111
-            // 12345 -> 12321, 12421, 12121
-            
-            var half = String(prefix + i)
-            print("half \(half)")
-            
-            //padding with zerores if needed -> 10
-            /*
-             Need to handle that change
-             */
-            while half.count < halfLen {
-                half = "0" + half
+
+class RandomizedSet {
+    var hashMap : [Int:Int]//will contain the element present at what index of randomizedSetArray
+    var randomizedSetArray : [Int]
+    var sizeCount : Int
+
+    init() {
+        hashMap = [:]
+        randomizedSetArray = []
+        sizeCount = 0
+    }
+    
+    func insert(_ val: Int) -> Bool {
+        // if element already present
+        if let index = hashMap[val] {
+            if index < self.sizeCount || self.sizeCount == 0 {
+                randomizedSetArray[index] = val
             }
-            
-            var palindrome: String
-            
-            if len % 2 == 0 {
-                palindrome = half + String(half.reversed())
-            }
-            else {
-                palindrome = half + String(half.dropLast().reversed())
-            }
-            
-            if let palNum = Int(palindrome) {
-                candidates.insert(palNum)
-            }
+            return false
         }
-        
-        candidates.remove(num)
-        
-        var answer = -1
-        for candidate in candidates {
-            if answer == -1 ||
-                abs(candidate-num) < abs(answer-num) ||
-                (abs(candidate-num) == abs(answer-num) && candidate<answer)
-            {
-                answer = candidate
-            }
+        // else
+        else {
+            sizeCount = randomizedSetArray.count
+            hashMap[val, default:0] = sizeCount - 1
+            randomizedSetArray.append(val)
+            sizeCount += 1
+            return true
         }
-        return String(answer)
+    }
+    
+    func remove(_ val: Int) -> Bool {
+        // if element present
+        if let index = hashMap[val] {
+            hashMap[val]=nil
+            hashMap[randomizedSetArray[sizeCount-1]] = index
+            randomizedSetArray.swapAt(index, sizeCount-1)
+            randomizedSetArray.removeLast()
+            sizeCount -= 1
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func getRandom() -> Int {
+        return randomizedSetArray.randomElement()!
     }
 }
 
-let solution = Solution()
-print(solution.nearestPalindromic("10"))
+/**
+ * Your RandomizedSet object will be instantiated and called as such:
+ * let obj = RandomizedSet()
+ * let ret_1: Bool = obj.insert(val)
+ * let ret_2: Bool = obj.remove(val)
+ * let ret_3: Int = obj.getRandom()
+ */
+
+//class HitCounter {
+//    
+//    init() {
+//        // Initialize your data structure here.
+//    }
+//    
+//    func hit(_ timestamp: Int) {
+//        // Record a hit at the given timestamp.
+//    }
+//    
+//    func getHits(_ timestamp: Int) -> Int {
+//        // Return the number of hits in the past 5 minutes.
+//        return 0
+//    }
+//}
+
+//class HitCounter {
+//    private var hits: [Int] = []
+//    
+//    init() {
+//        // Initialize empty array to store all hit timestamps
+//    }
+//    
+//    func hit(_ timestamp: Int) {
+//        // Simply append the timestamp to our array
+//        hits.append(timestamp)
+//    }
+//    
+//    func getHits(_ timestamp: Int) -> Int {
+//        // Count all hits within the last 5 minutes (300 seconds)
+//        // Valid range: [timestamp - 299, timestamp]
+//        let earliestValidTime = timestamp - 299
+//        
+//        var count = 0
+//        for hitTime in hits {
+//            if hitTime >= earliestValidTime && hitTime <= timestamp {
+//                count += 1
+//            }
+//        }
+//        return count
+//    }
+//}
+
+//class HitCounter {
+//    
+//    var hitQueue: [Int] = []
+//    
+//    init() {
+//        // Initialize your data structure here.
+//    }
+//
+//    func hit(_ timestamp: Int) {
+//        // Add the new hit timestamp to our queue
+//        hitQueue.append(timestamp)
+//                
+//        // Remove any timestamps that are now too old
+//        // (older than 300 seconds from current timestamp)
+//        removeExpiredHits(timestamp)
+//    }
+//    
+//    func removeExpiredHits(_ timestamp: Int){
+//        let earliestTimeStamp = timestamp - 299
+//        while !hitQueue.isEmpty && hitQueue[0]<earliestTimeStamp {
+//            hitQueue.removeFirst()
+//        }
+//    }
+//
+//    func getHits(_ timestamp: Int) -> Int {
+//        removeExpiredHits(timestamp)
+//        return hitQueue.count
+//    }
+//}
+
+//class HitCounter {
+//    private let WINDOW_SIZE = 300
+//    private var hits: [Int]
+//    private var time: [Int]
+//    init() {
+//        // Initialize your data structure here.
+//        hits = Array(repeating: 0, count: WINDOW_SIZE)
+//        time = Array(repeating: 0, count: WINDOW_SIZE)
+//    }
+//
+//    func hit(_ timestamp: Int) {
+//        // Record a hit at the given timestamp.
+//        let myTimeStampIndex = timestamp % WINDOW_SIZE
+//        if time[myTimeStampIndex] == timestamp {
+//            hits[myTimeStampIndex] += 1
+//        } else {
+//            hits[myTimeStampIndex] = 1
+//            time[myTimeStampIndex] = myTimeStampIndex
+//        }
+//    }
+//
+//    func getHits(_ timestamp: Int) -> Int {
+//        // Return the number of hits in the past 5 minutes.
+//        var totalHits = 0
+//        var earliestTimeStamp = timestamp - 299
+//        for i in 0..<WINDOW_SIZE {
+//            if time[i] >= earliestTimeStamp && time[i] <= timestamp {
+//                totalHits += hits[i]
+//            }
+//        }
+//        return totalHits
+//    }
+//}
+//
+//class Solution {
+//    func maxCoins(_ nums: [Int]) -> Int {
+//        var nums = nums
+//        
+//        nums.insert(1, at: 0)
+//        nums.append(1)
+//        
+//        let n = nums.count
+//        var hashMap: [[Int]:Int] = [:]
+//        func dfsHelper(nums:[Int]) -> Int {
+//            if nums.count == 2 {
+//                // [1,1] only virtual elements are remaining
+//                hashMap[nums] = 0
+//                return 0
+//            }
+//            
+//            if let cachedValue = hashMap[nums] {
+//                return cachedValue
+//            }
+//            
+//            var maxCoins = 0
+//            
+//            for i in 1...nums.count-2 {
+//                let coins = nums[i-1]*nums[i]*nums[i+1]
+//                var newNums = nums
+//                newNums.remove(at: i)
+//                print("for i: \(i) the nums is \(nums) and newNums is \(newNums)")
+//                maxCoins = max(maxCoins,coins+dfsHelper(nums: newNums))
+//            }
+//            
+//            hashMap[nums] = maxCoins
+//            return maxCoins
+//        }
+//        return dfsHelper(nums: nums)
+//    }
+//    
+//    func rob(_ root: TreeNode?) -> Int {
+////        var hashMap : [ TreeNode : Int ] = [:]
+////        func dfsHelper(_ node: TreeNode?) -> Int {
+////            guard let node = node else {return 0}
+////            // leaf node
+////            if node.left == nil && node.right == nil {
+////                hashMap[node] = node.val
+////                return node.val
+////            }
+////            
+////            if let cachedValue = hashMap[node] {
+////                return cachedValue
+////            }
+////
+////            let robAtCurrentNode = node.val + dfsHelper(node.left?.left) + dfsHelper(node.left?.right) + dfsHelper(node.right?.left) + dfsHelper(node.right?.right)
+////
+////            let notRobbingAtCurrentNode = dfsHelper(node.left)+dfsHelper(node.right)
+////            
+////            hashMap[node] = max(robAtCurrentNode, notRobbingAtCurrentNode)
+////            return max(robAtCurrentNode, notRobbingAtCurrentNode)
+////        }
+////        return dfsHelper(root)
+//        func robHelper(_ node: TreeNode?) -> (Int,Int) {
+//            guard let node = node else { return (0,0) }
+//            if node.left == nil && node.right == nil {
+//                //(rob,notRob)
+//                return (node.val,0)
+//            }
+//            let rob = node.val + robHelper(node.left).1 + robHelper(node.right).1 //node.left.notRob
+//            let notRob = max(robHelper(node.left).0, robHelper(node.left).1) + max(robHelper(node.right).0, robHelper(node.right).1)
+//            return (rob,notRob)
+//        }
+//        return max(robHelper(root).0,robHelper(root).1)
+//    }
+//    
+//    func minCost(_ costs: [[Int]]) -> Int {
+////        var hashMap : [String:Int] = [:]
+////        func minCostHelper(_ costs: [[Int]], _ prevChosenColor: Int, _ rowIndex: Int) -> Int {
+////            let key = "\(prevChosenColor)_\(rowIndex)"
+////            if rowIndex == costs.count {
+////                return 0 // No houses left to color
+////            }
+////            if let cachedValue = hashMap[key] {
+////                return cachedValue
+////            }
+////            var minCost = Int.max
+////            for color in 0..<3 {
+////                if color != prevChosenColor {
+////                    let cost = costs[rowIndex][color] + minCostHelper(costs, color, rowIndex + 1)
+////                    minCost = min(minCost, cost)
+////                }
+////            }
+////            hashMap[key] = minCost
+////            return minCost
+////        }
+////        return minCostHelper(costs,-1,0)
+//        guard !costs.isEmpty else { return 0 }
+//        let n = costs.count
+//        var dp = costs[n-1] // 1D DP is more than  enough since we are just concerned about prevIndex
+//        for i in stride(from: n-2, through: 0, by: -1){
+//            let red = costs[i][0] + min(dp[1],dp[2])
+//            let blue = costs[i][1] + min(dp[0],dp[2])
+//            let green = costs[i][2] + min(dp[0],dp[1])
+//            dp = [red,blue,green]
+//        }
+//        return min(dp[0],min(dp[1],dp[2]))
+//    }
+//        
+//}
+//
+//
+//
+///**
+// * Definition for a binary tree node.
+// * public class TreeNode {
+// *     public var val: Int
+// *     public var left: TreeNode?
+// *     public var right: TreeNode?
+// *     public init() { self.val = 0; self.left = nil; self.right = nil; }
+// *     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+// *     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+// *         self.val = val
+// *         self.left = left
+// *         self.right = right
+// *     }
+// * }
+// */
+//
+// public class TreeNode {
+//     public var val: Int
+//     public var left: TreeNode?
+//     public var right: TreeNode?
+//     public init() { self.val = 0; self.left = nil; self.right = nil; }
+//     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+//     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+//         self.val = val
+//         self.left = left
+//         self.right = right
+//     }
+// }
+//
+//extension TreeNode : Hashable {
+//    public func hash(into hasher: inout Hasher) {
+//        hasher.combine(ObjectIdentifier(self))
+//    }
+//    
+//    public static func == (lhs: TreeNode, rhs: TreeNode) -> Bool {
+//        lhs === rhs
+//    }
+//}
+//
+//let solution = Solution()
+////print(solution.maxCoins([3,1,5,8]))
+//print(solution.minCost([[8,3,4],[6,5,7],[3,6,8]]))
+
+
+//class Solution {
+//    func matrixMultiplication(_ arr:[Int], _ n:Int) -> Int {
+//        /*
+//        var memoDp = Array(repeating: Array(repeating: Int.max, count: n), count: n)
+//        func matrixMultiplicationHelper(_ i: Int, _ j : Int) -> Int {
+//            if i==j {
+//                return 0
+//            }
+//            if memoDp[i][j] != Int.max {
+//                return memoDp[i][j]
+//            }
+//            var mini = Int.max
+//            for k in i...j-1 {
+//                var minimumCostIfPartitionDoneAtK = (arr[i-1]*arr[k]*arr[j]) + matrixMultiplicationHelper(i, k) + matrixMultiplicationHelper(k+1, j)
+//                mini = min(mini, minimumCostIfPartitionDoneAtK)
+//            }
+//            memoDp[i][j] = mini
+//            return mini
+//        }
+//        
+//        return matrixMultiplicationHelper(1, n-1)
+//         */
+//        var dp =  Array(repeating: Array(repeating: Int.max, count: n), count: n)
+//        /*
+//         Tabular Dp ( Bottom-up : Smaller cases we start and build the bigger solution, where as recursion is basically from bigger set we go to smaller set i.e. top down
+//         1 Copy the base case
+//         2 Write the changing states
+//         3 Copy the recurrence
+//         */
+//        
+//        for i in 1..<n {
+//            dp[i][i] = 0
+//        }
+//        
+//        for i in stride(from: n-1, through: 1, by: -1) {
+//            for j in (i+1)..<n {
+//                var mini = Int.max
+//                for k in i..<j {
+//                    // Ensure no overflow
+//                    if dp[i][k] != Int.max && dp[k+1][j] != Int.max {
+//                        let cost = arr[i-1] * arr[k] * arr[j] + dp[i][k] + dp[k+1][j]
+//                        mini = min(mini, cost)
+//                    }
+//                }
+//                dp[i][j] = mini
+//            }
+//        }
+//        return dp[1][n-1]
+//    }
+//    
+//    func maxCoins(_ nums: [Int]) -> Int {
+//        var nums = nums
+//        
+//        nums.insert(1, at: 0)
+//        nums.append(1)
+//        
+//        let n = nums.count
+////        var hashMap: [[Int]:Int] = [:]
+////        func dfsHelper(nums:[Int]) -> Int {
+////            if nums.count == 2 {
+////                // [1,1] only virtual elements are remaining
+////                hashMap[nums] = 0
+////                return 0
+////            }
+////            
+////            if let cachedValue = hashMap[nums] {
+////                return cachedValue
+////            }
+////            
+////            var maxCoins = 0
+////            
+////            for i in 1...nums.count-2 {
+////                let coins = nums[i-1]*nums[i]*nums[i+1]
+////                var newNums = nums
+////                newNums.remove(at: i)
+////                // print("for i: \(i) the nums is \(nums) and newNums is \(newNums)")
+////                maxCoins = max(maxCoins,coins+dfsHelper(nums: newNums))
+////            }
+////            
+////            hashMap[nums] = maxCoins
+////            return maxCoins
+////        }
+////        return dfsHelper(nums: nums)
+//       
+//        func maXCoinsRecursiveHelper(_ i:Int, _ j:Int, _ k: Int) -> Int {
+//            // gives me the best possible answer for array in between i to j if kth element has been burst out
+//            var newArray = nums
+//            if k != -1 {
+//                // give me new array which doesn't have k the element since it has been bursted out
+//            }
+//
+//            var maxCoins = Int.min
+//            
+//            for k in i...j {
+//                var bestCostIfKthBalloonBursts = newArray[k-1]*newArray[k]*newArray[k+1] + maXCoinsRecursiveHelper(i, j, k)
+//                maxCoins = max(maxCoins, bestCostIfKthBalloonBursts)
+//            }
+//            return maxCoins
+//        }
+//        return maXCoinsRecursiveHelper(1,n-1,-1)
+//    }
+//    
+//    func findWords(_ board:[[Character]], _ words: [String]) -> [String] {
+//        //Building the trieNode from words
+//        let root = TrieNode()
+//        for word in words {
+//            var node = root
+//            for ch in word {
+//                if node.children[ch] == nil {
+//                    node.children[ch] = TrieNode()
+//                }
+//                node = node.children[ch]!
+//            }
+//            node.word = word
+//        }
+//        
+//        var visited = Array(repeating: Array(repeating: false, count: board[0].count), count: board.count)
+//        var result = Set<String>()
+//        
+//        var directions = [(0,1),(0,-1),(1,0),(-1,0)]
+//        
+//        func findWordsHelper(_ r: Int, _ c: Int, _ node: TrieNode) {
+//            
+//            guard let newNode = node.children[board[r][c]] else {
+//                return
+//            }
+//            
+//            if let foundWord = newNode.word {
+//                result.insert(foundWord)
+//            }
+//            
+//            for direction in directions {
+//                let newR = r + direction.0
+//                let newC = c + direction.1
+//                if newR >= 0 && newR < board.count && newC >= 0 && newC < board[0].count {
+//                    if !visited[newR][newC] {
+//                        visited[newR][newC] = true
+//                        findWordsHelper(newR, newC, newNode)
+//                        visited[newR][newC] = false
+//                    }
+//                }
+//            }
+//            
+//        }
+//        
+//        for i in 0..<board.count {
+//            for j in 0..<board[0].count {
+//                if !visited[i][j] {
+//                    visited[i][j] = true
+//                    findWordsHelper(i,j,root)
+//                    visited[i][j] = false
+//                }
+//            }
+//        }
+//        
+//        return Array(result)
+//    }
+//    
+////    func calcEquation(_ equations: [[String]], _ values: [Double], _ queries: [[String]]) -> [Double] {
+////        var adjList : [String:[String:Double]] = [:]
+////        //adjList[a] = ["e":2.00, "f":0.3000]
+////        for (index,equationPair) in equations.enumerated() {
+////            let u = equationPair.first!
+////            let v = equationPair.last!
+////            adjList[u, default: [String:Double]()][v] = values[index]
+////            adjList[v,default: [String:Double]()][u] = 1.0/values[index]
+////        }
+////        
+////        var result = [Double]()
+////        
+////        for query in queries {
+////            let source = query.first!
+////            let target = query.last!
+////            
+////            guard let validSource = adjList[source],
+////                  let validTarget = adjList[target] else {
+////                result.append(-1.0000)
+////                continue
+////            }
+////            
+////            var queue = [(String,Double)]()
+////            var visited = Set<String>()
+////            var hasFoundValidValue = false
+////            
+////            queue.append((source,1.0000))
+////            visited.insert(source)
+////            
+////            while !queue.isEmpty {
+////                var (currNode,answerSoFar) = queue.removeFirst()
+////                if currNode == target {
+////                    result.append(answerSoFar)
+////                    hasFoundValidValue = true
+////                    break
+////                }
+////                
+////                if let nodeWeightDictionary = adjList[currNode] {
+////                    for (neighbor,weight) in nodeWeightDictionary {
+////                        if !visited.contains(neighbor){
+////                            queue.append((neighbor,weight*answerSoFar))
+////                            visited.insert(neighbor)
+////                        }
+////                    }
+////                }
+////            }
+////            if !hasFoundValidValue {
+////                result.append(-1.00000)
+////            }
+////        }
+////        return result
+////    }
+//    func calcEquation(_ equations: [[String]], _ values: [Double], _ queries: [[String]]) -> [Double] {
+//        var dsu = DSU()
+//        
+//        for (index,equation) in equations.enumerated() {
+//            var firstChar = equation.first!
+//            var secondChar = equation.last!
+//            var value = values[index]
+//            dsu.union(firstChar, secondChar, value)
+//        }
+//        
+//        var result = [Double]()
+//        
+//        for query in queries {
+//            let x = query.first!
+//            let y = query.last!
+//            let (rootX, weightX) = dsu.find(x)
+//            let (rootY, weightY) = dsu.find(x)
+//            if rootX != rootY {
+//                result.append(-1.0000)
+//                continue
+//            }
+//            result.append(weightX/weightY)
+//        }
+//        return result
+//    }
+//    
+//    func longestSubarrayWithDiffLessThanLimit(_ nums:[Int], _ limit:Int) -> Int {
+//        var minDequeue = [Int]()
+//        var maxDequeue = [Int]()
+//        var left = 0 , result = 0
+//        for right in 0..<nums.count {
+//            while !minDequeue.isEmpty && minDequeue.last! > nums[right] {
+//                minDequeue.removeLast()
+//            }
+//            while !maxDequeue.isEmpty && maxDequeue.last! < nums[right] {
+//                maxDequeue.removeLast()
+//            }
+//            while (maxDequeue.first! - minDequeue.first!) > limit {
+//                //shrinking the window size
+//                if maxDequeue.first == nums[left] { maxDequeue.removeFirst() }
+//                if minDequeue.first == nums[left] { minDequeue.removeFirst() }
+//                left += 1
+//            }
+//            result = max(result, right - left + 1)
+//        }
+//        return result
+//    }
+//    
+//    func exist(_ board: [[Character]], _ word: String) -> Bool {
+//        let m = board.count
+//        let n = board[0].count
+//        
+//        var visited = Array(repeating: Array(repeating: false, count: n), count: m)
+//        var wordArray = Array(word)
+//        
+//        let wordLen = wordArray.count
+//        
+//        func dfsHelper(_ r: Int, _ c: Int, _ idx: Int) -> Bool {
+//            if idx == wordLen {
+//                return true
+//            }
+//            
+//            if r<0 || r>=m || c<0 || c>=n {
+//                return false
+//            }
+//            
+//            if board[r][c] != wordArray[idx]{
+//                return false
+//            }
+//            
+//            if visited[r][c] {
+//                return false
+//            }
+//            
+//            visited[r][c] = true
+//            
+//            var result = dfsHelper(r+1, c, idx+1) || dfsHelper(r,c+1,idx+1) || dfsHelper(r-1, c, idx+1) || dfsHelper(r, c-1, idx+1)
+//            
+//            visited[r][c] = false
+//            
+//            return result
+//        }
+//        
+//        for i in 0..<m {
+//            for j in 0..<n {
+//                if dfsHelper(i,j,0){
+//                    return true
+//                }
+//            }
+//        }
+//        return false
+//    }
+//    
+//    func fullJustify(_ words: [String], _ maxWidth: Int) -> [String] {
+//        var output = [String]()
+//        var currWord = [String]()
+//        var currLength : Int = 0
+//        
+//        var idx = 0
+//        let numberOfWords = words.count
+//        
+//        func justifyHelper(_ isLastLine: Bool) {
+//            // currWord = ["This","is","an"]
+//            var line = ""
+//            let characterCount = currWord.reduce(0) { partialResult, str in
+//                partialResult + str.count
+//            }
+//            var totalEmptySpaces = maxWidth - characterCount
+//            if isLastLine || currWord.count == 1 {
+//                line = currWord.joined(separator: " ")
+//                let extra = maxWidth - line.count
+//                if extra > 0 {
+//                    line += String(repeating: " ", count: extra)
+//                }
+//            } else {
+//                let numberOfSpaceSlots = currWord.count - 1
+//                let evenDistributedSpaces = totalEmptySpaces/numberOfSpaceSlots
+//                var oddDistributedSpaces = totalEmptySpaces%numberOfSpaceSlots
+//                for j in 0..<currWord.count {
+//                    line += currWord[j]
+//                    if j != currWord.count - 1 {
+//                        line += String(repeating: " ", count: evenDistributedSpaces + ((oddDistributedSpaces > 0) ? 1 : 0))
+//                        if oddDistributedSpaces > 0 {
+//                            oddDistributedSpaces -= 1
+//                        }
+//                    }
+//                }
+//            }
+//            output.append(line)
+//        }
+//        
+//        
+//        while idx < numberOfWords {
+//            var word = words[idx]
+//            if currWord.isEmpty {
+//                if words[idx].count <= maxWidth {
+//                    currLength += words[idx].count
+//                    currWord = [words[idx]]
+//                }
+//            } else if (currLength + 1 + word.count) <= maxWidth {
+//                currWord.append(word)
+//                currLength += 1+word.count
+//            } else {
+//                justifyHelper(true)
+//                currWord = [word]
+//                currLength = word.count
+//            }
+//            idx += 1
+//        }
+//        justifyHelper(false)
+//        return output
+//    }
+//    
+//    func asteroidCollision(_ asteroids: [Int]) -> [Int] {
+//           var queue = [Int]()
+//           var output = [Int]()
+//           var i = 0
+//           var asteroidsCount = asteroids.count
+//
+//           while i < asteroids.count {
+//               print("Entered outer while loop: \(asteroids[i]) and queue: \(queue)")
+//               if asteroids[i] > 0 {
+//                   queue.append(asteroids[i])
+//                   i += 1
+//                   continue
+//               } else {
+//                   if queue.isEmpty {
+//                       output.append(asteroids[i])
+//                       i += 1
+//                       continue
+//                   } else {
+//                       while !queue.isEmpty {
+//                           if queue.count > 0 {
+//                               var currAsteroid = queue.last!
+//                               if currAsteroid == abs(asteroids[i]) {
+//                                   // both will destroy each other
+//                                   queue.removeLast()
+//                                   print("destroyed same element")
+//                                   i += 1
+//                                   print("value of i after destroying same element: \(i)")
+//                                   print("queue after destroying same element: \(queue)")
+//                                   break
+//                               } else if currAsteroid > abs(asteroids[i]) {
+//                                   i += 1
+//                                   break
+//                               } else if currAsteroid < abs(asteroids[i]) {
+//                                   // need to remove currAsteroid from queue and check for remaining queue
+//                                   queue.removeLast()
+//                                   i -= 1
+//                               }
+//                           }
+//                       }
+//                   }
+//                   // if queue.isEmpty { output.append(asteroids[i]) }
+//               }
+//               if i != asteroidsCount - 1{
+//                   i += 1
+//               }
+//           }
+//           output += queue
+//           return output
+//       }
+//    
+//   
+// }
+//
+//protocol OperationFunctionality {
+//    func add(_ x: String)
+//    func union(_ x:String, _ y: String, _ value: Double) // x/y correct implementation in my DSU
+//    func find(_ x: String) -> (String,Double) //Returns the root of x and x/rootX value
+//}
+//
+//class DSU: OperationFunctionality {
+//    func add(_ x: String) {
+//        if parent[x] == nil {
+//            parent[x] = x
+//            weight[x] = 1.0
+//        }
+//    }
+//    
+//    func union(_ x: String, _ y: String, _ value: Double) {
+//        add(x)
+//        add(y)
+//        let (rootX, weightX) = find(x)
+//        let (rootY, weightY) = find(y)
+//        if rootX != rootY {
+//            parent[rootX] = rootY
+//            weight[rootX] = (value * weightY)/weightX
+//        }
+//    }
+//    
+//    func find(_ x: String) -> (String,Double) {
+//        // gives the root for x, and path from x to it's root
+//        add(x)
+//        if parent[x]! != x {
+//            var (root, parentWeight) = find(parent[x]!)
+//            parent[x]! = root
+//            weight[x]! *= parentWeight
+//        }
+//        return (parent[x]!, weight[x]!)
+//    }
+//    
+//   private var parent : [String:String] = [:]
+//   private var weight : [String:Double] = [:]  // weight[A] = a/rootA
+//}
+//
+//class TrieNode {
+//    var children : [Character:TrieNode] = [:]
+//    var word : String? = nil
+//    
+//}
+//
+////let solution = Solution()
+////print(solution.matrixMultiplication([10,20,30,40,50], 5))
+//
+//let solution = Solution()
+//print(solution.asteroidCollision([-2,1,-1,-2]))
+
+
+
+class LRUCache {
+    private var capacity: Int
+
+    private var head: DoublyLL?
+    private var tail: DoublyLL?
+
+    private var hashMap: [Int:DoublyLL] = [:]
+
+    init(_ capacity: Int) {
+        self.capacity = capacity
+    }
+    
+    func get(_ key: Int) -> Int {
+        if let node = hashMap[key] {
+            moveToTail(node)
+            return node.value
+        }
+        return -1
+    }
+    
+    func moveToTail(_ node: DoublyLL) {
+        if node === tail {
+            return
+        }
+        if node === head {
+            head = node.next
+            head?.prev = nil
+        } else {
+            node.prev?.next = node.next
+            node.next?.prev = node.prev
+        }
+        node.prev = tail
+        node.next = nil
+        tail?.next = node
+        tail = node
+    }
+    
+    func put(_ key: Int, _ value: Int) {
+        if let cachedNode = hashMap[key] {
+            moveToTail(cachedNode)
+            cachedNode.value = value
+        } else {
+            let newNode = DoublyLL(key, value)
+            addToTail(newNode)
+            hashMap[key] = newNode
+            if hashMap.count > capacity {
+                removeHead()
+            }
+        }
+    }
+    
+    func addToTail(_ node: DoublyLL){
+        if tail == nil {
+            head = node
+            tail = node
+        } else {
+            tail?.next = node
+            node.prev = tail
+            tail = node
+        }
+    }
+    
+    func removeHead(){
+        guard let oldHead = head else {
+            return
+        }
+        hashMap[oldHead.key] = nil
+        if head === tail {
+            head = nil
+            tail = nil
+        } else {
+            head = oldHead.next
+            head?.prev = nil
+        }
+    }
+}
+
+class DoublyLL {
+    var key: Int
+    var value: Int
+    var prev: DoublyLL?
+    var next: DoublyLL?
+
+    init(_ key: Int, _ value: Int){
+        self.key = key
+        self.value = value
+    }
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * let obj = LRUCache(capacity)
+ * let ret_1: Int = obj.get(key)
+ * obj.put(key, value)
+ */
+
+
+class Solution {
+    func merge(_ intervals: [[Int]]) -> [[Int]] {
+        var sortedIntervals = intervals.sorted {
+            $0.first! < $1.first!
+        } // based on the starting time
+        
+        var prevStart = sortedIntervals[0].first!
+        var prevEnd = sortedIntervals[0].last!
+        
+        var output = [[Int]]()
+        
+        for interval in intervals {
+            var currStart = interval.first!
+            var currEnd = interval.last!
+            
+            if prevEnd >= currStart {
+                prevEnd = max(prevEnd,currEnd)
+            } else {
+                output.append([prevStart,prevEnd])
+                prevStart = currStart
+                prevEnd = currEnd
+            }
+        }
+        output.append([prevStart,prevEnd])
+        return output
+    }
+}
