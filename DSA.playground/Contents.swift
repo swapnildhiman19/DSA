@@ -4813,128 +4813,412 @@ class RandomizedSet {
 //print(solution.asteroidCollision([-2,1,-1,-2]))
 
 
+//
+//class LRUCache {
+//    private var capacity: Int
+//
+//    private var head: DoublyLL?
+//    private var tail: DoublyLL?
+//
+//    private var hashMap: [Int:DoublyLL] = [:]
+//
+//    init(_ capacity: Int) {
+//        self.capacity = capacity
+//    }
+//    
+//    func get(_ key: Int) -> Int {
+//        if let node = hashMap[key] {
+//            moveToTail(node)
+//            return node.value
+//        }
+//        return -1
+//    }
+//    
+//    func moveToTail(_ node: DoublyLL) {
+//        if node === tail {
+//            return
+//        }
+//        if node === head {
+//            head = node.next
+//            head?.prev = nil
+//        } else {
+//            node.prev?.next = node.next
+//            node.next?.prev = node.prev
+//        }
+//        node.prev = tail
+//        node.next = nil
+//        tail?.next = node
+//        tail = node
+//    }
+//    
+//    func put(_ key: Int, _ value: Int) {
+//        if let cachedNode = hashMap[key] {
+//            moveToTail(cachedNode)
+//            cachedNode.value = value
+//        } else {
+//            let newNode = DoublyLL(key, value)
+//            addToTail(newNode)
+//            hashMap[key] = newNode
+//            if hashMap.count > capacity {
+//                removeHead()
+//            }
+//        }
+//    }
+//    
+//    func addToTail(_ node: DoublyLL){
+//        if tail == nil {
+//            head = node
+//            tail = node
+//        } else {
+//            tail?.next = node
+//            node.prev = tail
+//            tail = node
+//        }
+//    }
+//    
+//    func removeHead(){
+//        guard let oldHead = head else {
+//            return
+//        }
+//        hashMap[oldHead.key] = nil
+//        if head === tail {
+//            head = nil
+//            tail = nil
+//        } else {
+//            head = oldHead.next
+//            head?.prev = nil
+//        }
+//    }
+//}
+//
+//class DoublyLL {
+//    var key: Int
+//    var value: Int
+//    var prev: DoublyLL?
+//    var next: DoublyLL?
+//
+//    init(_ key: Int, _ value: Int){
+//        self.key = key
+//        self.value = value
+//    }
+//}
+//
+///**
+// * Your LRUCache object will be instantiated and called as such:
+// * let obj = LRUCache(capacity)
+// * let ret_1: Int = obj.get(key)
+// * obj.put(key, value)
+// */
+//
+//
+//class Solution {
+//    func merge(_ intervals: [[Int]]) -> [[Int]] {
+//        var sortedIntervals = intervals.sorted {
+//            $0.first! < $1.first!
+//        } // based on the starting time
+//        
+//        var prevStart = sortedIntervals[0].first!
+//        var prevEnd = sortedIntervals[0].last!
+//        
+//        var output = [[Int]]()
+//        
+//        for interval in intervals {
+//            var currStart = interval.first!
+//            var currEnd = interval.last!
+//            
+//            if prevEnd >= currStart {
+//                prevEnd = max(prevEnd,currEnd)
+//            } else {
+//                output.append([prevStart,prevEnd])
+//                prevStart = currStart
+//                prevEnd = currEnd
+//            }
+//        }
+//        output.append([prevStart,prevEnd])
+//        return output
+//    }
+//}
 
-class LRUCache {
-    private var capacity: Int
 
-    private var head: DoublyLL?
-    private var tail: DoublyLL?
+//
+//  public class ListNode {
+//      public var val: Int
+//      public var next: ListNode?
+//      public init() { self.val = 0; self.next = nil; }
+//      public init(_ val: Int) { self.val = val; self.next = nil; }
+//      public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+//  }
+// 
+//class Solution {
+//    func reverseLL (_ node: ListNode?) -> ListNode? {
+//        /*
+//         // Iterative way
+//        if node == nil || node?.next == nil {
+//            return node
+//        }
+//        var node = node
+//        var prev : ListNode? = nil
+//        
+//        while let currNode = node {
+//            var tempNode = currNode.next
+//            currNode.next = prev
+//            prev = currNode
+//            node = tempNode
+//        }
+//        return prev
+//         */
+//        if node == nil || node?.next == nil {
+//            return node
+//        }
+//        
+//        let newHead = reverseLL(node?.next)
+//        node?.next?.next = node
+//        node?.next = nil
+//        
+//        return newHead
+//    }
+//    
+//    func len(_ node: ListNode?) -> Int {
+//        if node == nil {
+//            return 0
+//        }
+//        return 1 + len(node?.next)
+//    }
+//    
+//    func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+////        var reversel1 = reverseLL(l1)
+////        var reversel2 = reverseLL(l2)
+//        
+//        var len1 = len(l1)
+//        var len2 = len(l2)
+//        
+//        var n1 = l1
+//        var n2 = l2
+//        
+//        var output : ListNode? = ListNode()
+//        var currNode = output
+//        var carry = 0
+//        
+//        while n1 != nil && n2 != nil {
+//            var val1 = n1!.val
+//            var val2 = n2!.val
+//            
+//            var sum = val1 + val2 + carry
+//            
+//            var lastDigit = sum % 10
+//            carry = sum / 10
+//            
+//            let newNode = ListNode(lastDigit)
+//             
+//            currNode?.next = newNode
+//            
+//            currNode = newNode
+//            
+//            n1 = n1?.next
+//            n2 = n2?.next
+//        }
+//        
+//        while n1 != nil {
+//            var currSum = n1!.val + carry
+//            var lastDigit = currSum % 10
+//            carry = currSum / 10
+//            let newNode = ListNode(lastDigit)
+//            currNode?.next = newNode
+//            currNode = newNode
+//            n1 = n1?.next
+//        }
+//        
+//        while n2 != nil {
+//            var currSum = n2!.val + carry
+//            var lastDigit = currSum % 10
+//            carry = currSum / 10
+//            let newNode = ListNode(lastDigit)
+//            currNode?.next = newNode
+//            currNode = newNode
+//            n2 = n2?.next
+//        }
+//        
+//        return output?.next
+//    }
+//}
 
-    private var hashMap: [Int:DoublyLL] = [:]
+//class MinHeap {
+//    var minHeap : [Int] = []
+//    
+//    var isEmpty : Bool {
+//        minHeap.isEmpty
+//    }
+//    
+//    var count : Int {
+//        minHeap.count
+//    }
+//    
+//    var peek : Int? {
+//        minHeap.first
+//    }
+//    
+//    //heapify up
+//    func insert(_ num: Int){
+//        minHeap.append(num)
+//        var idx = minHeap.count - 1
+//        
+//        while idx > 0 {
+//            var parentIdx = (idx - 1)/2
+//            if minHeap[parentIdx] > minHeap[idx] {
+//                minHeap.swapAt(parentIdx, idx)
+//                idx = parentIdx
+//            } else {
+//                break
+//            }
+//        }
+//    }
+//    
+//    //heapify down
+//    func extractMin() -> Int? {
+//        guard !minHeap.isEmpty else {
+//            return nil
+//        }
+//        
+//        if minHeap.count == 1 {
+//            return minHeap.removeFirst()
+//        }
+//        
+//        var answer = minHeap[0]
+//        minHeap[0] = minHeap.removeLast()
+//        
+//        /*
+//         Why Can't We Just Remove the Root and Heapify Down?
+//         The binary heap is always a complete binary tree (all levels filled except possibly the last, filled left to right).
+//
+//         If you simply remove the root (index 0) and start "heapifying down," your array is now missing an element at index 0: the entire structure is broken—children have no parent, some nodes cannot be reached, and the complete tree property is violated.
+//         */
+//        var parentIdx = 0
+//        while true {
+//            var leftChildIdx = 2 * parentIdx + 1
+//            var rightChildIdx = 2 * parentIdx + 2
+//
+//            var smallestIdx = parentIdx
+//            
+//            if leftChildIdx < minHeap.count && minHeap[leftChildIdx] < minHeap[smallestIdx] {
+//                smallestIdx = leftChildIdx
+//            }
+//            
+//            if rightChildIdx < minHeap.count && minHeap[rightChildIdx] < minHeap[smallestIdx] {
+//                smallestIdx = rightChildIdx
+//            }
+//            
+//            if smallestIdx == parentIdx {
+//                break
+//            }
+//            
+//            minHeap.swapAt(parentIdx, smallestIdx)
+//            parentIdx = smallestIdx
+//        }
+//        
+//        return answer
+//    }
+//    
+//}
+//
+//
+//
+//class Solution {
+//    func findKthLargest(_ nums: [Int], _ k: Int) -> Int {
+//        var minHeap = MinHeap()
+//        // Append first k elements in the nums and we will keep the minHeap to length k only
+//        for i in 0..<k {
+//            minHeap.insert(nums[i])
+//        }
+//        
+//        var n = nums.count
+//        
+//        for i in k..<n {
+//            if nums[i] > minHeap.peek! {
+//                _ = minHeap.extractMin()
+//                minHeap.insert(nums[i])
+//            }
+//        }
+//        
+//        return minHeap.peek!
+//    }
+//}
 
-    init(_ capacity: Int) {
-        self.capacity = capacity
-    }
-    
-    func get(_ key: Int) -> Int {
-        if let node = hashMap[key] {
-            moveToTail(node)
-            return node.value
-        }
-        return -1
-    }
-    
-    func moveToTail(_ node: DoublyLL) {
-        if node === tail {
-            return
-        }
-        if node === head {
-            head = node.next
-            head?.prev = nil
-        } else {
-            node.prev?.next = node.next
-            node.next?.prev = node.prev
-        }
-        node.prev = tail
-        node.next = nil
-        tail?.next = node
-        tail = node
-    }
-    
-    func put(_ key: Int, _ value: Int) {
-        if let cachedNode = hashMap[key] {
-            moveToTail(cachedNode)
-            cachedNode.value = value
-        } else {
-            let newNode = DoublyLL(key, value)
-            addToTail(newNode)
-            hashMap[key] = newNode
-            if hashMap.count > capacity {
-                removeHead()
-            }
-        }
-    }
-    
-    func addToTail(_ node: DoublyLL){
-        if tail == nil {
-            head = node
-            tail = node
-        } else {
-            tail?.next = node
-            node.prev = tail
-            tail = node
-        }
-    }
-    
-    func removeHead(){
-        guard let oldHead = head else {
-            return
-        }
-        hashMap[oldHead.key] = nil
-        if head === tail {
-            head = nil
-            tail = nil
-        } else {
-            head = oldHead.next
-            head?.prev = nil
-        }
-    }
-}
 
-class DoublyLL {
-    var key: Int
-    var value: Int
-    var prev: DoublyLL?
-    var next: DoublyLL?
-
-    init(_ key: Int, _ value: Int){
-        self.key = key
-        self.value = value
-    }
-}
-
-/**
- * Your LRUCache object will be instantiated and called as such:
- * let obj = LRUCache(capacity)
- * let ret_1: Int = obj.get(key)
- * obj.put(key, value)
- */
-
-
-class Solution {
-    func merge(_ intervals: [[Int]]) -> [[Int]] {
-        var sortedIntervals = intervals.sorted {
-            $0.first! < $1.first!
-        } // based on the starting time
-        
-        var prevStart = sortedIntervals[0].first!
-        var prevEnd = sortedIntervals[0].last!
-        
-        var output = [[Int]]()
-        
-        for interval in intervals {
-            var currStart = interval.first!
-            var currEnd = interval.last!
-            
-            if prevEnd >= currStart {
-                prevEnd = max(prevEnd,currEnd)
-            } else {
-                output.append([prevStart,prevEnd])
-                prevStart = currStart
-                prevEnd = currEnd
-            }
-        }
-        output.append([prevStart,prevEnd])
-        return output
-    }
-}
+////class Solution {
+////    func longestConsecutive(_ nums: [Int]) -> Int {
+////        var numSet = Set(nums)
+////        var answer = 0
+////        for num in numSet {
+////            if !numSet.contains(num-1){
+////                var currNum = num
+////                var currStreak = 1
+////                while numSet.contains(currNum+1) {
+////                    currStreak += 1
+////                    currNum += 1
+////                }
+////                if currStreak == nums.count {
+////                    return currStreak
+////                }
+////                answer = max(currStreak,answer)
+////            }
+////        }
+////        return answer
+////    }
+////}
+//
+//class Solution {
+//    func longestConsecutive(_ nums: [Int]) -> Int {
+//        var uniqueElements = Array(Set(nums))
+//        var uniqueElementsValToIndex = [Int:Int]()
+//        
+//        for (index,element) in uniqueElements.enumerated() {
+//            uniqueElementsValToIndex[element] = index
+//        }
+//        
+//        var dsu = DSU(uniqueElements.count)
+//        
+//        for (element,index) in uniqueElementsValToIndex {
+//            if let nextGreaterElementExist = uniqueElementsValToIndex[element+1] {
+//                dsu.union(index,nextGreaterElementExist)
+//            }
+//        }
+//        
+//        return dsu.size.max() ?? 0
+//    }
+//}
+//
+//
+//class DSU {
+//    var parent : [Int]
+//    var size : [Int]
+//    
+//    init(_ n : Int){
+//        parent = Array(0..<n)
+//        size = Array(repeating:1, count: n)
+//    }
+//    
+//    func union(_ x :Int,_ y: Int){
+//        let rootX = find(x)
+//        let rootY = find(y)
+//        
+//        if rootX == rootY {
+//            return
+//        }
+//        
+//        if rootX != rootY {
+//            parent[rootX] = rootY
+//            size[rootY] += size[rootX]
+//        }
+//    }
+//    
+//    func find(_ x: Int) -> Int {
+//        if parent[x] == x{
+//            return x
+//        }
+//        return find(parent[x])
+//    }
+//}
+//
+//
+//let solution = Solution()
+//print(solution.longestConsecutive([100,4,200,1,3,2]))
