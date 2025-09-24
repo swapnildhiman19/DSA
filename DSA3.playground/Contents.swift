@@ -530,72 +530,72 @@ class Solution {
     }
     
     /*
-    func longestPalindrome(_ s: String) -> String {
-        var dpHashMap : [String:Bool] = [:]  //String key creation: O(log n) per operation due to string interpolation
-        /*
-         How the conversion works To convert an integer to its string representation, the system performs a sequence of divisions and modulo operations to extract each digit one by one. It divides the number by the base (10 for a decimal number) and takes the remainder to get the last digit.It repeats this process with the quotient until the number is reduced to zero.The extracted digits are then ordered correctly to form the final string. Since the number of digits in an integer is logarithmic with respect to its value (i.e., \(d\approx \log _{10}(n)\)), the complexity can also be expressed as \(O(\log n)\), where \(n\) is the value of the integer itself.
-         */
-        /*
-         Thus need a 2D array, much better
-         */
-        var strArray = Array(s)
-        var count = strArray.count
-        
-        var answer = String(strArray[0])
-        var maxLen = 1
-        
-        for (i,ch) in strArray.enumerated() {
-            dpHashMap["\(i)_\(i)"] = true
-        }
+     func longestPalindrome(_ s: String) -> String {
+     var dpHashMap : [String:Bool] = [:]  //String key creation: O(log n) per operation due to string interpolation
+     /*
+      How the conversion works To convert an integer to its string representation, the system performs a sequence of divisions and modulo operations to extract each digit one by one. It divides the number by the base (10 for a decimal number) and takes the remainder to get the last digit.It repeats this process with the quotient until the number is reduced to zero.The extracted digits are then ordered correctly to form the final string. Since the number of digits in an integer is logarithmic with respect to its value (i.e., \(d\approx \log _{10}(n)\)), the complexity can also be expressed as \(O(\log n)\), where \(n\) is the value of the integer itself.
+      */
+     /*
+      Thus need a 2D array, much better
+      */
+     var strArray = Array(s)
+     var count = strArray.count
      
-        // Here the sequence of for loop would be for len in 1...count and then i in 0...count-len and not simply for i in 0...n-1 and for j in i...n-1
+     var answer = String(strArray[0])
+     var maxLen = 1
+     
+     for (i,ch) in strArray.enumerated() {
+     dpHashMap["\(i)_\(i)"] = true
+     }
+     
+     // Here the sequence of for loop would be for len in 1...count and then i in 0...count-len and not simply for i in 0...n-1 and for j in i...n-1
      because we would miss the cases , example
      "cbbd" here if you would have gone for later for loop pattern then you would try to deduce 0,3 without finding out 1,2 which would lead to wrong answer [IMP]
-        
-        for len in 1...count {
-            
-            for i in 0...count-len {
-                
-                    var j = i + len
-                
-                    if j >= count { break }
-                    
-                    var key = "\(i)_\(j)"
-                    
-                    if j == i {
-                        continue
-                    }
-                    
-                    if j - i == 1 {
-                        if strArray[j] == strArray[i] {
-                            // it's a palindrome
-                            dpHashMap[key] = true
-                            var newLen = j - i + 1
-                            if maxLen < newLen {
-                                maxLen = newLen
-                                answer = String(strArray[i...j])
-                            }
-                        }
-                        continue
-                    }
-                    // if i+1 ... j-1 is a palindrome and strArray[i] == strArray[j] that means i...j is a palindrome
-                    var subStringKey = "\(i+1)_\(j-1)"
-                    if let subStringPalindrome = dpHashMap[subStringKey] {
-                        if subStringPalindrome && strArray[i] == strArray[j] {
-                            dpHashMap[key] = true
-                            var newLen = j - i + 1
-                            if maxLen < newLen {
-                                maxLen = newLen
-                                answer = String(strArray[i...j])
-                            }
-                        }
-                    }
-                }
-            }
-        
-        return answer
-    }
-    */
+     
+     for len in 1...count {
+     
+     for i in 0...count-len {
+     
+     var j = i + len
+     
+     if j >= count { break }
+     
+     var key = "\(i)_\(j)"
+     
+     if j == i {
+     continue
+     }
+     
+     if j - i == 1 {
+     if strArray[j] == strArray[i] {
+     // it's a palindrome
+     dpHashMap[key] = true
+     var newLen = j - i + 1
+     if maxLen < newLen {
+     maxLen = newLen
+     answer = String(strArray[i...j])
+     }
+     }
+     continue
+     }
+     // if i+1 ... j-1 is a palindrome and strArray[i] == strArray[j] that means i...j is a palindrome
+     var subStringKey = "\(i+1)_\(j-1)"
+     if let subStringPalindrome = dpHashMap[subStringKey] {
+     if subStringPalindrome && strArray[i] == strArray[j] {
+     dpHashMap[key] = true
+     var newLen = j - i + 1
+     if maxLen < newLen {
+     maxLen = newLen
+     answer = String(strArray[i...j])
+     }
+     }
+     }
+     }
+     }
+     
+     return answer
+     }
+     */
     
     func longestPalindrome(_ s: String) -> String {
         
@@ -627,9 +627,174 @@ class Solution {
         }
         return String(strArray[start..<start+maxLen])
     }
-   
+    
+    func isValid(_ s: String) -> Bool {
+        
+        var openingParanthesisStack : [Character] = []
+        var strArray = Array(s)
+        
+        for character in strArray {
+            if character == "(" || character == "{" || character == "[" {
+                openingParanthesisStack.append(character)
+            }
+            
+            if openingParanthesisStack.isEmpty {
+                return false
+            }
+            
+            if character == ")" {
+                if openingParanthesisStack.removeLast() != "(" {
+                    return false
+                }
+            }
+            
+            if character == "}" {
+                if openingParanthesisStack.removeLast() != "{" {
+                    return false
+                }
+            }
+            
+            if character == "]" {
+                if openingParanthesisStack.removeLast() != "[" {
+                    return false
+                }
+            }
+        }
+        
+        return openingParanthesisStack.isEmpty ? true : false
+    }
+    
+    func nextGreaterElement(_ nums1: [Int], _ nums2: [Int]) -> [Int] {
+        
+        if nums2.isEmpty {
+            return Array(repeating: -1, count: nums1.count)
+        }
+        
+        var hashMapValToNextGreaterVal = [Int:Int]()
+        
+        var stackForNums2 = [Int]() //Need to find the next greater element for each of the element present in nums2
+        
+        stackForNums2.append(nums2[0])
+        
+        for element in nums2.dropFirst() {
+            if !stackForNums2.isEmpty && element > stackForNums2.last! {
+                //empty the stack and build the hashMap
+                while !stackForNums2.isEmpty && element > stackForNums2.last! {
+                    hashMapValToNextGreaterVal[stackForNums2.removeLast()] = element
+                }
+            }
+            stackForNums2.append(element)
+        }
+        
+        var answer = [Int]()
+        
+        print(hashMapValToNextGreaterVal)
+        
+        for element in nums1 {
+            if let elementExist = hashMapValToNextGreaterVal[element] {
+                answer.append(elementExist)
+            } else {
+                answer.append(-1)
+            }
+        }
+        return answer
+    }
+    
+    func sortStack(_ stack: [Int]) -> [Int] {
+        /*
+         Okay so seems like two recursive functions would be required here
+
+         Example : [10,20,-5,7,15]
+
+         1. pop out the element and do the recursive call on remaining of the stack to give the descending order stack: basically it will be
+         [20,10,7,-5] + 15
+
+         2. Another recursive function will be used now to insert the element in the already sorted stack we have using recursion. Basically we would say if sortedStack.top < element , simply pop the element and call recursive function on remaining sortedStack, after that once you found correct append our element and while exiting append back the previous pop element back to sortedStack.
+         */
+        var stack = stack
+        sortStackHelper(&stack)
+        return stack
+    }
+    
+    func sortStackHelper(_ stack: inout [Int]) {
+        // Base case: If the stack is empty or has 1 element, it's already sorted.
+        if stack.isEmpty || stack.count == 1 {
+            return
+        }
+
+        // Step 1: Pop the last element (top of stack)
+        let temp = stack.removeLast()
+
+        // Step 2: Sort the remaining stack recursively
+        sortStackHelper(&stack)
+
+        // Step 3: Insert the popped element back in the sorted stack
+        insertStackHelper(&stack, temp)
+    }
+
+    func insertStackHelper(_ stack: inout [Int], _ element: Int) {
+        // Base case: stack is empty or top of stack < element (for descending order)
+        if stack.isEmpty || stack.last! < element {
+            stack.append(element)
+            return
+        }
+
+        // Pop the top and recurse
+        let temp = stack.removeLast()
+        insertStackHelper(&stack, element)
+        // Push the previous top back
+        stack.append(temp)
+    }
+
+    func nextSmallerElement(_ nums: [Int]) -> [Int] {
+        
+        if nums.isEmpty {
+            return []
+        }
+        
+        var stack : [(Int,Int)] = [] // stack to keep track of next smaller element
+        
+        stack.append((0,nums[0]))
+        
+        var output = Array(repeating: -1, count: nums.count)
+        
+        for index in 1..<nums.count {
+            var element = nums[index]
+            if !stack.isEmpty {
+                var (stackLastIdx, stackLastElement) = stack.last!
+                if stackLastElement < element {
+                    stack.append((index,element))
+                } else {
+                    while !stack.isEmpty && stack.last!.1 > element {
+                        var (currStackIdx, currStackElement) = stack.removeLast()
+                        output[currStackIdx] = element
+                    }
+                    stack.append((index,element))
+                }
+            }
+        }
+        return output
+    }
+    
+    /*
+     Better approach is to store indices
+     func nextSmallerElement(_ nums: [Int]) -> [Int] {
+         var stack: [Int] = []
+         var output = Array(repeating: -1, count: nums.count)
+         for i in 0..<nums.count {
+             while let last = stack.last, nums[last] > nums[i] {
+                 output[last] = nums[i]
+                 stack.removeLast()
+             }
+             stack.append(i)
+         }
+         return output
+     }
+     */
 }
 
 
 let solution = Solution()
-print(solution.longestPalindrome("aaaaa"))
+//print(solution.nextGreaterElement([1,3,5,2,4], [6,5,4,3,2,1,7]))
+//print(solution.sortStack([10,20,-5,7]))
+print(solution.nextSmallerElement([10,9,8,7]))
