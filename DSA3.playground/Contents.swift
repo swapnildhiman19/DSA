@@ -791,10 +791,180 @@ class Solution {
          return output
      }
      */
+    
+    //https://www.youtube.com/watch?v=wRubz1zhVqk
+    //TimeComplexity = (log10 n)^2
+    func findKthNumber(_ n: Int, _ k: Int) -> Int {
+        var currPosition = 1
+        var i = 1 // when i == k that means we have reached our desired currPosition : we are basically trying to simulate the DFS PreOrder without actually doing it completely
+        while i < k {
+            let steps = countTotalChildrean(n, currPosition) // This will give the number of children this subTree including the root has
+            if i + steps <= k {
+                // move towards right
+                i += steps
+                currPosition += 1
+            } else {
+                // move deep down
+                i += 1
+                currPosition *= 10
+            }
+        }
+        return currPosition
+    }
+    
+    func countTotalChildrean(_ n: Int, _ curr1: Int) -> Int {
+        var count = 0
+        var curr1 = curr1
+        var curr2 = curr1 + 1
+        
+        // will be counting level by level
+        while curr1 <= n {
+            count += min(n+1, curr2) - curr1 //at this level
+            curr1 *= 10
+            curr2 *= 10
+        }
+        
+        return count
+    }
+    
+    
+    
+    func lexicalOrder(_ n: Int) -> [Int] {
+        // first digit has option from 0...9 , second digit will have option from 1...9
+        // DFS preorder traversal will give the answer
+        var output = [Int]()
+        for i in 1...9 {
+            dfs(i,n,&output)
+        }
+        return output
+    }
+
+    func dfs(_ curr: Int, _ n :Int, _ output: inout [Int]) {
+        if curr > n {
+            return
+        }
+        output.append(curr)
+        for i in 0...9 {
+            var newElement  = (curr*10) + i
+            dfs(newElement, n, &output)
+        }
+    }
+    
+    
+    func threeSum(_ nums: [Int]) -> [[Int]] {
+            var nums = nums.sorted()
+            return kSum(nums,0,0,3)
+        }
+        func kSum(_ nums: [Int], _ start: Int, _ target: Int, _ k :Int) -> [[Int]] {
+            let n = nums.count
+            var result = [[Int]]()
+            if k == 2 {
+                var start = start
+                var end = n - 1
+                while start < end {
+                    if nums[start] + nums[end] == target {
+                        result.append([start,end])
+                        start += 1
+                        end -= 1
+                        while start < end && nums[start] == nums[start+1] {
+                            start += 1
+                        }
+                        while end > start && nums[end] == nums[end-1] {
+                            end -= 1
+                        }
+                    } else if nums[start] + nums[end] < target {
+                        start += 1
+                    } else {
+                        end -= 1
+                    }
+                }
+                return result
+            }
+            var i = start
+            while i < n - k + 1 {
+                //Same i needs to be skipped to remove duplicates
+                if i > start && nums[i] == nums[i-1]  {
+                    i += 1
+                    continue
+                }
+
+                var subResults = kSum(nums, i + 1, target - nums[i], k - 1)
+                
+                for subResult in subResults {
+                    result.append([nums[i]]+subResult)
+                }
+                
+                i += 1
+            }
+            return result
+        }
+    
+        func convert(_ s: String, _ numRows: Int) -> String {
+            if numRows == 1 || numRows > s.count {
+                return s
+            }
+            
+            var stringAtEachRow : [String] = Array(repeating: "", count: numRows)
+            
+            var strArray = Array(s)
+            
+            var index = 0
+            
+            while index < strArray.count {
+                //Go down and then diagonally up
+                var currRow = 0
+                
+                while currRow <= numRows - 1 && index < strArray.count {
+                    stringAtEachRow[currRow].append(strArray[index])
+                    currRow += 1
+                    index += 1
+                }
+                
+                currRow -= 2
+                
+                while currRow > 0 && index < strArray.count {
+                    stringAtEachRow[currRow].append(strArray[index])
+                    currRow -= 1
+                    index += 1
+                }
+            }
+            
+            var output : String = ""
+            for eachRowString in stringAtEachRow {
+                output.append(eachRowString)
+            }
+            
+            return output
+        }
+    
+    func findPeakElement(_ nums: [Int]) -> Int {
+        let n = nums.count
+
+        var left = 0
+        var right = n - 1
+
+        while left < right {
+            let mid = left + (right - left)/2
+            if mid > 0 && mid < n && nums[mid-1] < nums[mid] && nums[mid] < nums[mid+1] {
+                return mid //found the peek
+            }
+            if nums[mid] < nums[mid+1] {
+                left = mid + 1
+            } else {
+                right = mid - 1
+            }
+        }
+        return left
+    }
+    
 }
 
 
 let solution = Solution()
 //print(solution.nextGreaterElement([1,3,5,2,4], [6,5,4,3,2,1,7]))
 //print(solution.sortStack([10,20,-5,7]))
-print(solution.nextSmallerElement([10,9,8,7]))
+//print(solution.nextSmallerElement([10,9,8,7]))
+//print(solution.findKthNumber(838, 500))
+//print(solution.lexicalOrder(13))
+//print(solution.threeSum([-1,0,1,2,-1,-4]))
+print(solution.convert("ABCDE", 4))
