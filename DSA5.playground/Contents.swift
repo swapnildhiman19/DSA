@@ -158,7 +158,90 @@ import Foundation
 //    }
 //}
 //
+class MinHeap {
+    private var minHeap : [ListNode] = []
+    
+    var peek : ListNode? {
+        return minHeap.first
+    }
+    
+    var isEmpty : Bool {
+        return minHeap.isEmpty
+    }
+    
+    var count : Int {
+        return minHeap.count
+    }
+    
+    //heapify up
+    func insert(_ node: ListNode?) {
+        guard let node = node else { return }
+        
+        minHeap.append(node)
+        var childIdx = count - 1
+        
+        while childIdx > 0 {
+            var parentIdx = (childIdx - 1)/2
+            if minHeap[parentIdx].val < minHeap[childIdx].val {
+                break
+            }
+            minHeap.swapAt(parentIdx, childIdx)
+            childIdx = parentIdx
+        }
+    }
+    
+    //Heapify Down
+    func extractMin() -> ListNode? {
+        if isEmpty {
+            return nil
+        }
+        
+        if count == 1 {
+            return minHeap.removeLast()
+        }
+        
+        let answer = minHeap.first!
+        minHeap[0] = minHeap.removeLast()
+        
+        var parentIdx = 0
+        
+        while parentIdx < count {
+            let leftChildIdx = 2 * parentIdx + 1
+            let rightChildIdx = 2 * parentIdx + 2
+            
+            var smallestIdx = parentIdx
+            
+            if leftChildIdx < count && minHeap[smallestIdx].val > minHeap[leftChildIdx].val {
+                smallestIdx = leftChildIdx
+            }
+            
+            if rightChildIdx < count && minHeap[smallestIdx].val > minHeap[rightChildIdx].val {
+                smallestIdx = rightChildIdx
+            }
+            
+            if smallestIdx == parentIdx {
+                break
+            }
+            
+            minHeap.swapAt(parentIdx, smallestIdx)
+            parentIdx = smallestIdx
+        }
+        
+        return answer
+    }
+}
 
+public class ListNode {
+    public var val: Int
+    public var next: ListNode?
+    public init() { self.val = 0; self.next = nil; }
+    public init(_ val: Int) { self.val = val; self.next = nil; }
+    public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+}
+
+class TrieNode {
+    var children : [Character:TrieNode] = [:]
+}
 
 class Solution {
     //    func findRedundantDirectedConnection(_ edges: [[Int]]) -> [Int] {
@@ -513,108 +596,427 @@ class Solution {
         return dummyHead.next
     }
     
-}
-
-class MinHeap {
-    private var minHeap : [ListNode] = []
-
-    var peek : ListNode? {
-        return minHeap.first
-    }
-
-    var isEmpty : Bool {
-        return minHeap.isEmpty
-    }
-
-    var count : Int {
-        return minHeap.count
-    }
-    
-    //heapify up
-    func insert(_ node: ListNode?) {
-        guard let node = node else { return }
+    func myAtoi(_ s: String) -> Int {
+        /*
+         The algorithm for myAtoi(string s) is as follows:
+         
+         Whitespace: Ignore any leading whitespace (" ").
+         Signedness: Determine the sign by checking if the next character is '-' or '+', assuming positivity if neither present.
+         Conversion: Read the integer by skipping leading zeros until a non-digit character is encountered or the end of the string is reached. If no digits were read, then the result is 0.
+         
+         Rounding: If the integer is out of the 32-bit signed integer range [-231, 231 - 1], then round the integer to remain in the range. Specifically, integers less than -231 should be rounded to -231, and integers greater than 231 - 1 should be rounded to 231 - 1.
+         */
         
-        minHeap.append(node)
-        var childIdx = count - 1
+        /*
+         1. remove leading whitespaces
+         2. if -, + , 0-9 character not encountered at prefix return 0
+         3. +,- keep that in signed variable,default = +
+         4. remove leading 0s if any present
+         5. Int conversion till we are encountering 0-9
+         6. Add - if signed variable has - sign
+         */
         
-        while childIdx > 0 {
-            var parentIdx = (childIdx - 1)/2
-            if minHeap[parentIdx].val < minHeap[childIdx].val {
+        
+        // removing whitespaces first
+        let stringWithoutWhiteSpaces = s.trimmingCharacters(in: .whitespaces)
+        if stringWithoutWhiteSpaces.isEmpty { return 0 }
+        
+        var signed : Character = "+"
+        
+        var stringArray = Array(stringWithoutWhiteSpaces)
+        
+        if stringArray[0] == "-" {
+            signed = "-"
+            stringArray.remove(at: 0)
+        } else if stringArray[0] == "+" {
+            stringArray.remove(at: 0)
+        } else if !(stringArray[0].isNumber) {
+            return 0
+        }
+        
+        // removing any leading 0s
+        var stringArrayWithoutLeading0s = stringArray.trimmingPrefix(while: { $0 == "0" })
+        if stringArrayWithoutLeading0s.isEmpty { return 0 }
+        
+        var number : Int = 0
+        for char in stringArrayWithoutLeading0s {
+            if char.isNumber {
+                let digit = Int(String(char))!
+                // check for overflow and underflow
+                if signed == "-" {
+                    if -number < (Int(Int32.min) + digit) / 10 {
+                        return Int(Int32.min)
+                    }
+                } else {
+                    if number > (Int(Int32.max) - digit) / 10 {
+                        return Int(Int32.max)
+                    }
+                }
+                number = number * 10 + digit
+                /*
+                 
+                 ## The Mathematical Logic
+                 
+                 The overflow check works by **reversing the operation** and checking if we're already at the dangerous boundary.
+                 
+                 ### For Positive Numbers (Int32.max = 2,147,483,647)
+                 
+                 **The Problem:**
+                 - We want to do: `number = number * 10 + digit`
+                 - But if this would exceed `Int32.max`, we need to catch it beforehand
+                 
+                 **The Solution - Reverse Engineering:**
+                 Instead of checking if `number * 10 + digit > Int32.max`, we rearrange the math:
+                 
+                 ```
+                 number * 10 + digit > Int32.max
+                 number > (Int32.max - digit) / 10
+                 ```
+                 
+                 So we check: **"Is the current number already too big that adding one more digit would overflow?"**
+                 
+                 ### Concrete Example:
+                 
+                 Let's say `Int32.max = 2,147,483,647` and we have:
+                 - Current `number = 214,748,364`
+                 - Next `digit = 9`
+                 
+                 **Step 1:** Calculate the threshold
+                 ```
+                 threshold = (Int32.max - digit) / 10
+                 threshold = (2,147,483,647 - 9) / 10
+                 threshold = 2,147,483,638 / 10
+                 threshold = 214,748,363
+                 ```
+                 
+                 **Step 2:** Check if we're past the threshold
+                 ```
+                 number > threshold?
+                 214,748,364 > 214,748,363?
+                 YES! We're already too big!
+                 ```
+                 
+                 **Step 3:** What would happen if we proceeded?
+                 ```
+                 number * 10 + digit = 214,748,364 * 10 + 9 = 2,147,483,649
+                 ```
+                 This exceeds `Int32.max` (2,147,483,647), so we'd get overflow!
+                 
+                 ### For Negative Numbers (Int32.min = -2,147,483,648)
+                 
+                 The logic is similar but for the lower bound:
+                 
+                 **The Problem:**
+                 - We want to do: `number = number * 10 + digit`, then negate it
+                 - But if `-number` would go below `Int32.min`, we need to catch it
+                 
+                 **The Solution:**
+                 ```
+                 -(number * 10 + digit) < Int32.min
+                 -(number * 10) - digit < Int32.min
+                 -number * 10 < Int32.min + digit
+                 -number < (Int32.min + digit) / 10
+                 ```
+                 
+                 ### Why This Works:
+                 
+                 1. **We check BEFORE doing the operation** - not after
+                 2. **We use integer division** - which naturally rounds down, making our threshold slightly more conservative
+                 3. **We're checking the "last safe value"** before adding the next digit would cause overflow
+                 
+                 ### Visual Example:
+                 
+                 ```
+                 Int32.max = 2147483647
+                 
+                 Safe values: 0, 1, 2, ..., 214748363
+                 Dangerous:   214748364, 214748365, ...
+                 ```
+                 
+                 When `number = 214748364`, we check:
+                 - `214748364 > (2147483647 - 9) / 10`
+                 - `214748364 > 214748363`
+                 - `true` → We're in the danger zone!
+                 
+                 The key insight is that we're not trying to detect overflow after it happens - we're **predicting** it by checking if we're already at the boundary where the next operation would be unsafe.
+                 
+                 This is a common pattern in overflow-safe programming: **check the preconditions rather than trying to handle the overflow after it occurs**.
+                 
+                 */
+            } else {
                 break
             }
-            minHeap.swapAt(parentIdx, childIdx)
-            childIdx = parentIdx
         }
+        return signed == "-" ? -number : number
     }
     
-    //Heapify Down
-    func extractMin() -> ListNode? {
-        if isEmpty {
-            return nil
+    func longestCommonPrefix(_ strs: [String]) -> String {
+        
+        //        let smallestString = strs.min { a, b in
+        //            a.count < b.count
+        //        }
+        //
+        //        var answer = smallestString!
+        //
+        //        for str in strs {
+        //            var commonPrefixString = str.commonPrefix(with: answer)
+        //            if commonPrefixString == "" {
+        //                return ""
+        //            }
+        //            if commonPrefixString.count < answer.count {
+        //                answer = commonPrefixString
+        //            }
+        //        }
+        //
+        //        return answer
+        
+        var root = TrieNode()
+        
+        if strs.count == 1 {
+            return strs.first!
         }
         
-        if count == 1 {
-            return minHeap.removeLast()
+        let smallestString = strs.min { a, b in
+            a.count < b.count
         }
         
-        let answer = minHeap.first!
-        minHeap[0] = minHeap.removeLast()
+        let smallestStringCount = smallestString!.count
         
-        var parentIdx = 0
+        //Building the Trie
+        for str in strs {
+            var node = root
+            var currStringArray = Array(str)
+            for i in 0..<smallestStringCount {
+                if node.children[currStringArray[i]] == nil {
+                    node.children[currStringArray[i]] = TrieNode()
+                }
+                node = node.children[currStringArray[i]]!
+            }
+        }
         
-        while parentIdx < count {
-            let leftChildIdx = 2 * parentIdx + 1
-            let rightChildIdx = 2 * parentIdx + 2
-            
-            var smallestIdx = parentIdx
-            
-            if leftChildIdx < count && minHeap[smallestIdx].val > minHeap[leftChildIdx].val {
-                smallestIdx = leftChildIdx
-            }
-            
-            if rightChildIdx < count && minHeap[smallestIdx].val > minHeap[rightChildIdx].val {
-                smallestIdx = rightChildIdx
-            }
-            
-            if smallestIdx == parentIdx {
+        var answer = ""
+        
+        var node : TrieNode? = root
+        
+        //finding the first divergence
+        while let currNode = node {
+            let children = currNode.children
+            if children.count > 1 || children.isEmpty {
                 break
             }
-            
-            minHeap.swapAt(parentIdx, smallestIdx)
-            parentIdx = smallestIdx
+            for (ch,nextChild) in children {
+                node = nextChild
+                answer += String(ch)
+                break
+            }
         }
         
         return answer
     }
+    
+    func repeatedStringMatch(_ a: String, _ b: String) -> Int {
+        var maxRepeatedTimes = b.count/a.count
+        var count = 0
+        var a = a
+        while count < maxRepeatedTimes {
+            if kmpStringMatch(a,b) == -1 {
+                count += 1
+                a += a
+            } else {
+                break
+            }
+        }
+        return count
+    }
+    
+    func kmpStringMatch(_ s: String, _ t: String) -> Int {
+        let lpsOfT = createLPS(t)
+        var tPointer = 0, sPointer = 0
+        
+        var sArray = Array(s)
+        var tArray = Array(t)
+        
+        var start = 0
+        
+        while tPointer < tArray.count && sPointer < sArray.count {
+            if tArray[tPointer] == sArray[sPointer] {
+                tPointer += 1
+                sPointer += 1
+            } else {
+                if tPointer == 0 {
+                    sPointer += 1 //Both are not getting matched
+                } else {
+                    tPointer = lpsOfT[tPointer - 1]
+                }
+            }
+        }
+        
+        return tPointer == tArray.count ? sPointer - tPointer : -1
+    }
+    
+    func createLPS(_ s: String) -> [Int] {
+        // Create Longest Prefix Suffix ( longest prefix which is also a suffix for that index )
+        var lps = Array(repeating:0, count: s.count)
+        var prefix = 0 , suffix = 1
+        var strArray = Array(s)
+        while suffix < s.count {
+            if strArray[prefix] == strArray[suffix] {
+                lps[suffix] = prefix + 1
+                prefix += 1
+                suffix += 1
+            } else {
+                if prefix == 0 {
+                    lps[suffix] = 0
+                    suffix += 1
+                } else {
+                    prefix = lps[prefix - 1]
+                }
+            }
+        }
+        return lps
+    }
+    
+    func fourSum(_ nums: [Int], _ target: Int) -> [[Int]] {
+        let sortedNums = nums.sorted()
+        return kSum(sortedNums,0,4,target)
+    }
+    
+    func kSum(_ nums: [Int], _ start: Int, _ k : Int, _ target : Int) -> [[Int]] {
+        let n = nums.count
+        var results = [[Int]]()
+        
+        
+        if k == 2 {
+            var left = start
+            var right = n - 1
+            while left < right {
+                if nums[left] + nums[right] == target {
+                    results.append([nums[left], nums[right]])
+                    //Handling duplicates
+                    while left < right && nums[left] == nums[left-1] {
+                        left += 1
+                    }
+                    while right > left && nums[right] == nums[right+1] {
+                        right -= 1
+                    }
+                    left += 1
+                    right -= 1
+                }
+                else if nums[left] + nums[right] < target {
+                    left += 1
+                } else {
+                    right -= 1
+                }
+            }
+            return results
+        }
+        
+        var index = start
+        
+        while index < n - k + 1 {
+            if index > start {
+                if nums[index] == nums[index-1] {
+                    index += 1
+                    continue
+                }
+            }
+            
+            let subArraysConsideringCurrElement = kSum(nums, index+1, k-1, target - nums[index])
+            for subArray in subArraysConsideringCurrElement {
+                results.append([nums[index]] + subArray)
+            }
+            
+            index += 1
+        }
+        
+        return results
+    }
+    
+    func minInsertions(_ s: String) -> Int {
+        /*
+         This approach of thinking that since palindrome is a string where the first half is the mirror image of second half, thus all the characters except one ( middle frequency character ) should have even frequency, thus finding the odd frequency character count is false ,
+         
+         Example: "aabcbc" ( all characters have even frequency and still not palindrome), "ccewnxhytsr"
+         
+         if s.count == 1 {
+         return 0
+         }
+         var frequencyCharacter : [Character:Int] = [:]
+         var strArray = Array(s)
+         for ch in strArray {
+         frequencyCharacter[ch, default: 0] += 1
+         }
+         
+         var oddFrequencyCounts = 0
+         
+         for (ch,value) in frequencyCharacter {
+         if value % 2 != 0 {
+         oddFrequencyCounts += 1
+         }
+         }
+         
+         var middleCharacter = strArray[(strArray.count)/2]
+         
+         print(middleCharacter)
+         
+         return frequencyCharacter[middleCharacter]! % 2 == 0 ? oddFrequencyCounts : oddFrequencyCounts - 1
+         }
+         */
+        
+        /*
+         Approach 2 :
+         If we know the longest palindromic sub-sequence is x and the length of the string is n then, what is the answer to this problem? It is n - x as we need n - x insertions to make the remaining characters also palindrome.
+         */
+        
+        //dp[i] : Length of longest palindromic substring ending at i th index
+        
+        var strArray = Array(s)
+        var dp = Array(repeating: 1, count: strArray.count) //since every single character is a palindrome of length
+        
+        for i in 1..<strArray.count {
+            let rangeStart = i-1-dp[i-1]
+            if rangeStart >= 0 {
+                if strArray[rangeStart] == strArray[i] {
+                    dp[i] = dp[i-1] + 2
+                }
+            }
+        }
+        
+        let longestPalindromicSubstringCount = dp.max()
+        
+        return strArray.count - longestPalindromicSubstringCount!
+    }
+    
 }
-
- public class ListNode {
-      public var val: Int
-      public var next: ListNode?
-      public init() { self.val = 0; self.next = nil; }
-      public init(_ val: Int) { self.val = val; self.next = nil; }
-      public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
-}
- 
 
 let solution = Solution()
-
+//print(solution.myAtoi("0-1"))
+//print(solution.longestCommonPrefix(["flower","flow","flight"]))
 //print(solution.maxOfMin([10,20,30,50,10,70,30]))
 //print(solution.findRedundantDirectedConnection([[1,2],[2,3],[3,4],[4,1],[1,5]]))
 //print(solution.reverseWords("  hell   world "))
 //print(solution.longestPalindrome("cbbd"))
 //print(solution.isAnagram("😂😍SwapnilDhiman", "😂Dhiman😍Swapnil"))
+//
+//var node1 = ListNode(10)
+//var node2 = ListNode(20)
+//var node3 = ListNode(30)
+//
+//node1.next = node2
+//node2.next = node3
+//
+//var node4 = ListNode(12)
+//var node5 = ListNode(22)
+//
+//node4.next = node5
+//
+//solution.mergeKLists([node1,node4])
 
-var node1 = ListNode(10)
-var node2 = ListNode(20)
-var node3 = ListNode(30)
+//print(solution.repeatedStringMatch("abcd","cdabcdab"))
 
-node1.next = node2
-node2.next = node3
+//print(solution.createLPS("aabaabaaa"))
 
-var node4 = ListNode(12)
-var node5 = ListNode(22)
-
-node4.next = node5
-
-solution.mergeKLists([node1,node4])
+//print(solution.repeatedStringMatch("abcd", "cdabcdab"))
+//print(solution.fourSum([1,0,-1,0,-2,2], 0))
+//print(solution.createLPS("cbcbaa"))
+print(solution.minInsertions("zzazz"))
