@@ -1,25 +1,55 @@
 import Foundation
 
-var width : Float = 3.4
-var height : Float = 2.1
-
-var areaCovered: Float {
-    get {
-        return height * width
+class Worker {
+    var completionHandler : (() -> Void)?
+    
+    func startLongJob(completion: @escaping () -> Void ) {
+        print("Worker received the closure, storing for later")
+        self.completionHandler = completion
+        
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2.0) {
+            [weak self] in
+            print("Worker job done, time to call back")
+            self?.completionHandler?()
+        }
+    }
+    
+    deinit {
+        print("Worker: deinitalized")
     }
 }
 
-var areaCoveredByOneBucket : Float = 1.5
-
-var bucketsOfPaint : Int {
-    get {
-        return Int(ceil(areaCovered/areaCoveredByOneBucket))
+class MyViewController {
+    let worker = Worker()
+    
+    // Creating a function to start work
+    func startWork() {
+        worker.startLongJob {
+            //Need to use [weak self]
+            [weak self] in
+            
+            guard let self else {
+                print("MyViewController is already deallocated")
+                return
+            }
+            
+            self.updateUI()
+        }
     }
-    set {
-        print("This amount of paint can cover the area of \(Float(newValue) * areaCoveredByOneBucket)")
+    
+    func updateUI() {
+        print("MyViewController: UI updated")
+    }
+    
+    deinit {
+        print("MyViewController: deinitalized")
     }
 }
 
-print(bucketsOfPaint)
+var vc : MyViewController? = MyViewController()
+vc?.startWork()
 
-bucketsOfPaint = 8
+DispatchQueue.global().asyncAfter(deadline: .now() + 1.0, execute: {
+    print("Main: Setting vc to nil")
+    vc = nil
+} )

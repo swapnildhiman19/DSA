@@ -158,6 +158,19 @@ import Foundation
 //    }
 //}
 //
+// Definition for a binary tree node.
+ public class TreeNode {
+     public var val: Int
+     public var left: TreeNode?
+     public var right: TreeNode?
+     public init() { self.val = 0; self.left = nil; self.right = nil; }
+     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+         self.val = val
+         self.left = left
+         self.right = right
+     }
+}
 class MinHeap {
     private var minHeap : [ListNode] = []
     
@@ -968,25 +981,556 @@ class Solution {
          If we know the longest palindromic sub-sequence is x and the length of the string is n then, what is the answer to this problem? It is n - x as we need n - x insertions to make the remaining characters also palindrome.
          */
         
-        //dp[i] : Length of longest palindromic substring ending at i th index
+        /* Approach 2.1 : Recursion with memoization
+         //            func helper(_ strArr: [Character], _ start: Int, _ end: Int) -> Int {
+         //                if start >= end { return 0 }
+         //                if strArr[start] == strArr[end] {
+         //                    return helper(strArr, start+1, end-1)
+         //                } else {
+         //                    return min(helper(strArr, start+1, end), helper(strArr, start, end-1)) + 1
+         //                }
+         //            }
+         
+         var helper : (([Character], Int, Int) -> Int)!
+         var strArray = Array(s)
+         var memoization = Array(repeating: Array(repeating: 1, count: strArray.count), count: strArray.count)
+         
+         helper = {
+         strArr, start, end in
+         if start >= end { return 0 }
+         if memoization[start][end] != 1 {
+         return memoization[start][end]
+         }
+         if strArr[start] == strArr[end] {
+         memoization[start][end] = helper(strArr, start+1, end-1)
+         return memoization[start][end]
+         } else {
+         memoization[start][end] = min(helper(strArr, start+1, end), helper(strArr, start, end-1)) + 1
+         return memoization[start][end]
+         }
+         }
+         return helper(strArray, 0, strArray.count-1)
+         */
         
         var strArray = Array(s)
-        var dp = Array(repeating: 1, count: strArray.count) //since every single character is a palindrome of length
+        let n = strArray.count
+        var dp = Array(repeating: Array(repeating: 1, count: strArray.count), count: strArray.count)
         
-        for i in 1..<strArray.count {
-            let rangeStart = i-1-dp[i-1]
-            if rangeStart >= 0 {
-                if strArray[rangeStart] == strArray[i] {
-                    dp[i] = dp[i-1] + 2
+        for i in 0...n-1 {
+            for j in stride(from: n-1, through: 0, by: -1) {
+                if strArray[i] == strArray[j] {
+                    dp[i][j] = dp[i+1][j-1]
+                } else {
+                    dp[i][j] = min(dp[i+1][j], dp[i][j-1]) + 1
                 }
             }
         }
         
-        let longestPalindromicSubstringCount = dp.max()
-        
-        return strArray.count - longestPalindromicSubstringCount!
+        return dp[0][n-1]
     }
     
+    func generate(_ numRows: Int) -> [[Int]] {
+        var results = [[Int]]()
+        for i in 1...numRows {
+            var result = [Int]()
+            if i == 1 {
+                result = [1]
+                results.append(result)
+                continue
+            }
+            if i == 2 {
+                result = [1,1]
+                results.append(result)
+                continue
+            }
+            if i == 3 {
+                result = [1,2,1]
+                results.append(result)
+                continue
+            }
+            var prevResult = results[i-2]
+            result.append(1)
+            for j in 0..<i-2 {
+                result.append(prevResult[j]+prevResult[j+1])
+            }
+            result.append(1)
+            results.append(result)
+        }
+        return results
+    }
+    
+    func divideArray(_ nums: [Int], _ k: Int) -> [[Int]] {
+        //Sorting so that we can have elements closer to each other so that substraction could give me value < k
+        var numsSorted = nums.sorted()
+        var output = [[Int]]()
+        var i = 0
+        for i in 0..<numsSorted.count {
+            if i != 0 && (i+1) % 3 == 0 {
+                var slot = Array(numsSorted[i-2...i])
+                //                print(numsSorted[i])
+                //                print(numsSorted[i-2])
+                //                print("---------")
+                if numsSorted[i] - numsSorted[i-2] > k {
+                    return [[]]
+                }
+                output.append(slot)
+            }
+        }
+        return output
+    }
+    
+    func countAndSay(_ n: Int) -> String {
+        if n == 1 {
+            return "1"
+        }
+        var prevString = countAndSay(n-1)
+        var prevStrArray = Array(prevString)
+        let n = prevStrArray.count
+        var count = 1
+        var answerString = ""
+        for i in 0..<n {
+            if i+1 < n && prevStrArray[i] == prevStrArray[i+1] {
+                count += 1
+            } else {
+                answerString += "\(count)"
+                answerString += String(prevStrArray[i])
+                count = 1
+            }
+        }
+        return answerString
+    }
+
+        func compareVersion(_ version1: String, _ version2: String) -> Int {
+            let v1ChArr = Array(version1)
+            let v2ChArr = Array(version2)
+            let n1 = version1.count
+            let n2 = version2.count
+            var i = 0 , j = 0
+            while i < n1 || j < n2 {
+                var nums1 : Int = 0
+                var nums2 : Int = 0
+                while i < n1 && v1ChArr[i] != "." {
+                    //nums1 = (nums1 * 10) + (v1ChArr[i] - "0")
+                    /*
+                     That's correct; the expression v1ChArr[i] - "0" works in C++ but not in Swift due to fundamental differences in how the two languages handle char and Character types.
+                     Why it works in C++
+                     In C and C++, the char data type is an integer type that represents a single character by its ASCII (or other character set) integer value.
+                     The literal '0' is also a character and, therefore, is represented by its ASCII integer value (48).
+                     Characters representing digits '0' through '9' are guaranteed to have consecutive ASCII values.
+                     When you write '5' - '0', C++ performs an integer subtraction: 53 - 48, which results in the integer 5.
+                     This allows for simple and efficient conversion of a single digit character to its numeric value through arithmetic.
+                     Why it fails in Swift
+                     In contrast, Swift's Character type is not an integer type and does not automatically convert to one.
+                     Swift's Character type is a full Unicode character, not just a 1-byte ASCII value.
+                     Swift is a type-safe language and does not allow arithmetic operations between a Character and a String (like "0"). The compiler will throw an error because the - operator is not defined for these types.
+                     For conversion, Swift requires explicit methods, such as using the wholeNumberValue property or converting the Character to a String and then to an Int.
+                     
+                     */
+                    if let asciiValue = v1ChArr[i].asciiValue {
+                        nums1 = (nums1 * 10) + Int(asciiValue) - 48
+                    }
+                    i += 1
+                }
+                while v2ChArr[j] != "." {
+                    //nums2 = (nums2 * 10) + (v2ChArr[j] - "0")
+                    guard let num = Int(String(v2ChArr[j])) else { fatalError("Invalid character in version string") }
+                    nums2 = (nums2 * 10) + num
+                    j += 1
+                }
+                if nums1 < nums2 {
+                    return -1
+                }
+                if nums1 > nums2 {
+                    return 1
+                }
+                i += 1
+                j += 1
+            }
+            return 0
+        }
+    
+    func rightSideView(_ root: TreeNode?) -> [Int] {
+        var queue : [TreeNode] = []
+        var output = [Int]()
+        // last element at each level
+        guard let root = root else { return [] }
+        queue.append(root)
+        while !queue.isEmpty {
+            var size = queue.count
+            while size != 0 {
+                if size == 1 {
+                    output.append(queue.first!.val)
+                }
+                let node = queue.removeFirst()
+                if let left = node.left { queue.append(left) }
+                if let right = node.right { queue.append(right)}
+                size -= 1
+            }
+        }
+        return output
+    }
+    
+    func maxEnvelopes(_ envelopes: [[Int]]) -> Int {
+        /*
+         O ( n ^ 2 ): approach
+         
+         let n = envelopes.count
+         
+         let sortedEnvelopes = envelopes.sorted {
+         $0[0] == $1[0] ? $0[1] < $1[1] : $0[0] < $1[0] // Ascending order for height when width is same
+         }
+         
+         var memoization = Array(repeating: Array(repeating: 0, count: n), count: n)
+         
+         func recursiveHelper(_ lastIdx: Int, _ currIdx: Int) -> Int {
+         if currIdx == n {
+         return 0  // No more envelopes left, chain ends
+         }
+         
+         if lastIdx != -1 {
+         if memoization[lastIdx][currIdx] != 0 {
+         return memoization[lastIdx][currIdx]
+         }
+         }
+         
+         var prevWidth = 0, prevHeight = 0
+         if lastIdx != -1 {
+         prevWidth = sortedEnvelopes[lastIdx][0]
+         prevHeight = sortedEnvelopes[lastIdx][1]
+         }
+         
+         let currWidth = sortedEnvelopes[currIdx][0]
+         let currHeight = sortedEnvelopes[currIdx][1]
+         
+         var include = 0
+         if currWidth > prevWidth && currHeight > prevHeight {
+         // Include current envelope, chain grows by 1
+         include = 1 + recursiveHelper(currIdx, currIdx + 1)
+         }
+         // Option 2: Skip this envelope, move to the next
+         let exclude = recursiveHelper(lastIdx, currIdx + 1)
+         
+         if lastIdx != -1 {
+         memoization[lastIdx][currIdx] = max(include, exclude)
+         }
+         
+         return max(include, exclude)
+         }
+         
+         return recursiveHelper(-1, 0)
+         }
+         
+         */
+        
+        // Sorting by ascending order of width , if width are equal then sorting by decreasing order of height
+        /*
+         Layman Explanation (Why Sorting by Increasing Width & Decreasing Height)
+         You want to nest envelopes: each must be strictly larger (width and height) than the previous.
+
+         If you sort by increasing width, for any potential sequence, you always know that widths are increasing as you go forward.
+
+         But what if you have many envelopes with the same width? You can never nest two together (same width fails "strictly greater" rule).
+
+         If you want the longest chain, you should not let envelopes with same width create “fake” sequences using heights.
+
+         Therefore:
+
+         For envelopes with the same width, sort heights in decreasing order.
+
+         This is because you want to “block” chains from forming where only height increases. If heights are decreasing for equal widths, then the longest increasing subsequence (LIS) algorithm will only ever pick the first one in each group, which is correct (avoids using two envelopes with same width).
+
+         It cleverly prevents you from using multiple envelopes with the same width for your LIS sequence.
+         */
+        let sortedEnvelopes = envelopes.sorted {
+            $0[0] == $1[0] ? $0[1] > $1[1] : $0[0] < $1[0]
+        }
+        
+        let heights = sortedEnvelopes.map { $0[1] }
+        
+        return longestIncreasingSubsequence(heights)
+    }
+    
+    func longestIncreasingSubsequence(_ nums: [Int]) -> Int {
+        
+        // example nums = [5,8,3,7,9,1]
+        // lis longest increasing subsequence ending at ith index = [1,2,1,2,3,1]
+        /*
+         Approach 1 : Using Monotonic Increasing Queue : O ( n ^ 2 ),
+         usually monotonic increasing dequeue solves question in O ( n ) time :
+         Where O(n) Applies
+         Problems like "sliding window maximum/minimum," or "Next Greater Element" use monotonic deques for O(n) because every array position is pushed/popped at most once.
+
+         In those problems, each replacement in the deque structure is strictly in O(1) per element, so overall O(2n).
+
+         Examples:
+
+         Sliding window minimum: O(n)
+
+         Next greater element: O(n)
+
+         Sliding window maximum: O(n)
+
+         Why LIS With Replacement Is NOT O(n) Using Deque
+         In LIS, when you want to find the place to “replace” (to keep future growth possible), you need to find the earliest position in the candidate queue that is greater than or equal to your number:
+
+         If you use a linear scan, it's O(n) worst case for each replacement (so O(n^2) for the whole list).
+
+         You can’t guarantee O(n) because you might need to scan the whole queue repeatedly.
+         */
+        
+        /* If we wan't to return the pure the lis ending at each index
+        let n = nums.count
+        var dp = Array(repeating: 1, count: n)
+        for i in 0..<n {
+            for j in 0..<i {
+                if nums[j] < nums[i] {
+                    dp[i] = max(dp[i], dp[j]+1)
+                }
+            }
+        }
+        return dp
+         */
+        
+        /*
+         If we want just the lis count
+         */
+        /*
+        // Approach 1 : Using Monotonic Increasing Queue : Here it is not the lis ending at i th index, but here we are trying to accomodate the possible increasing subsequences in O ( n ) time itself : TC: O (n ^ 2)
+        // Example : [5,8,3,7,9,1]
+        // possible increasing queue:
+        // [5,8,9]
+        // [3,7,9]
+        // [1]
+        // below answer will contain the combined answer as [1,7,9] here if we are just concerned with the size and not the actual lis, we are saying these could be the possibilities but the size never got compromised
+        var lisQueue : [Int] = [] // Monontonic increasing queue
+        for num in nums {
+            if lisQueue.isEmpty || lisQueue.last! < num {
+                lisQueue.append(num)
+            } else {
+                // Finding the just greater element and replacing it
+                for i in 0..<lisQueue.count {
+                    if lisQueue[i] >= num {
+                        lisQueue[i] = num
+                        break
+                    }
+                }
+            }
+        }
+        return lisQueue.count
+         */
+        /*
+         Approach 2 : Dynamic Programming with Binary Search : DP with Binary Search : O (nlogn)
+         */
+        var lis : [Int] = []
+        let n = nums.count
+        for i in 0..<n {
+            if lis.isEmpty || lis.last! < nums[i] {
+                lis.append(nums[i])
+            } else {
+                // Since we are having monotonic increasing queue we can use binary search to find the lower bound i.e. element just greater than the nums
+                if let index = lis.firstIndex(where: {$0 >= nums[i]}) {
+                    lis[index] = nums[i]
+                }
+            }
+        }
+        return lis.count
+    }
+    func preorderTraversal(_ root: TreeNode?) -> [Int] {
+        // preorderTraversal : root, left, right
+        /*
+        var output = [Int]()
+        func preorderTraversalHelper(_ root: TreeNode?) {
+            guard let root = root else { return }
+            output.append(root.val)
+            preorderTraversalHelper(root.left)
+            preorderTraversalHelper(root.right)
+        }
+        preorderTraversalHelper(root)
+        return output
+         */
+        return morrisPreorderTraversal(root)
+    }
+    
+    func morrisPreorderTraversal(_ root : TreeNode?) -> [Int] {
+        if root == nil {
+            return []
+        }
+        
+        var curr = root
+        var output = [Int]()
+        while curr != nil {
+            if curr?.left == nil {
+                if let val = curr?.val {
+                    output.append(val)
+                }
+                curr = curr?.right
+            } else {
+                var predecessorNode = findPredecessor(curr) //Using predecessor of inorder
+                if predecessorNode?.right == nil {
+                    //Creating a temporary link here
+                    predecessorNode?.right = curr?.right
+                    curr = curr?.left
+                } else {
+                    //Remove the temporary link
+                    predecessorNode?.right = nil
+                    if let val = curr?.val {
+                        output.append(val)
+                    }
+                    curr = curr?.right
+                }
+            }
+        }
+        return output
+    }
+    
+    func inorderTraversal(_ root: TreeNode?) -> [Int] {
+        // Inorder traversal left, root, right
+        /*
+        var output = [Int]()
+        func inorderTraversalHelper(_ root: TreeNode?) {
+            guard let root = root else { return }
+            inorderTraversalHelper(root.left)
+            output.append(root.val)
+            inorderTraversalHelper(root.right)
+        }
+        inorderTraversalHelper(root)
+        return output
+        */
+        return morrisInorderTraversal(root) // Finds inOrder in SC : O(1) with temporary altering the tree
+    }
+
+    func morrisInorderTraversal(_ root: TreeNode?) -> [Int] {
+        if root == nil { return [] }
+        //left root right
+        /*
+        Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
+
+        Output: [4,2,6,5,7,1,3,9,8]
+
+        for root = 1 we need a path to come from 7
+
+        For a node find it's inorder predecessor i.e. node -> left -> Extreme right.
+        Form a link predecessor.right -> node, and go to node.left
+        If node is a leaf node -> print that node
+        */
+
+        var curr = root
+        var output = [Int]()
+        while curr != nil {
+            if curr?.left == nil {
+                if let val = curr?.val {
+                    output.append(val)
+                }
+                curr = curr?.right
+            } else {
+                var predecessorNode = findPredecessor(curr)
+                if predecessorNode?.right == nil {
+                    //Creating a temporary link here
+                    predecessorNode?.right = curr
+                    curr = curr?.left
+                } else {
+                    //Remove the temporary link
+                    predecessorNode?.right = nil
+                    if let val = curr?.val {
+                        output.append(val)
+                    }
+                    curr = curr?.right
+                }
+            }
+        }
+        return output
+    }
+
+    func findPredecessor(_ node: TreeNode?) -> TreeNode? {
+        var pred = node?.left
+        if pred == nil { return nil }    // No left subtree
+        while pred?.right != nil && pred?.right !== node {
+            pred = pred?.right
+        }
+        return pred
+    }
+    
+    func maxSubArray(_ nums: [Int]) -> Int {
+        // Kadane's Algorithm
+        var ansStart : Int = 0
+        var ansEnd : Int = 0
+        
+        var maxSumTillPrevIndex : Int = nums[0]
+        var maxSum : Int = maxSumTillPrevIndex
+        
+        for i in 1..<nums.count {
+            if maxSumTillPrevIndex + nums[i] < nums[i] {
+                // Better to start the new subarray
+                ansStart = i
+                ansEnd = i
+                maxSumTillPrevIndex = nums[i]
+            } else {
+                maxSumTillPrevIndex += nums[i]
+                ansEnd += 1
+            }
+            if maxSumTillPrevIndex < maxSum {
+                maxSum = maxSumTillPrevIndex
+            }
+        }
+        
+        return maxSum
+    }
+    
+    func distributeCandies(_ n: Int, _ limit: Int) -> Int {
+        /*
+        Let’s print them:
+        n = 5 , limit = 3
+        (0, 2, 3)
+        (0, 3, 2)
+        (1, 1, 3)
+        (1, 2, 2)
+        (1, 3, 1)
+        (2, 0, 3)
+        (2, 1, 2)
+        (2, 2, 1)
+        (2, 3, 0)
+        (3, 0, 2)
+        (3, 1, 1)
+        (3, 2, 0)
+
+        var memoization = Array(repeating: Array(repeating: 0,count: n+1), count: 4)
+        func recursiveHelper(_ start : Int, _ n : Int) -> Int {
+            if start == 3 { return n == 0 ? 1 : 0 }
+            if n < 0 || start > 2 { return 0 }
+            if n > 0 && start < 4 && memoization[start][n] != 0 {
+                return memoization[start][n]
+            }
+            var count = 0
+            for val in 0...min(n,limit) {
+                count += recursiveHelper(start+1, n-val)
+            }
+            if n > 0 && start < 4 {
+                memoization[start][n] = count
+            }
+            return count
+        }
+        return recursiveHelper(0, n)
+        */
+
+        func nCr( _ n : Int, _ r : Int ) -> Int {
+            if n < r || r < 0 { return 0 }
+            var result = 1
+            for i in 1...r {
+                result = result * (n-i+1) / i
+            }
+            return result
+        }
+        
+        let n = n
+        let r = limit
+        
+        let totalWaysWithoutLimit = nCr(n+2, 2)
+        let atleastOneGreaterThanR = 3 * nCr(n - r + 2, 2)
+        let atleastTwoGreaterThanR = 3 * nCr(n - 2*r + 2, 2)
+        let allThreeGreaterThanR = nCr(n - 3*r + 2, 2)
+        
+        return totalWaysWithoutLimit - atleastOneGreaterThanR + atleastTwoGreaterThanR - allThreeGreaterThanR
+    }
 }
 
 let solution = Solution()
@@ -1019,4 +1563,8 @@ let solution = Solution()
 //print(solution.repeatedStringMatch("abcd", "cdabcdab"))
 //print(solution.fourSum([1,0,-1,0,-2,2], 0))
 //print(solution.createLPS("cbcbaa"))
-print(solution.minInsertions("zzazz"))
+//print(solution.minInsertions("zzazz"))
+//print(solution.generate(5))
+//print(solution.divideArray([1,3,4,8,7,9,3,5,1], 2))
+//print(solution.countAndSay(4))
+
