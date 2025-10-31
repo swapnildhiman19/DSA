@@ -1874,6 +1874,160 @@ class Solution {
         print("Inorder: \(inOrder)")
         print("PostOrder: \(postOrder)")
     }
+    
+    func minimizeMax(_ nums: [Int], _ p: Int) -> Int {
+        //[10,1,2,7,1,3,5,9]
+        //[1,1,2,3,5,7,9,10]: Sorted nums
+        /*
+        Here creating a minHeap for difference won't work because each index can be consumed only once, minHeap approach will take (1,1) and (1,2) as valid thing.
+        Now here we see either a element can be in the answer or it can't be : DP
+        If it is considered than it's should be pair with the adjacent element of the sorted array. Otherwise ignore it
+        */
+        /*
+        Alright, let's dissect this step by step. 😎
+
+        The term **"minimize the maximum difference"** might sound confusing at first, but here's what it really means:
+
+        1. You need to form **exactly `p` pairs** from the array.
+        2. For each pair `(i, j)`, calculate the **difference** as `|nums[i] - nums[j]|`.
+        3. Once you have all the pairs, find the **maximum difference** among them (let's call this `max_diff`).
+        4. Your goal is to **minimize this `max_diff`**, meaning you need to find a way to pair the numbers such that the largest difference among all the pairs is as small as possible.
+
+        ### Now, let's address your example:
+        **Input:** `[10, 1, 2, 7, 1, 3, 5, 9]`, `p = 3`
+
+        See here triplets ( since of p =3 ) pairs combinations:
+
+        You suggested pairs: `(1, 10)`, `(1, 9)`, and `(2, 7)`.
+        - Their differences are:
+          - `|1 - 10| = 9`
+          - `|1 - 9| = 8`
+          - `|2 - 7| = 5`
+
+        The **maximum difference** here is `max(9, 8, 5) = 9`.
+
+        But wait, the goal is to **minimize** this maximum difference, not just find it. This means you need to choose pairs where the largest difference among them is as small as possible.
+
+        For example:
+        If you choose pairs like `(1, 1)`, `(2, 3)`, `(9, 10)`:
+        - Their differences are:
+          - `|1 - 1| = 0`
+          - `|2 - 3| = 1`
+          - `|9 - 10| = 1`
+
+        The **maximum difference** here is `max(0, 1, 1) = 1`.
+
+        Now, **1** is smaller than **9**, so this pairing is better. You can see how choosing closer numbers minimizes the maximum difference.
+
+        ### Key Point:
+        You are **not** trying to minimize the smallest difference or the average difference. You are trying to minimize the **largest difference** among all the pairs. It’s a tricky concept, but does this explanation make sense now?
+        */
+        var numsSorted = nums.sorted()
+        let n = numsSorted.count
+        
+        var answer = Int.max
+        
+        func recursiveHelper(_ currMaxDifference: Int, _ pairsRemaining: Int, _ currIndex: Int) -> Int {
+            if currIndex >= n-1 {
+                return 0
+            }
+            
+            if pairsRemaining == 0 {
+                answer = min(answer, currMaxDifference)
+                print(answer)
+                return currMaxDifference
+            }
+            
+            let currDifference = abs(numsSorted[currIndex]-numsSorted[currIndex+1])
+            let considering = recursiveHelper(max(currMaxDifference,currDifference), pairsRemaining-1, currIndex+2)
+            let skipping = recursiveHelper(currMaxDifference, pairsRemaining, currIndex+1)
+            return max(considering, skipping)
+        }
+        _ = recursiveHelper(0, p, 0)
+        return answer
+    }
+    
+    
+    func setZeroes(_ matrix: inout [[Int]]) {
+        /*
+        let n = matrix.count
+        let m = matrix[0].count
+        for i in 0..<n {
+            for j in 0..<m {
+                if matrix[i][j] == 0 {
+                    alterCurrRowAndCol(i,j,&matrix)
+                }
+            }
+        }
+
+        for i in 0..<n {
+            for j in 0..<m {
+                if matrix[i][j] == Int.min {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+        */
+        // Not a valid approach as there could be Int.min as an element
+
+        // marking the first row and first col
+        let m = matrix.count
+        let n = matrix[0].count
+
+        for i in 1..<m {
+            for j in 1..<n {
+                if matrix[i][j] == 0 {
+                    //marking the first row and first col as 0
+                    matrix[i][0] = 0
+                    matrix[0][j] = 0
+                }
+            }
+        }
+        
+        for i in 1..<m {
+            if matrix[i][0] == 0 {
+                matrix[i] = Array(repeating: 0, count: n)
+            }
+        }
+        
+        for j in 1..<n {
+            if matrix[0][j] == 0 {
+                for i in 1..<m {
+                    matrix[i][j] = 0
+                }
+            }
+        }
+        
+        if matrix[0][0] == 0 || matrix[0][n-1] == 0 {
+            matrix[0] = Array(repeating: 0, count: n)
+            if matrix[0][0] == 0 {
+                for i in 0..<m {
+                    matrix[i][0] = 0
+                }
+            } else if matrix[0][n-1] == 0 {
+                for i in 0..<m {
+                    matrix[i][n-1] = 0
+                }
+            }
+            
+        }
+        
+    }
+
+    func alterCurrRowAndCol(_ row: Int, _ col: Int,_ matrix: inout [[Int]]) {
+        let n = matrix.count
+        let m = matrix[0].count
+        for i in 0..<n {
+            if matrix[i][col] != 0 {
+                matrix[i][col] = Int.min
+            }
+        }
+        for j in 0..<m {
+            if matrix[row][j] != 0 {
+                matrix[row][j] = Int.min
+            }
+        }
+    }
 }
 
 let solution = Solution()
@@ -1910,5 +2064,6 @@ let solution = Solution()
 //print(solution.generate(5))
 //print(solution.divideArray([1,3,4,8,7,9,3,5,1], 2))
 //print(solution.countAndSay(4))
-var nums = [0,1,0,3,12]
-solution.moveZeroes(&nums)
+//var nums = [0,1,0,3,12]
+//solution.moveZeroes(&nums)
+print(solution.minimizeMax([10,1,2,7,1,3,5,9], 3))
