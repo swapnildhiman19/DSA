@@ -498,31 +498,6 @@ class Solution {
         return answerString
     }
     
-    func longestPalindrome(_ s: String) -> String {
-        var strArray = Array(s)
-        let n = strArray.count
-        var dp = Array(repeating: Array(repeating: false, count:n), count: n)
-        var maxLen = 1
-        var start = 0
-        
-        for len in 1...n {
-            for i in 0...n-len {
-                var j = i + len - 1
-                if len == 1 {
-                    dp[i][j] = true
-                } else if len == 2 {
-                    dp[i][j] = (strArray[i] == strArray[j])
-                } else {
-                    dp[i][j] = dp[i+1][j-1] && (strArray[i] == strArray[j])
-                }
-                if dp[i][j] && maxLen < len {
-                    start = i
-                    maxLen = len
-                }
-            }
-        }
-        return String(strArray[start..<start+maxLen])
-    }
     func isAnagram(_ s: String, _ t: String) -> Bool {
         /*
          Got it, so you're starting with the optimization to directly return `false` if `s` and `t` have different lengths—that's a good preliminary check.
@@ -1476,60 +1451,428 @@ class Solution {
         return maxSum
     }
     
-    func distributeCandies(_ n: Int, _ limit: Int) -> Int {
+        func distributeCandies(_ n: Int, _ limit: Int) -> Int {
+            /*
+            Let’s print them:
+            n = 5 , limit = 3
+            (0, 2, 3)
+            (0, 3, 2)
+            (1, 1, 3)
+            (1, 2, 2)
+            (1, 3, 1)
+            (2, 0, 3)
+            (2, 1, 2)
+            (2, 2, 1)
+            (2, 3, 0)
+            (3, 0, 2)
+            (3, 1, 1)
+            (3, 2, 0)
+
+            var memoization = Array(repeating: Array(repeating: 0,count: n+1), count: 4)
+            func recursiveHelper(_ start : Int, _ n : Int) -> Int {
+                if start == 3 { return n == 0 ? 1 : 0 }
+                if n < 0 || start > 2 { return 0 }
+                if n > 0 && start < 4 && memoization[start][n] != 0 {
+                    return memoization[start][n]
+                }
+                var count = 0
+                for val in 0...min(n,limit) {
+                    count += recursiveHelper(start+1, n-val)
+                }
+                if n > 0 && start < 4 {
+                    memoization[start][n] = count
+                }
+                return count
+            }
+            return recursiveHelper(0, n)
+            */
+            
+            /*
+            func nCr( _ n : Int, _ r : Int ) -> Int {
+                if n < r || r < 0 { return 0 }
+                var result = 1
+                for i in 1...r {
+                    result = result * (n-i+1) / i
+                }
+                return result
+            }
+            
+            let n = n
+            let r = limit
+
+            
+            let totalWaysWithoutLimit = nCr(n+2, 2)
+            let atleastOneGreaterThanR = 3 * nCr(n - (r + 1 ) + 2, 2)
+            let atleastTwoGreaterThanR = 3 * nCr(n - 2 * (r + 1) + 2, 2)
+            let allThreeGreaterThanR = nCr(n - 3*(r + 1) + 2, 2)
+            
+            return totalWaysWithoutLimit - atleastOneGreaterThanR + atleastTwoGreaterThanR - allThreeGreaterThanR
+             */
+            
+            // Approach 3 :
+            var ways : Int = 0
+            var minCh1 = max(0, n - 2*limit)
+            var maxCh1 = min(n, limit)
+            
+            for i in minCh1...maxCh1 {
+                let newN = n - i
+                var minCh2 = max(0, newN - limit)
+                var maxCh2 = min(newN, limit)
+                
+                ways += maxCh2 - minCh2 + 1
+            }
+            
+            return ways
+        }
+    
+    func longestPalindrome(_ s: String) -> String {
+        var strArray = Array(s)
+        let n = s.count
+        var dp = Array(repeating: Array(repeating: false, count: n), count: n)
+        var start = 0
+        var maxLen = 1
+        
+        for len in 1...n {
+            for i in 0...n-len {
+                var j = i + len - 1
+                if len == 1 {
+                    dp[i][j] = true
+                } else if len == 2 {
+                    dp[i][j] = (strArray[i]==strArray[j])
+                } else {
+                    dp[i][j] = dp[i+1][j-1] && (strArray[i]==strArray[j])
+                    if maxLen < len {
+                        start = i
+                        maxLen = len
+                    }
+                }
+            }
+        }
+        
+        return String(strArray[start..<start+maxLen])
+    }
+    
+    func topKFrequent(_ words: [String], _ k: Int) -> [String] {
+        var frequencyHashMap : [String:Int] = [:]
+        for word in words {
+            frequencyHashMap[word, default: 0] += 1
+        }
+        var sortedArrayWords = frequencyHashMap.sorted { lhs, rhs in
+            if lhs.value == rhs.value {
+                return lhs.key < rhs.key
+            }
+            return lhs.value > rhs.value
+        }
+        return sortedArrayWords.prefix(k).map{$0.key}
+    }
+    
+    func nextPermutation(_ nums: inout [Int]) {
+        //look from the right, the first element where you encountered the sequence is decreasing
+        //Main intention is to keep the prefix same as long as possible
+        let n = nums.count
+        var pivotIndex = n-1
+        for i in stride(from: n-2, through: 0, by: -1) {
+            if nums[i] < nums[i+1] {
+                pivotIndex = i
+                break
+            }
+        }
+        if pivotIndex == n-1 {
+            nums = nums.reversed()
+        } else {
+            //switch with the next greater element of the pivot and reverse the right side array
+            var nextGreaterCandidateIdx = pivotIndex
+            for i in pivotIndex+1..<n {
+                if nums[i] > nums[pivotIndex] {
+                    if nums[i] < nums[nextGreaterCandidateIdx] {
+                        nextGreaterCandidateIdx = i
+                    }
+                }
+            }
+
+            nums.swapAt(pivotIndex, nextGreaterCandidateIdx)
+            nums[(pivotIndex+1)...].reverse()
+        }
+        print(nums)
+    }
+    func singleNumber(_ nums: [Int]) -> Int {
+        //xor of all the elements
+        var result = nums[0]
+        for num in nums {
+            result ^= num
+        }
+        return result
+    }
+    
+    func moveZeroes(_ nums: inout [Int]) {
+        //need to move all the zeroes to the end
+        var zeroPointer = 0, nonZeroPointer = 0
+        let n = nums.count
+        if n == 1 {
+            return
+        }
+        for i in 0..<n {
+            if nums[i] == 0 {
+                zeroPointer = i
+                break
+            }
+        }
+        
+        for i in zeroPointer..<n {
+            if nums[i] != 0 {
+                nonZeroPointer = i
+                break
+            }
+        }
+        
+        while nonZeroPointer < n {
+            if zeroPointer < n && nonZeroPointer < n {
+                nums.swapAt(zeroPointer, nonZeroPointer)
+            }
+            zeroPointer += 1
+            //find next non-zero value
+            for i in nonZeroPointer+1..<n {
+                if i < n && nums[i] != 0 {
+                    nonZeroPointer = i
+                    break
+                }
+            }
+            
+            if nonZeroPointer == n-1 {
+                nums.swapAt(zeroPointer, nonZeroPointer)
+                break
+            }
+        }
+        print(nums)
+    }
+    
+    
+    /*
+     Views of Binary Tree
+     1. Left view of Binary Tree
+     2. Right view of Binary Tree
+     3. Top View of Binary Tree
+     4. Bottom view of binary tree
+     */
+    func leftView(_ root: TreeNode?) -> [Int] {
+        guard let root = root else {
+            return []
+        }
+        
+        var queue : [TreeNode] = []
+        queue.append(root)
+        var result : [Int] = []
+        
+        while !queue.isEmpty {
+            var size = queue.count
+            var i = 0
+            while size != 0 {
+                let node = queue.removeFirst()
+                if i == 0 { result.append(node.val) }
+                if node.left != nil {
+                    queue.append(node.left!)
+                }
+                if node.right != nil {
+                    queue.append(node.right!)
+                }
+                size -= 1
+            }
+        }
+        return result
+    }
+    
+    func rightView(_ root: TreeNode?) -> [Int] {
+        guard let root = root else {
+            return []
+        }
+        
+        var queue : [TreeNode] = []
+        queue.append(root)
+        var result : [Int] = []
+        
+        while !queue.isEmpty {
+            var size = queue.count
+            var lastVal = 0
+            while size != 0 {
+                let node = queue.removeFirst()
+                lastVal = node.val
+                if node.left != nil {
+                    queue.append(node.left!)
+                }
+                if node.right != nil {
+                    queue.append(node.right!)
+                }
+                size -= 1
+            }
+            result.append(lastVal)
+        }
+        return result
+    }
+    
+    func topView(_ root: TreeNode?) -> [Int] {
+        guard let root = root else { return [] }
+        var queue = [(TreeNode, Int)]()
+        queue.append((root, 0))
+        var topNodes = [Int: Int]() // hd: node value
+        var minHD = 0, maxHD = 0
+
+        while !queue.isEmpty {
+            var size = queue.count
+            while size != 0 {
+                let (node, hd) = queue.removeFirst()
+                if topNodes[hd] == nil {
+                    topNodes[hd] = node.val
+                }
+                minHD = min(minHD, hd)
+                maxHD = max(maxHD, hd)
+                if let left = node.left { queue.append((left, hd - 1)) }
+                if let right = node.right { queue.append((right, hd + 1)) }
+                size -= 1
+            }
+        }
+        // Produce result from leftmost to rightmost
+        return (minHD...maxHD).compactMap { topNodes[$0] }
         /*
-        Let’s print them:
-        n = 5 , limit = 3
-        (0, 2, 3)
-        (0, 3, 2)
-        (1, 1, 3)
-        (1, 2, 2)
-        (1, 3, 1)
-        (2, 0, 3)
-        (2, 1, 2)
-        (2, 2, 1)
-        (2, 3, 0)
-        (3, 0, 2)
-        (3, 1, 1)
-        (3, 2, 0)
+         return (minHD...maxHD).compactMap { top[$0] }
+         has a key role in constructing and returning the top view nodes in the correct, left-to-right order.
 
-        var memoization = Array(repeating: Array(repeating: 0,count: n+1), count: 4)
-        func recursiveHelper(_ start : Int, _ n : Int) -> Int {
-            if start == 3 { return n == 0 ? 1 : 0 }
-            if n < 0 || start > 2 { return 0 }
-            if n > 0 && start < 4 && memoization[start][n] != 0 {
-                return memoization[start][n]
-            }
-            var count = 0
-            for val in 0...min(n,limit) {
-                count += recursiveHelper(start+1, n-val)
-            }
-            if n > 0 && start < 4 {
-                memoization[start][n] = count
-            }
-            return count
-        }
-        return recursiveHelper(0, n)
-        */
+         How does it work?
+         minHD...maxHD creates a range of all horizontal distances (hd) seen, from the smallest (the leftmost) to the largest (the rightmost).
 
-        func nCr( _ n : Int, _ r : Int ) -> Int {
-            if n < r || r < 0 { return 0 }
-            var result = 1
-            for i in 1...r {
-                result = result * (n-i+1) / i
+         top is a dictionary mapping each horizontal distance to the first node value encountered at that hd (i.e., the top view node at that position).
+
+         compactMap { top[$0] } fetches the node values for each horizontal distance in that range, skipping any nils (ensuring all results are valid).
+         */
+    }
+    
+    func bottomView(_ root : TreeNode?) -> [Int] {
+        guard let root = root else { return [] }
+        var queue = [(TreeNode, Int)]()
+        queue.append((root, 0))
+        var bottomNodes = [Int: Int]() // hd: node value
+        var minHD = 0, maxHD = 0
+
+        while !queue.isEmpty {
+            var size = queue.count
+            while size != 0 {
+                let (node, hd) = queue.removeFirst()
+                bottomNodes[hd] = node.val //Taking the last one for that depth
+                minHD = min(minHD, hd)
+                maxHD = max(maxHD, hd)
+                if let left = node.left { queue.append((left, hd - 1)) }
+                if let right = node.right { queue.append((right, hd + 1)) }
+                size -= 1
             }
-            return result
+        }
+        // Produce result from leftmost to rightmost
+        return (minHD...maxHD).compactMap { bottomNodes[$0] }
+    }
+    
+    /*
+     The vertical order traversal of a binary tree is a list of top-to-bottom orderings for each column index starting from the leftmost column and ending on the rightmost column. There may be multiple nodes in the same row and same column. In such a case, sort these nodes by their values.
+     */
+    func verticalTraversal(_ root: TreeNode?) -> [[Int]] {
+        /*
+        guard let root = root else { return [] }
+        var queue = [(TreeNode, Int)]()
+        var answer = [Int: [Int]]()
+        queue.append((root, 0))
+        
+        var minHD = 0, maxHD = 0
+        
+        while !queue.isEmpty {
+            var size = queue.count
+            var currentLevelMap = [Int: [Int]]()
+            var currMinHD = 0, currMaxHD = 0
+            while size != 0 {
+                let (node,hd) = queue.removeFirst()
+                minHD = min(minHD,hd)
+                maxHD = max(maxHD,hd)
+                currMinHD = min(currMinHD,hd)
+                currMaxHD = max(currMaxHD,hd)
+                currentLevelMap[hd, default: []].append(node.val)
+                if let left = node.left { queue.append((left,hd-1)) }
+                if let right = node.right { queue.append((right,hd+1)) }
+                size -= 1
+            }
+            for depth in currMinHD...currMaxHD {
+                if let vals = currentLevelMap[depth]?.sorted() {
+                    answer[depth, default: []].append(contentsOf: vals)
+                }
+            }
+        }
+        return (minHD...maxHD).map { answer[$0] ?? []}
+         */
+        // Rather than sorting at each level, do the sort once by tracking the row
+        guard let node = root else { return [] }
+        var all: [(hd: Int, row: Int, val: Int)] = []
+        var queue: [(TreeNode, Int, Int)] = [(node, 0, 0)] // node, hd, row
+
+        while !queue.isEmpty {
+            let (n, hd, row) = queue.removeFirst()
+            all.append((hd, row, n.val))
+            if let l = n.left { queue.append((l, hd - 1, row + 1)) }
+            if let r = n.right { queue.append((r, hd + 1, row + 1)) }
+        }
+
+        // Sort by hd, row, value
+        all.sort { a, b in
+            if a.hd != b.hd { return a.hd < b.hd }
+            if a.row != b.row { return a.row < b.row }
+            return a.val < b.val
+        }
+
+        // Group by hd
+        var res: [[Int]] = []
+        var prevHD: Int? = nil
+        for entry in all {
+            if entry.hd != prevHD {
+                res.append([])
+                prevHD = entry.hd
+            }
+            res[res.count - 1].append(entry.val)
+        }
+
+        return res
+    }
+    
+    //All three traversal in a single flow
+    func treeTraversal(_ root: TreeNode?) {
+        var preOrder = [Int]() // Status = 1
+        var inOrder = [Int]() // Status = 2
+        var postOrder = [Int]() // Status = 3
+        var stack = [(TreeNode,Int)]()
+        stack.append((root!,1))
+        
+        while !stack.isEmpty {
+            let (node,status) = stack.removeLast()
+            if status == 1 {
+                /*
+                 1. part of preorder,
+                 2. update the status of this node to 2 for inOrder, push this back
+                 3. search for left if it exists, push in stack with status 1
+                 */
+                preOrder.append(node.val)
+                stack.append((node,2))
+                if let left = node.left { stack.append((left,1)) }
+            } else if status == 2 {
+                /*
+                 1. part of inorder,
+                 2. update the status of this node to 3 for postOrder, push this back
+                 3. search for right if it exists, push in stack with status 1
+                 */
+                inOrder.append(node.val)
+                stack.append((node,3))
+                if let right = node.right { stack.append((right,1)) }
+            } else {
+                // part of postOrder
+                postOrder.append(node.val)
+            }
         }
         
-        let n = n
-        let r = limit
-        
-        let totalWaysWithoutLimit = nCr(n+2, 2)
-        let atleastOneGreaterThanR = 3 * nCr(n - r + 2, 2)
-        let atleastTwoGreaterThanR = 3 * nCr(n - 2*r + 2, 2)
-        let allThreeGreaterThanR = nCr(n - 3*r + 2, 2)
-        
-        return totalWaysWithoutLimit - atleastOneGreaterThanR + atleastTwoGreaterThanR - allThreeGreaterThanR
+        print("PreOrder: \(preOrder)")
+        print("Inorder: \(inOrder)")
+        print("PostOrder: \(postOrder)")
     }
 }
 
@@ -1567,4 +1910,5 @@ let solution = Solution()
 //print(solution.generate(5))
 //print(solution.divideArray([1,3,4,8,7,9,3,5,1], 2))
 //print(solution.countAndSay(4))
-
+var nums = [0,1,0,3,12]
+solution.moveZeroes(&nums)
