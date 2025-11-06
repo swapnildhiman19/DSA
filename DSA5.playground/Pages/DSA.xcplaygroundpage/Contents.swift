@@ -159,17 +159,17 @@ import Foundation
 //}
 //
 // Definition for a binary tree node.
- public class TreeNode {
-     public var val: Int
-     public var left: TreeNode?
-     public var right: TreeNode?
-     public init() { self.val = 0; self.left = nil; self.right = nil; }
-     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
-     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
-         self.val = val
-         self.left = left
-         self.right = right
-     }
+public class TreeNode {
+    public var val: Int
+    public var left: TreeNode?
+    public var right: TreeNode?
+    public init() { self.val = 0; self.left = nil; self.right = nil; }
+    public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+    public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+        self.val = val
+        self.left = left
+        self.right = right
+    }
 }
 class MinHeap {
     private var minHeap : [ListNode] = []
@@ -1074,55 +1074,55 @@ class Solution {
         }
         return answerString
     }
-
-        func compareVersion(_ version1: String, _ version2: String) -> Int {
-            let v1ChArr = Array(version1)
-            let v2ChArr = Array(version2)
-            let n1 = version1.count
-            let n2 = version2.count
-            var i = 0 , j = 0
-            while i < n1 || j < n2 {
-                var nums1 : Int = 0
-                var nums2 : Int = 0
-                while i < n1 && v1ChArr[i] != "." {
-                    //nums1 = (nums1 * 10) + (v1ChArr[i] - "0")
-                    /*
-                     That's correct; the expression v1ChArr[i] - "0" works in C++ but not in Swift due to fundamental differences in how the two languages handle char and Character types.
-                     Why it works in C++
-                     In C and C++, the char data type is an integer type that represents a single character by its ASCII (or other character set) integer value.
-                     The literal '0' is also a character and, therefore, is represented by its ASCII integer value (48).
-                     Characters representing digits '0' through '9' are guaranteed to have consecutive ASCII values.
-                     When you write '5' - '0', C++ performs an integer subtraction: 53 - 48, which results in the integer 5.
-                     This allows for simple and efficient conversion of a single digit character to its numeric value through arithmetic.
-                     Why it fails in Swift
-                     In contrast, Swift's Character type is not an integer type and does not automatically convert to one.
-                     Swift's Character type is a full Unicode character, not just a 1-byte ASCII value.
-                     Swift is a type-safe language and does not allow arithmetic operations between a Character and a String (like "0"). The compiler will throw an error because the - operator is not defined for these types.
-                     For conversion, Swift requires explicit methods, such as using the wholeNumberValue property or converting the Character to a String and then to an Int.
-                     
-                     */
-                    if let asciiValue = v1ChArr[i].asciiValue {
-                        nums1 = (nums1 * 10) + Int(asciiValue) - 48
-                    }
-                    i += 1
-                }
-                while v2ChArr[j] != "." {
-                    //nums2 = (nums2 * 10) + (v2ChArr[j] - "0")
-                    guard let num = Int(String(v2ChArr[j])) else { fatalError("Invalid character in version string") }
-                    nums2 = (nums2 * 10) + num
-                    j += 1
-                }
-                if nums1 < nums2 {
-                    return -1
-                }
-                if nums1 > nums2 {
-                    return 1
+    
+    func compareVersion(_ version1: String, _ version2: String) -> Int {
+        let v1ChArr = Array(version1)
+        let v2ChArr = Array(version2)
+        let n1 = version1.count
+        let n2 = version2.count
+        var i = 0 , j = 0
+        while i < n1 || j < n2 {
+            var nums1 : Int = 0
+            var nums2 : Int = 0
+            while i < n1 && v1ChArr[i] != "." {
+                //nums1 = (nums1 * 10) + (v1ChArr[i] - "0")
+                /*
+                 That's correct; the expression v1ChArr[i] - "0" works in C++ but not in Swift due to fundamental differences in how the two languages handle char and Character types.
+                 Why it works in C++
+                 In C and C++, the char data type is an integer type that represents a single character by its ASCII (or other character set) integer value.
+                 The literal '0' is also a character and, therefore, is represented by its ASCII integer value (48).
+                 Characters representing digits '0' through '9' are guaranteed to have consecutive ASCII values.
+                 When you write '5' - '0', C++ performs an integer subtraction: 53 - 48, which results in the integer 5.
+                 This allows for simple and efficient conversion of a single digit character to its numeric value through arithmetic.
+                 Why it fails in Swift
+                 In contrast, Swift's Character type is not an integer type and does not automatically convert to one.
+                 Swift's Character type is a full Unicode character, not just a 1-byte ASCII value.
+                 Swift is a type-safe language and does not allow arithmetic operations between a Character and a String (like "0"). The compiler will throw an error because the - operator is not defined for these types.
+                 For conversion, Swift requires explicit methods, such as using the wholeNumberValue property or converting the Character to a String and then to an Int.
+                 
+                 */
+                if let asciiValue = v1ChArr[i].asciiValue {
+                    nums1 = (nums1 * 10) + Int(asciiValue) - 48
                 }
                 i += 1
+            }
+            while v2ChArr[j] != "." {
+                //nums2 = (nums2 * 10) + (v2ChArr[j] - "0")
+                guard let num = Int(String(v2ChArr[j])) else { fatalError("Invalid character in version string") }
+                nums2 = (nums2 * 10) + num
                 j += 1
             }
-            return 0
+            if nums1 < nums2 {
+                return -1
+            }
+            if nums1 > nums2 {
+                return 1
+            }
+            i += 1
+            j += 1
         }
+        return 0
+    }
     
     func rightSideView(_ root: TreeNode?) -> [Int] {
         var queue : [TreeNode] = []
@@ -1201,19 +1201,19 @@ class Solution {
         /*
          Layman Explanation (Why Sorting by Increasing Width & Decreasing Height)
          You want to nest envelopes: each must be strictly larger (width and height) than the previous.
-
+         
          If you sort by increasing width, for any potential sequence, you always know that widths are increasing as you go forward.
-
+         
          But what if you have many envelopes with the same width? You can never nest two together (same width fails "strictly greater" rule).
-
+         
          If you want the longest chain, you should not let envelopes with same width create “fake” sequences using heights.
-
+         
          Therefore:
-
+         
          For envelopes with the same width, sort heights in decreasing order.
-
+         
          This is because you want to “block” chains from forming where only height increases. If heights are decreasing for equal widths, then the longest increasing subsequence (LIS) algorithm will only ever pick the first one in each group, which is correct (avoids using two envelopes with same width).
-
+         
          It cleverly prevents you from using multiple envelopes with the same width for your LIS sequence.
          */
         let sortedEnvelopes = envelopes.sorted {
@@ -1234,64 +1234,64 @@ class Solution {
          usually monotonic increasing dequeue solves question in O ( n ) time :
          Where O(n) Applies
          Problems like "sliding window maximum/minimum," or "Next Greater Element" use monotonic deques for O(n) because every array position is pushed/popped at most once.
-
+         
          In those problems, each replacement in the deque structure is strictly in O(1) per element, so overall O(2n).
-
+         
          Examples:
-
+         
          Sliding window minimum: O(n)
-
+         
          Next greater element: O(n)
-
+         
          Sliding window maximum: O(n)
-
+         
          Why LIS With Replacement Is NOT O(n) Using Deque
          In LIS, when you want to find the place to “replace” (to keep future growth possible), you need to find the earliest position in the candidate queue that is greater than or equal to your number:
-
+         
          If you use a linear scan, it's O(n) worst case for each replacement (so O(n^2) for the whole list).
-
+         
          You can’t guarantee O(n) because you might need to scan the whole queue repeatedly.
          */
         
         /* If we wan't to return the pure the lis ending at each index
-        let n = nums.count
-        var dp = Array(repeating: 1, count: n)
-        for i in 0..<n {
-            for j in 0..<i {
-                if nums[j] < nums[i] {
-                    dp[i] = max(dp[i], dp[j]+1)
-                }
-            }
-        }
-        return dp
+         let n = nums.count
+         var dp = Array(repeating: 1, count: n)
+         for i in 0..<n {
+         for j in 0..<i {
+         if nums[j] < nums[i] {
+         dp[i] = max(dp[i], dp[j]+1)
+         }
+         }
+         }
+         return dp
          */
         
         /*
          If we want just the lis count
          */
         /*
-        // Approach 1 : Using Monotonic Increasing Queue : Here it is not the lis ending at i th index, but here we are trying to accomodate the possible increasing subsequences in O ( n ) time itself : TC: O (n ^ 2)
-        // Example : [5,8,3,7,9,1]
-        // possible increasing queue:
-        // [5,8,9]
-        // [3,7,9]
-        // [1]
-        // below answer will contain the combined answer as [1,7,9] here if we are just concerned with the size and not the actual lis, we are saying these could be the possibilities but the size never got compromised
-        var lisQueue : [Int] = [] // Monontonic increasing queue
-        for num in nums {
-            if lisQueue.isEmpty || lisQueue.last! < num {
-                lisQueue.append(num)
-            } else {
-                // Finding the just greater element and replacing it
-                for i in 0..<lisQueue.count {
-                    if lisQueue[i] >= num {
-                        lisQueue[i] = num
-                        break
-                    }
-                }
-            }
-        }
-        return lisQueue.count
+         // Approach 1 : Using Monotonic Increasing Queue : Here it is not the lis ending at i th index, but here we are trying to accomodate the possible increasing subsequences in O ( n ) time itself : TC: O (n ^ 2)
+         // Example : [5,8,3,7,9,1]
+         // possible increasing queue:
+         // [5,8,9]
+         // [3,7,9]
+         // [1]
+         // below answer will contain the combined answer as [1,7,9] here if we are just concerned with the size and not the actual lis, we are saying these could be the possibilities but the size never got compromised
+         var lisQueue : [Int] = [] // Monontonic increasing queue
+         for num in nums {
+         if lisQueue.isEmpty || lisQueue.last! < num {
+         lisQueue.append(num)
+         } else {
+         // Finding the just greater element and replacing it
+         for i in 0..<lisQueue.count {
+         if lisQueue[i] >= num {
+         lisQueue[i] = num
+         break
+         }
+         }
+         }
+         }
+         return lisQueue.count
          */
         /*
          Approach 2 : Dynamic Programming with Binary Search : DP with Binary Search : O (nlogn)
@@ -1313,15 +1313,15 @@ class Solution {
     func preorderTraversal(_ root: TreeNode?) -> [Int] {
         // preorderTraversal : root, left, right
         /*
-        var output = [Int]()
-        func preorderTraversalHelper(_ root: TreeNode?) {
-            guard let root = root else { return }
-            output.append(root.val)
-            preorderTraversalHelper(root.left)
-            preorderTraversalHelper(root.right)
-        }
-        preorderTraversalHelper(root)
-        return output
+         var output = [Int]()
+         func preorderTraversalHelper(_ root: TreeNode?) {
+         guard let root = root else { return }
+         output.append(root.val)
+         preorderTraversalHelper(root.left)
+         preorderTraversalHelper(root.right)
+         }
+         preorderTraversalHelper(root)
+         return output
          */
         return morrisPreorderTraversal(root)
     }
@@ -1361,34 +1361,34 @@ class Solution {
     func inorderTraversal(_ root: TreeNode?) -> [Int] {
         // Inorder traversal left, root, right
         /*
-        var output = [Int]()
-        func inorderTraversalHelper(_ root: TreeNode?) {
-            guard let root = root else { return }
-            inorderTraversalHelper(root.left)
-            output.append(root.val)
-            inorderTraversalHelper(root.right)
-        }
-        inorderTraversalHelper(root)
-        return output
-        */
+         var output = [Int]()
+         func inorderTraversalHelper(_ root: TreeNode?) {
+         guard let root = root else { return }
+         inorderTraversalHelper(root.left)
+         output.append(root.val)
+         inorderTraversalHelper(root.right)
+         }
+         inorderTraversalHelper(root)
+         return output
+         */
         return morrisInorderTraversal(root) // Finds inOrder in SC : O(1) with temporary altering the tree
     }
-
+    
     func morrisInorderTraversal(_ root: TreeNode?) -> [Int] {
         if root == nil { return [] }
         //left root right
         /*
-        Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
-
-        Output: [4,2,6,5,7,1,3,9,8]
-
-        for root = 1 we need a path to come from 7
-
-        For a node find it's inorder predecessor i.e. node -> left -> Extreme right.
-        Form a link predecessor.right -> node, and go to node.left
-        If node is a leaf node -> print that node
-        */
-
+         Input: root = [1,2,3,4,5,null,8,null,null,6,7,9]
+         
+         Output: [4,2,6,5,7,1,3,9,8]
+         
+         for root = 1 we need a path to come from 7
+         
+         For a node find it's inorder predecessor i.e. node -> left -> Extreme right.
+         Form a link predecessor.right -> node, and go to node.left
+         If node is a leaf node -> print that node
+         */
+        
         var curr = root
         var output = [Int]()
         while curr != nil {
@@ -1415,7 +1415,7 @@ class Solution {
         }
         return output
     }
-
+    
     func findPredecessor(_ node: TreeNode?) -> TreeNode? {
         var pred = node?.left
         if pred == nil { return nil }    // No left subtree
@@ -1451,79 +1451,79 @@ class Solution {
         return maxSum
     }
     
-        func distributeCandies(_ n: Int, _ limit: Int) -> Int {
-            /*
-            Let’s print them:
-            n = 5 , limit = 3
-            (0, 2, 3)
-            (0, 3, 2)
-            (1, 1, 3)
-            (1, 2, 2)
-            (1, 3, 1)
-            (2, 0, 3)
-            (2, 1, 2)
-            (2, 2, 1)
-            (2, 3, 0)
-            (3, 0, 2)
-            (3, 1, 1)
-            (3, 2, 0)
-
-            var memoization = Array(repeating: Array(repeating: 0,count: n+1), count: 4)
-            func recursiveHelper(_ start : Int, _ n : Int) -> Int {
-                if start == 3 { return n == 0 ? 1 : 0 }
-                if n < 0 || start > 2 { return 0 }
-                if n > 0 && start < 4 && memoization[start][n] != 0 {
-                    return memoization[start][n]
-                }
-                var count = 0
-                for val in 0...min(n,limit) {
-                    count += recursiveHelper(start+1, n-val)
-                }
-                if n > 0 && start < 4 {
-                    memoization[start][n] = count
-                }
-                return count
-            }
-            return recursiveHelper(0, n)
-            */
+    func distributeCandies(_ n: Int, _ limit: Int) -> Int {
+        /*
+         Let’s print them:
+         n = 5 , limit = 3
+         (0, 2, 3)
+         (0, 3, 2)
+         (1, 1, 3)
+         (1, 2, 2)
+         (1, 3, 1)
+         (2, 0, 3)
+         (2, 1, 2)
+         (2, 2, 1)
+         (2, 3, 0)
+         (3, 0, 2)
+         (3, 1, 1)
+         (3, 2, 0)
+         
+         var memoization = Array(repeating: Array(repeating: 0,count: n+1), count: 4)
+         func recursiveHelper(_ start : Int, _ n : Int) -> Int {
+         if start == 3 { return n == 0 ? 1 : 0 }
+         if n < 0 || start > 2 { return 0 }
+         if n > 0 && start < 4 && memoization[start][n] != 0 {
+         return memoization[start][n]
+         }
+         var count = 0
+         for val in 0...min(n,limit) {
+         count += recursiveHelper(start+1, n-val)
+         }
+         if n > 0 && start < 4 {
+         memoization[start][n] = count
+         }
+         return count
+         }
+         return recursiveHelper(0, n)
+         */
+        
+        /*
+         func nCr( _ n : Int, _ r : Int ) -> Int {
+         if n < r || r < 0 { return 0 }
+         var result = 1
+         for i in 1...r {
+         result = result * (n-i+1) / i
+         }
+         return result
+         }
+         
+         let n = n
+         let r = limit
+         
+         
+         let totalWaysWithoutLimit = nCr(n+2, 2)
+         let atleastOneGreaterThanR = 3 * nCr(n - (r + 1 ) + 2, 2)
+         let atleastTwoGreaterThanR = 3 * nCr(n - 2 * (r + 1) + 2, 2)
+         let allThreeGreaterThanR = nCr(n - 3*(r + 1) + 2, 2)
+         
+         return totalWaysWithoutLimit - atleastOneGreaterThanR + atleastTwoGreaterThanR - allThreeGreaterThanR
+         */
+        
+        // Approach 3 :
+        var ways : Int = 0
+        var minCh1 = max(0, n - 2*limit)
+        var maxCh1 = min(n, limit)
+        
+        for i in minCh1...maxCh1 {
+            let newN = n - i
+            var minCh2 = max(0, newN - limit)
+            var maxCh2 = min(newN, limit)
             
-            /*
-            func nCr( _ n : Int, _ r : Int ) -> Int {
-                if n < r || r < 0 { return 0 }
-                var result = 1
-                for i in 1...r {
-                    result = result * (n-i+1) / i
-                }
-                return result
-            }
-            
-            let n = n
-            let r = limit
-
-            
-            let totalWaysWithoutLimit = nCr(n+2, 2)
-            let atleastOneGreaterThanR = 3 * nCr(n - (r + 1 ) + 2, 2)
-            let atleastTwoGreaterThanR = 3 * nCr(n - 2 * (r + 1) + 2, 2)
-            let allThreeGreaterThanR = nCr(n - 3*(r + 1) + 2, 2)
-            
-            return totalWaysWithoutLimit - atleastOneGreaterThanR + atleastTwoGreaterThanR - allThreeGreaterThanR
-             */
-            
-            // Approach 3 :
-            var ways : Int = 0
-            var minCh1 = max(0, n - 2*limit)
-            var maxCh1 = min(n, limit)
-            
-            for i in minCh1...maxCh1 {
-                let newN = n - i
-                var minCh2 = max(0, newN - limit)
-                var maxCh2 = min(newN, limit)
-                
-                ways += maxCh2 - minCh2 + 1
-            }
-            
-            return ways
+            ways += maxCh2 - minCh2 + 1
         }
+        
+        return ways
+    }
     
     func longestPalindrome(_ s: String) -> String {
         var strArray = Array(s)
@@ -1589,7 +1589,7 @@ class Solution {
                     }
                 }
             }
-
+            
             nums.swapAt(pivotIndex, nextGreaterCandidateIdx)
             nums[(pivotIndex+1)...].reverse()
         }
@@ -1715,7 +1715,7 @@ class Solution {
         queue.append((root, 0))
         var topNodes = [Int: Int]() // hd: node value
         var minHD = 0, maxHD = 0
-
+        
         while !queue.isEmpty {
             var size = queue.count
             while size != 0 {
@@ -1735,12 +1735,12 @@ class Solution {
         /*
          return (minHD...maxHD).compactMap { top[$0] }
          has a key role in constructing and returning the top view nodes in the correct, left-to-right order.
-
+         
          How does it work?
          minHD...maxHD creates a range of all horizontal distances (hd) seen, from the smallest (the leftmost) to the largest (the rightmost).
-
+         
          top is a dictionary mapping each horizontal distance to the first node value encountered at that hd (i.e., the top view node at that position).
-
+         
          compactMap { top[$0] } fetches the node values for each horizontal distance in that range, skipping any nils (ensuring all results are valid).
          */
     }
@@ -1751,7 +1751,7 @@ class Solution {
         queue.append((root, 0))
         var bottomNodes = [Int: Int]() // hd: node value
         var minHD = 0, maxHD = 0
-
+        
         while !queue.isEmpty {
             var size = queue.count
             while size != 0 {
@@ -1773,55 +1773,55 @@ class Solution {
      */
     func verticalTraversal(_ root: TreeNode?) -> [[Int]] {
         /*
-        guard let root = root else { return [] }
-        var queue = [(TreeNode, Int)]()
-        var answer = [Int: [Int]]()
-        queue.append((root, 0))
-        
-        var minHD = 0, maxHD = 0
-        
-        while !queue.isEmpty {
-            var size = queue.count
-            var currentLevelMap = [Int: [Int]]()
-            var currMinHD = 0, currMaxHD = 0
-            while size != 0 {
-                let (node,hd) = queue.removeFirst()
-                minHD = min(minHD,hd)
-                maxHD = max(maxHD,hd)
-                currMinHD = min(currMinHD,hd)
-                currMaxHD = max(currMaxHD,hd)
-                currentLevelMap[hd, default: []].append(node.val)
-                if let left = node.left { queue.append((left,hd-1)) }
-                if let right = node.right { queue.append((right,hd+1)) }
-                size -= 1
-            }
-            for depth in currMinHD...currMaxHD {
-                if let vals = currentLevelMap[depth]?.sorted() {
-                    answer[depth, default: []].append(contentsOf: vals)
-                }
-            }
-        }
-        return (minHD...maxHD).map { answer[$0] ?? []}
+         guard let root = root else { return [] }
+         var queue = [(TreeNode, Int)]()
+         var answer = [Int: [Int]]()
+         queue.append((root, 0))
+         
+         var minHD = 0, maxHD = 0
+         
+         while !queue.isEmpty {
+         var size = queue.count
+         var currentLevelMap = [Int: [Int]]()
+         var currMinHD = 0, currMaxHD = 0
+         while size != 0 {
+         let (node,hd) = queue.removeFirst()
+         minHD = min(minHD,hd)
+         maxHD = max(maxHD,hd)
+         currMinHD = min(currMinHD,hd)
+         currMaxHD = max(currMaxHD,hd)
+         currentLevelMap[hd, default: []].append(node.val)
+         if let left = node.left { queue.append((left,hd-1)) }
+         if let right = node.right { queue.append((right,hd+1)) }
+         size -= 1
+         }
+         for depth in currMinHD...currMaxHD {
+         if let vals = currentLevelMap[depth]?.sorted() {
+         answer[depth, default: []].append(contentsOf: vals)
+         }
+         }
+         }
+         return (minHD...maxHD).map { answer[$0] ?? []}
          */
         // Rather than sorting at each level, do the sort once by tracking the row
         guard let node = root else { return [] }
         var all: [(hd: Int, row: Int, val: Int)] = []
         var queue: [(TreeNode, Int, Int)] = [(node, 0, 0)] // node, hd, row
-
+        
         while !queue.isEmpty {
             let (n, hd, row) = queue.removeFirst()
             all.append((hd, row, n.val))
             if let l = n.left { queue.append((l, hd - 1, row + 1)) }
             if let r = n.right { queue.append((r, hd + 1, row + 1)) }
         }
-
+        
         // Sort by hd, row, value
         all.sort { a, b in
             if a.hd != b.hd { return a.hd < b.hd }
             if a.row != b.row { return a.row < b.row }
             return a.val < b.val
         }
-
+        
         // Group by hd
         var res: [[Int]] = []
         var prevHD: Int? = nil
@@ -1832,7 +1832,7 @@ class Solution {
             }
             res[res.count - 1].append(entry.val)
         }
-
+        
         return res
     }
     
@@ -1875,105 +1875,34 @@ class Solution {
         print("PostOrder: \(postOrder)")
     }
     
-    func minimizeMax(_ nums: [Int], _ p: Int) -> Int {
-        //[10,1,2,7,1,3,5,9]
-        //[1,1,2,3,5,7,9,10]: Sorted nums
-        /*
-        Here creating a minHeap for difference won't work because each index can be consumed only once, minHeap approach will take (1,1) and (1,2) as valid thing.
-        Now here we see either a element can be in the answer or it can't be : DP
-        If it is considered than it's should be pair with the adjacent element of the sorted array. Otherwise ignore it
-        */
-        /*
-        Alright, let's dissect this step by step. 😎
-
-        The term **"minimize the maximum difference"** might sound confusing at first, but here's what it really means:
-
-        1. You need to form **exactly `p` pairs** from the array.
-        2. For each pair `(i, j)`, calculate the **difference** as `|nums[i] - nums[j]|`.
-        3. Once you have all the pairs, find the **maximum difference** among them (let's call this `max_diff`).
-        4. Your goal is to **minimize this `max_diff`**, meaning you need to find a way to pair the numbers such that the largest difference among all the pairs is as small as possible.
-
-        ### Now, let's address your example:
-        **Input:** `[10, 1, 2, 7, 1, 3, 5, 9]`, `p = 3`
-
-        See here triplets ( since of p =3 ) pairs combinations:
-
-        You suggested pairs: `(1, 10)`, `(1, 9)`, and `(2, 7)`.
-        - Their differences are:
-          - `|1 - 10| = 9`
-          - `|1 - 9| = 8`
-          - `|2 - 7| = 5`
-
-        The **maximum difference** here is `max(9, 8, 5) = 9`.
-
-        But wait, the goal is to **minimize** this maximum difference, not just find it. This means you need to choose pairs where the largest difference among them is as small as possible.
-
-        For example:
-        If you choose pairs like `(1, 1)`, `(2, 3)`, `(9, 10)`:
-        - Their differences are:
-          - `|1 - 1| = 0`
-          - `|2 - 3| = 1`
-          - `|9 - 10| = 1`
-
-        The **maximum difference** here is `max(0, 1, 1) = 1`.
-
-        Now, **1** is smaller than **9**, so this pairing is better. You can see how choosing closer numbers minimizes the maximum difference.
-
-        ### Key Point:
-        You are **not** trying to minimize the smallest difference or the average difference. You are trying to minimize the **largest difference** among all the pairs. It’s a tricky concept, but does this explanation make sense now?
-        */
-        var numsSorted = nums.sorted()
-        let n = numsSorted.count
-        
-        var answer = Int.max
-        
-        func recursiveHelper(_ currMaxDifference: Int, _ pairsRemaining: Int, _ currIndex: Int) -> Int {
-            if currIndex >= n-1 {
-                return 0
-            }
-            
-            if pairsRemaining == 0 {
-                answer = min(answer, currMaxDifference)
-                print(answer)
-                return currMaxDifference
-            }
-            
-            let currDifference = abs(numsSorted[currIndex]-numsSorted[currIndex+1])
-            let considering = recursiveHelper(max(currMaxDifference,currDifference), pairsRemaining-1, currIndex+2)
-            let skipping = recursiveHelper(currMaxDifference, pairsRemaining, currIndex+1)
-            return max(considering, skipping)
-        }
-        _ = recursiveHelper(0, p, 0)
-        return answer
-    }
     
     
     func setZeroes(_ matrix: inout [[Int]]) {
         /*
-        let n = matrix.count
-        let m = matrix[0].count
-        for i in 0..<n {
-            for j in 0..<m {
-                if matrix[i][j] == 0 {
-                    alterCurrRowAndCol(i,j,&matrix)
-                }
-            }
-        }
-
-        for i in 0..<n {
-            for j in 0..<m {
-                if matrix[i][j] == Int.min {
-                    matrix[i][j] = 0
-                }
-            }
-        }
-        */
+         let n = matrix.count
+         let m = matrix[0].count
+         for i in 0..<n {
+         for j in 0..<m {
+         if matrix[i][j] == 0 {
+         alterCurrRowAndCol(i,j,&matrix)
+         }
+         }
+         }
+         
+         for i in 0..<n {
+         for j in 0..<m {
+         if matrix[i][j] == Int.min {
+         matrix[i][j] = 0
+         }
+         }
+         }
+         */
         // Not a valid approach as there could be Int.min as an element
-
+        
         // marking the first row and first col
         let m = matrix.count
         let n = matrix[0].count
-
+        
         for i in 1..<m {
             for j in 1..<n {
                 if matrix[i][j] == 0 {
@@ -2013,7 +1942,7 @@ class Solution {
         }
         
     }
-
+    
     func alterCurrRowAndCol(_ row: Int, _ col: Int,_ matrix: inout [[Int]]) {
         let n = matrix.count
         let m = matrix[0].count
@@ -2028,6 +1957,563 @@ class Solution {
             }
         }
     }
+    
+    //    func binaryTreePaths(_ root: TreeNode?) -> [String] {
+    //        var output = allRootToLeaf(root)
+    //        var answer = [String]()
+    //        for path in output {
+    //                var currPathString = ""
+    //                for i in 0..<path.count {
+    //                    currPathString += String(path[i]!.val)
+    //                    if i != 0 || i != (path.count-1) {
+    //                        currPathString += "->"
+    //                    }
+    //                }
+    //                answer.append(currPathString)
+    //            }
+    //        return answer
+    //    }
+    //
+    //    func allRootToLeaf(_ root: TreeNode?) -> [[TreeNode?]] {
+    //        guard let root = root else {
+    //            return []
+    //        }
+    //
+    //        var output = [[TreeNode?]]()
+    //
+    //        func recursiveHelper(_ root: TreeNode?, _ currPath: inout [TreeNode?]) {
+    //            if root?.left == nil && root?.right == nil {
+    //                currPath.append(root)
+    //                output.append(currPath)
+    //                return
+    //            }
+    //            currPath.append(root)
+    //            if let left = root?.left {
+    //                recursiveHelper(left, &currPath)
+    //                if !currPath.isEmpty {
+    //                    currPath.removeLast()
+    //                }
+    //            }
+    //
+    //            if let right = root?.right {
+    //                recursiveHelper(right, &currPath)
+    //                if !currPath.isEmpty {
+    //                    currPath.removeLast()
+    //                }
+    //            }
+    //        }
+    //
+    //        var currPath = [TreeNode?]()
+    //        recursiveHelper(root, &currPath)
+    //        return output
+    //    }
+    
+    /* Approach DFS 1:
+     func binaryTreePaths(_ root: TreeNode?) -> [String] {
+     var output = allRootToLeaf(root)
+     var answer = [String]()
+     for path in output {
+     var currPathString = ""
+     for i in 0..<path.count {
+     currPathString += String(path[i]!.val)
+     if i != (path.count-1) {
+     currPathString += "->"
+     }
+     }
+     answer.append(currPathString)
+     }
+     return answer
+     }
+     
+     func allRootToLeaf(_ root: TreeNode?) -> [[TreeNode?]] {
+     guard let root = root else {
+     return []
+     }
+     
+     var output = [[TreeNode?]]()
+     
+     func recursiveHelper(_ root: TreeNode?, _ currPath: inout [TreeNode?]) {
+     if root?.left == nil && root?.right == nil {
+     currPath.append(root)
+     output.append(currPath)
+     return
+     }
+     currPath.append(root)
+     if let left = root?.left {
+     recursiveHelper(left, &currPath)
+     if !currPath.isEmpty {
+     currPath.removeLast()
+     }
+     }
+     
+     if let right = root?.right {
+     recursiveHelper(right, &currPath)
+     if !currPath.isEmpty {
+     currPath.removeLast()
+     }
+     }
+     }
+     
+     var currPath = [TreeNode?]()
+     recursiveHelper(root, &currPath)
+     return output
+     }
+     */
+    /* Approach DFS 2: Without [TreeNode] array
+     func binaryTreePaths(_ root: TreeNode?) -> [String] {
+     var result = [String]()
+     dfsHelper(root,"",&result)
+     return result
+     }
+     
+     func dfsHelper(_ node: TreeNode?, _ currPath: String, _ result: inout [String]) {
+     guard let node = node else { return }
+     
+     if node.left == nil && node.right == nil {
+     let path = currPath + String(node.val)
+     result.append(path)
+     return
+     }
+     
+     let pathTravelledSoFar = currPath + String(node.val) + "->"
+     
+     dfsHelper(node.left, pathTravelledSoFar, &result)
+     dfsHelper(node.right, pathTravelledSoFar, &result)
+     }
+     */
+    // Approach 3 : Using BFS
+    func binaryTreePaths(_ root: TreeNode?) -> [String] {
+        guard let root = root else {return []}
+        var result = [String]()
+        var queue = [(TreeNode,String)]()
+        queue.append((root,""))
+        while !queue.isEmpty {
+            var (node, pathTravelledSoFar) = queue.removeFirst()
+            if node.left == nil && node.right == nil {
+                result.append(pathTravelledSoFar)
+            }
+            if let left = node.left {
+                queue.append((left, pathTravelledSoFar +  String(node.val) + "->" ))
+            }
+            if let right = node.right {
+                queue.append((right, pathTravelledSoFar + String(node.val) + "->"))
+            }
+        }
+        return result
+    }
+    
+    func maxTargetNodes(_ edges1: [[Int]], _ edges2: [[Int]], _ k : Int) -> [Int] {
+        var firstGraphAdjList = [Int:[Int]]()
+        var secondGraphAdjList = [Int:[Int]]()
+        
+        for edge in edges1 {
+            let u = edge.first!
+            let v = edge.last!
+            firstGraphAdjList[u, default: []].append(v)
+            firstGraphAdjList[v, default: []].append(u)
+        }
+        for edge in edges2 {
+            let u = edge.first!
+            let v = edge.last!
+            secondGraphAdjList[u, default: []].append(v)
+            secondGraphAdjList[v, default: []].append(u)
+        }
+        
+        let n = edges1.count, m =  edges2.count
+        
+        var count1 = Array(repeating: 0, count: n+1)
+        
+        for i in 0...n {
+            count1[i] = bfsCount(firstGraphAdjList, k, i)
+        }
+        
+        var goldenNodeCountFromTree2 = 0
+        for i in 0...m {
+            goldenNodeCountFromTree2 = max(goldenNodeCountFromTree2, bfsCount(secondGraphAdjList, k-1, i))
+        }
+        
+        return count1.map{$0 + goldenNodeCountFromTree2}
+    }
+    
+    func bfsCount(_ adjList: [Int:[Int]], _ maxDistanceAllowed: Int, _ sourceNode: Int) -> Int {
+        var visited = Set<Int>()
+        var queue : [Int] = []
+        queue.append(sourceNode)
+        visited.insert(sourceNode)
+        var count = 0, distance = 0
+        while !queue.isEmpty && distance <= maxDistanceAllowed {
+            var size = queue.count
+            while size != 0 {
+                var currNode = queue.removeFirst()
+                if let neighbors = adjList[currNode] {
+                    for neighbor in neighbors {
+                        if !visited.contains(neighbor) {
+                            visited.insert(neighbor)
+                            queue.append(neighbor)
+                        }
+                    }
+                }
+                count += 1
+                size -= 1
+            }
+            distance += 1
+        }
+        return count
+    }
+    func widthOfBinaryTree(_ root: TreeNode?) -> Int {
+        //leftChildIndex = 2 * parentIndex + 1
+        //rightChildIndex = 2 * parentIndex + 2
+        
+        guard let root = root else { return 0 }
+        
+        var queue = [(root: TreeNode, index: Int)]()
+        queue.append((root,0))
+        var answer: Int = 0
+        
+        while !queue.isEmpty {
+            let size = queue.count
+            let firstIndex = queue.first!.index
+            var lastIndex = firstIndex //Will update this in loop
+            for _ in 0..<size {
+                let (currNode, index) = queue.removeFirst()
+                let normalizedIndex = index - firstIndex
+                if let left = currNode.left {
+                    queue.append((left, 2 * normalizedIndex + 1))
+                }
+                if let right = currNode.right {
+                    queue.append((right, 2 * normalizedIndex + 2))
+                }
+            }
+            answer = max(answer, lastIndex - firstIndex + 1)
+        }
+        return answer
+    }
+    
+    func levelOrder(_ root: TreeNode?) -> [[Int]] {
+        guard let root = root else { return [] }
+        var queue : [TreeNode] = []
+        queue.append(root)
+        var output = [[Int]]()
+        var currLevel = 0
+        while !queue.isEmpty {
+            var size = queue.count
+            var currLevelTraversal = [Int]()
+            while size != 0 {
+                let currNode = queue.removeFirst()
+                currLevelTraversal.append(currNode.val)
+                if let left = currNode.left { queue.append(left) }
+                if let right = currNode.right { queue.append(right) }
+                size -= 1
+            }
+            if currLevel % 2 != 0 {
+                currLevelTraversal = currLevelTraversal.reversed()
+            }
+            currLevel += 1
+            output.append(currLevelTraversal)
+        }
+        return output
+    }
+    
+    /*
+     So let's say we are talking about ith node in the first tree, jth node in the second tree to which we are going to built a bridge, and v is the node as destination node in second tree, now to make this bridge an even length bridge, we need to have odd distance from jth node to vth node, basically we need to bridge with that jth node in Tree 2 which has maximum number of nodes path connected at odd distance. So answer calculation according to me would be like:
+     
+     val1 = For Tree2 find the node which has maximum number of odd nodes path available to it, inside. (let's say it's node 0 which has 5 odd length nodes possible in it) -> meaning val1 = 5
+     
+     val2 = For Tree1 find the number of even length nodes within it ( adding 1 to it since each node is target to itself)
+     
+     So the final answer would be val1 + val2 for ith node of tree1.
+     
+     Since the values toggle but level order is not necessarily be a sorted node order thus storing evenNodeAtCurrLevel for first tree in array
+     */
+    
+    func maxTargetNodes(_ edges1: [[Int]], _ edges2: [[Int]]) -> [Int] {
+        
+        var buildAdjList : ([[Int]]) -> [Int:[Int]] = { edges in
+            var adjList = [Int: [Int]]()
+            for edge in edges {
+                let u = edge.first!
+                let v = edge.last!
+                adjList[u,default: []].append(v)
+                adjList[v,default: []].append(u)
+            }
+            return adjList
+        }
+        
+        var firstGraphAdjList = buildAdjList(edges1)
+        var secondGraphAdjList = buildAdjList(edges2)
+        
+        let n = firstGraphAdjList.count, m = secondGraphAdjList.count
+        
+        func totalOddEvenCountsAtRoot( _ forFirstGraph: Bool) -> (Int,Int) {
+            //By DFS
+            var adjList = forFirstGraph == true ? firstGraphAdjList : secondGraphAdjList
+            func totalOddEvenCountsAtRootHelper(_ node: Int, _ parent: Int) -> (Int,Int) {
+                // Node as leaf node -> (po, pe) = (0,1)
+                if adjList[node]!.count == 0 {
+                    return (0,1)
+                }
+                var (nodePo, nodePe) = (0,1)
+                if let neighbors = adjList[node] {
+                    for neighbor in neighbors {
+                        if neighbor == parent { continue } //since it's undirected graph that means node will also have parent in it's adj list
+                        let (childPo, childPe) = totalOddEvenCountsAtRootHelper(neighbor, node)
+                        nodePo += childPe
+                        nodePe += childPo
+                    }
+                }
+                return (nodePo,nodePe)
+            }
+            return totalOddEvenCountsAtRootHelper(0,-1)
+        }
+        
+        let (totalOddForSecondTree, totalEvenForSecondTree) = totalOddEvenCountsAtRoot(false)
+        let (totalOddForFirstTre, totalEvenForFirstTree) = totalOddEvenCountsAtRoot(true)
+        let goldenCountForSecondTree = max(totalOddForSecondTree,totalEvenForSecondTree)
+        
+        var evenForFirstTree = Array(repeating: 0, count: n)
+        func bfsOnFirstTreeToFillEvenArray() {
+            var queue = [Int]()
+            queue.append(0)
+            var depth = 0
+            while !queue.isEmpty {
+                var size = queue.count
+                while size != 0 {
+                    var currNode = queue.removeFirst()
+                    if depth % 2 == 0 {
+                        evenForFirstTree[currNode] = totalEvenForFirstTree
+                    } else {
+                        evenForFirstTree[currNode] = totalOddForFirstTre
+                    }
+                    size -= 0
+                }
+                depth += 1
+            }
+        }
+        bfsOnFirstTreeToFillEvenArray()
+        return evenForFirstTree.map{$0+goldenCountForSecondTree}
+    }
+    
+    
+    
+    func minimizeMax(_ nums: [Int], _ p: Int) -> Int {
+        //[10,1,2,7,1,3,5,9]
+        //[1,1,2,3,5,7,9,10]: Sorted nums
+        /*
+         Here creating a minHeap for difference won't work because each index can be consumed only once, minHeap approach will take (1,1) and (1,2) as valid thing.
+         Now here we see either a element can be in the answer or it can't be : DP
+         If it is considered than it's should be pair with the adjacent element of the sorted array. Otherwise ignore it
+         */
+        /*
+         Alright, let's dissect this step by step. 😎
+         
+         The term **"minimize the maximum difference"** might sound confusing at first, but here's what it really means:
+         
+         1. You need to form **exactly `p` pairs** from the array.
+         2. For each pair `(i, j)`, calculate the **difference** as `|nums[i] - nums[j]|`.
+         3. Once you have all the pairs, find the **maximum difference** among them (let's call this `max_diff`).
+         4. Your goal is to **minimize this `max_diff`**, meaning you need to find a way to pair the numbers such that the largest difference among all the pairs is as small as possible.
+         
+         ### Now, let's address your example:
+         **Input:** `[10, 1, 2, 7, 1, 3, 5, 9]`, `p = 3`
+         
+         See here triplets ( since of p =3 ) pairs combinations:
+         
+         You suggested pairs: `(1, 10)`, `(1, 9)`, and `(2, 7)`.
+         - Their differences are:
+         - `|1 - 10| = 9`
+         - `|1 - 9| = 8`
+         - `|2 - 7| = 5`
+         
+         The **maximum difference** here is `max(9, 8, 5) = 9`.
+         
+         But wait, the goal is to **minimize** this maximum difference, not just find it. This means you need to choose pairs where the largest difference among them is as small as possible.
+         
+         For example:
+         If you choose pairs like `(1, 1)`, `(2, 3)`, `(9, 10)`:
+         - Their differences are:
+         - `|1 - 1| = 0`
+         - `|2 - 3| = 1`
+         - `|9 - 10| = 1`
+         
+         The **maximum difference** here is `max(0, 1, 1) = 1`.
+         
+         Now, **1** is smaller than **9**, so this pairing is better. You can see how choosing closer numbers minimizes the maximum difference.
+         
+         ### Key Point:
+         You are **not** trying to minimize the smallest difference or the average difference. You are trying to minimize the **largest difference** among all the pairs. It’s a tricky concept, but does this explanation make sense now?
+         */
+        
+        if p == 0 || nums.count == 0 {
+            return 0
+        }
+        
+        var numsSorted = nums.sorted()
+        let n = numsSorted.count
+        
+        var answer = Int.max //Minimize the maximum difference
+        
+        //        func recursiveHelper(_ currMaxDifference: Int, _ currPosition: Int, _ pairsRemaining: Int) {
+        //            if pairsRemaining == 0 {
+        //                answer = min(answer,currMaxDifference)
+        //                return
+        //            }
+        //
+        //            if currPosition >= n { return }
+        //
+        //            //including
+        //            if currPosition < n-1 {
+        //                var updatedMaxDifferenceIfIncluding = max(currMaxDifference, abs(numsSorted[currPosition]-numsSorted[currPosition+1]))
+        //                recursiveHelper(updatedMaxDifferenceIfIncluding, currPosition + 2, pairsRemaining-1)
+        //            }
+        //
+        //            recursiveHelper(currMaxDifference, currPosition+1, pairsRemaining)
+        //        }
+        //
+        //        recursiveHelper(Int.min, 0, p)
+        
+        //        var dp = Array(repeating: Array(repeating: -1, count: n+1), count: p+1)
+        //
+        //        func recursiveHelper(_ pairsRemaining: Int, _ currPosition: Int) -> Int {
+        //            if pairsRemaining == 0 {
+        //                // minimize the maximum difference, no pair is available
+        //                return 0
+        //            }
+        //
+        //            if currPosition >= n-1 {
+        //                return Int.max
+        //            }
+        //
+        //            if dp[pairsRemaining][currPosition] != -1 {
+        //                return dp[pairsRemaining][currPosition]
+        //            }
+        //
+        //            let diffIfIncluding = max(abs(numsSorted[currPosition]-nums[currPosition+1]), recursiveHelper(pairsRemaining-1, currPosition+2))
+        //            let rest = recursiveHelper(pairsRemaining, currPosition+1)
+        //
+        //            let answer = min(diffIfIncluding, rest)
+        //            dp[pairsRemaining][currPosition] = answer
+        //            return answer
+        //        }
+        //
+        //        return recursiveHelper(p, 0)
+        
+        
+        //        var dp = [String:Int]()
+        //
+        //        func recursiveHelper(_ pairsRemaining: Int, _ currPosition: Int) -> Int {
+        //            if pairsRemaining == 0 {
+        //                // minimize the maximum difference, no pair is available
+        //                return 0
+        //            }
+        //
+        //            if currPosition >= n-1 {
+        //                return Int.max
+        //            }
+        //
+        //            let key = "\(pairsRemaining)_\(currPosition)"
+        //
+        //            if dp[key] != nil {
+        //                return dp[key]!
+        //            }
+        //
+        //            let diffIfIncluding = max(abs(numsSorted[currPosition]-numsSorted[currPosition+1]), recursiveHelper(pairsRemaining-1, currPosition+2))
+        //            let rest = recursiveHelper(pairsRemaining, currPosition+1)
+        //
+        //            let answer = min(diffIfIncluding, rest)
+        //            dp[key] = answer
+        //            return answer
+        //        }
+        //
+        //        return recursiveHelper(p, 0)
+        
+        // Above solutions will give TLE, need to think about Binary Search on Maximum Difference
+        
+        var right = numsSorted[n-1] - numsSorted[0]
+        var left = right //minimum difference possible between any adjacent
+        for i in 1..<n {
+            left = min(left, abs(numsSorted[i]-numsSorted[i-1]))
+        }
+        
+        while left <= right {
+            var midMaxDifference = (left+right)/2
+            //if there exists p pairs in numsSorted whose max Difference <= midMaxDifference -> meaning we can reduce the midMaxDifference
+            if pairsDoesExist(midMaxDifference) {
+                right = midMaxDifference - 1
+            } else {
+                left = midMaxDifference + 1
+            }
+        }
+        
+        func pairsDoesExist(_ maxDifference: Int) -> Bool {
+            var index = 0
+            var count = 0
+            while index < n {
+                if index < n-1 && numsSorted[index+1] - numsSorted[index] <= maxDifference {
+                    count += 1
+                    if count == p {
+                        return true
+                    }
+                    index += 2
+                } else {
+                    index += 1
+                }
+            }
+            return false
+        }
+        return left
+    }
+    
+    func spiralOrder(_ matrix: [[Int]]) -> [Int] {
+        let m = matrix.count
+        let n = matrix[0].count
+        var output = [Int]()
+        func dfsTraversal(_ top: Int, _ bottom: Int, _ left: Int, _ right : Int) {
+            if top > bottom || left > right { return }
+            
+            for j in left...right {
+                output.append(matrix[top][j])
+            }
+            
+            
+            if top+1 < m && top < bottom {
+                for i in top+1...bottom {
+                    output.append(matrix[i][right])
+                }
+            }
+            
+            if top < bottom && left < right {
+                for j in stride(from: right-1 , through: left, by: -1) {
+                    output.append(matrix[bottom][j])
+                }
+                for i in stride(from: bottom-1, through: top+1, by: -1) {
+                    output.append(matrix[i][left])
+                }
+            }
+            
+            dfsTraversal(top+1, bottom-1, left+1, right-1)
+        }
+        dfsTraversal(0,m-1,0,n-1)
+        return output
+    }
+    
+    func diameterOfBinaryTree(_ root: TreeNode?) -> Int {
+        guard let root = root else { return 0 }
+        var answer = 0
+        //returns height and diameter of tree if currNode is considered in path
+        func heightAndDiameterOfBinaryTree(_ root: TreeNode?) -> (Int,Int) {
+            guard let root = root else { return (0,0) }
+            if root.left == nil && root.right == nil {
+                return (1,0)
+            }
+            var (leftH,leftD) = heightAndDiameterOfBinaryTree(root.left)
+            var (rightH,rightD) = heightAndDiameterOfBinaryTree(root.right)
+            answer = max(answer,max(leftD,rightD))
+            return (1+max(leftH,rightH),leftH+rightH)
+        }
+        _ = heightAndDiameterOfBinaryTree(root)
+        return answer
+    }
+    // This is the diameter of the tree since we need
 }
 
 let solution = Solution()
@@ -2066,4 +2552,6 @@ let solution = Solution()
 //print(solution.countAndSay(4))
 //var nums = [0,1,0,3,12]
 //solution.moveZeroes(&nums)
-print(solution.minimizeMax([10,1,2,7,1,3,5,9], 3))
+//print(solution.minimizeMax([10,1,2,7,1,3,5,9], 3))
+//print(solution.maxTargetNodes([[0,1],[0,2],[2,3],[2,4]], [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]))
+print(solution.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
