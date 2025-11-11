@@ -1552,20 +1552,6 @@ class Solution {
         return String(strArray[start..<start+maxLen])
     }
     
-    func topKFrequent(_ words: [String], _ k: Int) -> [String] {
-        var frequencyHashMap : [String:Int] = [:]
-        for word in words {
-            frequencyHashMap[word, default: 0] += 1
-        }
-        var sortedArrayWords = frequencyHashMap.sorted { lhs, rhs in
-            if lhs.value == rhs.value {
-                return lhs.key < rhs.key
-            }
-            return lhs.value > rhs.value
-        }
-        return sortedArrayWords.prefix(k).map{$0.key}
-    }
-    
     func nextPermutation(_ nums: inout [Int]) {
         //look from the right, the first element where you encountered the sequence is decreasing
         //Main intention is to keep the prefix same as long as possible
@@ -2514,6 +2500,304 @@ class Solution {
         return answer
     }
     // This is the diameter of the tree since we need
+    
+    func canChange(_ start: String, _ target: String) -> Bool {
+        // The sequence of L and R won't change for "L" and "R" in start and target
+        /*
+         Thinking Process:
+
+         First of All in order to get the Final string from the start String their L & R Must come in same sequenece.
+         Means, L--R--R cant never Converted in some thing Like R--LR-- their Sequence LRR !=RLR.
+         Now the second thing is for L(As L can only Move Left). so it is certain is that L in start can only Match up With those L whose index in the Final String is equal or Less than him.
+         Similarly, As R can Can only Move in Right so,Thats why all the R in start must have the lower or Equal in terms of index of final String R.
+         --L-- can match with L---- But cant never match with -----L\
+         similarly ---R can match with -R-- but not. in OWA.
+         */
+        var startStack = [(Character,Int)]()
+        var targetStack = [(Character,Int)]()
+        
+        var startArr = Array(start), targetArr = Array(target)
+        let n = startArr.count
+        let m = targetArr.count
+        
+        if n != m {
+            return false
+        }
+        
+        /*
+         // Approach 1 : Using Stack
+        var lCountFromStart = 0, rCountFromStart = 0, lCountFromTarget = 0, rCountFromTarget = 0
+        
+        for i in 0..<n {
+            if startArr[i] != "_" {
+                if startArr[i] == "L" {
+                    lCountFromStart += 1
+                } else {
+                    rCountFromStart += 1
+                }
+                startStack.append((startArr[i],i))
+            }
+            if targetArr[i] != "_" {
+                if targetArr[i] == "L" {
+                    lCountFromTarget += 1
+                } else {
+                    rCountFromTarget += 1
+                }
+                targetStack.append((targetArr[i],i))
+            }
+        }
+        
+        if lCountFromStart != lCountFromTarget || rCountFromStart != rCountFromTarget { return false }
+        
+        while !startStack.isEmpty && !targetStack.isEmpty {
+            let (ch1,idx1) = startStack.removeLast()
+            let (ch2,idx2) = targetStack.removeLast()
+            
+            if ch1 != ch2 { return false }
+            
+            if ch1 == "L" {
+                if idx1 < idx2 { return false }
+            }
+            
+            if ch1 == "R" {
+                if idx1 > idx2 { return false }
+            }
+        }
+        
+        return true
+         */
+        
+        // Approach 2 : Using 2 pointers , starting from back
+        var i = 0, j = 0
+        while i <= n && j <= n {
+            while i < n && startArr[i] == "_" { i += 1 }
+            while j < n && targetArr[j] == "_" { j += 1}
+            
+            if i == n || j == n { return i == n && j == n}
+            
+            if startArr[i] != targetArr[j] { return false }
+            if startArr[i] == "L" {
+                if i < j { return false }
+            } else {
+                if i > j { return false }
+            }
+            i += 1
+            j += 1
+        }
+        return true
+    }
+    
+    
+    func lowestCommonAncestor(_ root: TreeNode?, _ p: TreeNode?, _ q: TreeNode?) -> TreeNode? {
+        guard let root = root, let p = p, let q = q else { return nil }
+        if (root.val == p.val) || (root.val == q.val){
+            if lowestCommonAncestor(root.left, p, q) != nil || lowestCommonAncestor(root.right, p, q) != nil {
+                return root
+            }
+        }
+        let leftLca = lowestCommonAncestor(root.left, p, q)
+        if leftLca != nil { return leftLca }
+        let rightLca = lowestCommonAncestor(root.right, p, q)
+        if rightLca != nil { return rightLca }
+        return nil
+    }
+    
+    func isSameTree(_ p: TreeNode?, _ q: TreeNode?) -> Bool {
+        /*
+        // 1. DFS Based solution
+        guard let p = p, let q = q else { return p == nil && q == nil }
+        return p.val == q.val && isSameTree(p.left, q.left) && isSameTree(p.right, q.right)
+         */
+        // 2. BFS Based solution
+        var firstTreeQueue : [(TreeNode, Int)] = []
+        var secondTreeQueue : [(TreeNode, Int)] = []
+        guard let p = p , let q = q else { return p == nil && q == nil }
+        if p.val != q.val { return false }
+        firstTreeQueue.append((p,0))
+        secondTreeQueue.append((q,0))
+        while !firstTreeQueue.isEmpty && !secondTreeQueue.isEmpty {
+            var size1 = firstTreeQueue.count
+            var size2 = secondTreeQueue.count
+            if size1 != size2 { return false }
+            while size1 != 0 && size2 != 0 {
+                let (firstTreeCurrNode, firstTreeCurrIdx) = firstTreeQueue.removeFirst()
+                let (secondTreeCurrNode, secondTreeCurrIdx) = secondTreeQueue.removeFirst()
+                if firstTreeCurrNode.val != secondTreeCurrNode.val { return false }
+                if firstTreeCurrIdx != secondTreeCurrIdx { return false }
+                if let firstTreeLeft = firstTreeCurrNode.left { firstTreeQueue.append((firstTreeLeft, 2 * firstTreeCurrIdx + 1))}
+                if let firstTreeRight = firstTreeCurrNode.right { firstTreeQueue.append((firstTreeRight, 2 * firstTreeCurrIdx + 2))}
+                if let secondTreeLeft = secondTreeCurrNode.left { secondTreeQueue.append((secondTreeLeft, 2 * secondTreeCurrIdx + 1))}
+                if let secondTreeRight = secondTreeCurrNode.right { secondTreeQueue.append((secondTreeRight, 2 * secondTreeCurrIdx + 2))}
+                size1 -= 1
+                size2 -= 1
+            }
+        }
+        return true
+    }
+    
+    func canJump(_ nums: [Int]) -> Bool {
+        let n = nums.count
+        var dp = Array(repeating: false, count: n)
+        func canJumpHelper(_ currPos: Int) -> Bool {
+            if currPos >= n - 1 { return true }
+            if dp[currPos] == true { return true }
+            if currPos < n && nums[currPos] > 0 {
+                for val in 1...nums[currPos] {
+                    if canJumpHelper(currPos + val) {
+                        if currPos + val < n {
+                            dp[currPos + val] = true
+                        }
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+        return canJumpHelper(0)
+    }
+    
+    
+    func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
+        /*
+         // Approach 1: Using minHeap of fixed size k
+        var freqHashMap : [Int: Int] = [:]
+        
+        for num in nums {
+            freqHashMap[num, default: 0] += 1
+        }
+        
+        var minHeap = MinHeapForPair()
+        
+        for (key,val) in freqHashMap {
+            minHeap.insert(key, val)
+            if minHeap.count > k {
+                _ = minHeap.extractMin()
+            }
+        }
+        
+        var answer = [Int]()
+        while !minHeap.isEmpty {
+            answer.append(minHeap.extractMin()!.0)
+        }
+        
+        return answer
+        */
+        // Using Bucket sort approach over frequency
+        var freqHashMap : [Int:Int] = [:]
+        for num in nums {
+            freqHashMap[num, default: 0] += 1
+        }
+        //Each index represents frequency ranges from [0,n]
+        let n = nums.count
+        var bucketFreqArray = Array(repeating: [Int](), count: n+1)
+        for (key,val) in freqHashMap {
+            bucketFreqArray[val].append(key)
+        }
+        
+        var answer = [Int]()
+        var count = 0
+        for freq in stride(from: n, through: 0, by: -1) {
+            for num in bucketFreqArray[freq] {
+                answer.append(num)
+                if answer.count == k {
+                    return answer
+                }
+            }
+        }
+        return answer
+        /*
+         Key Insight: Each Element is Processed Only Once
+         Outer loop iterates over possible frequencies (from highest to lowest). The number of possible frequencies is at most nums.count + 1.
+
+         Inner loop iterates over the elements that have that particular frequency.
+
+         But:
+
+         The total number of iterations for for num in buckets[freq] across all freq is exactly equal to the number of unique elements, which can't exceed
+         n
+         n (the input’s length).
+
+         Every element appears in exactly one bucket (its frequency count), so these inner loop iterations across all buckets sum up to
+         n
+         n.
+
+         Time Complexity Breakdown
+         Building the frequency map:
+         O(n)
+         O(n)
+
+         Building the bucket array:
+         O(n)
+         O(n)
+
+         Processing the buckets:
+
+         At most all elements are visited once, total:
+         O(n)
+         O(n)
+
+         Total:
+         O(n)
+         O(n)
+
+         The outer loop does not multiply the complexity because most buckets will be empty, and only filled buckets are processed. You never process an element more than once.
+         */
+    }
+}
+
+class MinHeapForPair {
+    private var minHeap : [(Int,Int)] = []
+    var isEmpty : Bool {
+        return minHeap.isEmpty
+    }
+    var count : Int {
+        return minHeap.count
+    }
+    private var peek : (Int,Int)? {
+        return minHeap.first
+    }
+    
+    // Heapify Up
+    func insert(_ key: Int, _ val : Int) {
+        minHeap.append((key,val))
+        var childIdx = count - 1
+        while childIdx > 0 {
+            let parentIdx = (childIdx - 1)/2
+            if minHeap[parentIdx].1 < minHeap[childIdx].1 { return }
+            minHeap.swapAt(childIdx, parentIdx)
+            childIdx = parentIdx
+        }
+    }
+    
+    // Heapify down
+   func extractMin() -> (Int,Int)? {
+        if isEmpty { return nil }
+        if count == 1 {
+            return minHeap.removeLast()
+        }
+        
+        let answer = minHeap.first!
+        minHeap[0] = minHeap.removeLast()
+        
+        var parentIdx = 0
+        var smallestIdx = parentIdx
+        
+        while parentIdx < count {
+            let leftChildIdx = 2 * parentIdx + 1
+            let rightChildIdx = 2 * parentIdx + 2
+            if leftChildIdx < count && minHeap[leftChildIdx].1 < minHeap[smallestIdx].1 {
+                smallestIdx = leftChildIdx
+            }
+            if rightChildIdx < count && minHeap[rightChildIdx].1 < minHeap[smallestIdx].1 {
+                smallestIdx = rightChildIdx
+            }
+            if smallestIdx == parentIdx { break }
+            minHeap.swapAt(smallestIdx , parentIdx)
+            parentIdx = smallestIdx
+        }
+        
+        return answer
+    }
 }
 
 let solution = Solution()
