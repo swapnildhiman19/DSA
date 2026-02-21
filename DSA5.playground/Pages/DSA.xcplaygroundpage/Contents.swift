@@ -2514,7 +2514,386 @@ class Solution {
         return answer
     }
     // This is the diameter of the tree since we need
+
+    func maxPathSum(_ root: TreeNode?) -> Int {
+        var maxSum = Int.min
+        func maxPathSumHelper(_ root: TreeNode?) -> Int {
+            guard let root = root else {
+                return 0
+            }
+            var leftBestSum = maxPathSumHelper(root.left)
+            var rightBestSum = maxPathSumHelper(root.right)
+            var sum = leftBestSum + root.val + rightBestSum
+            maxSum = max(maxSum, sum)
+
+            return sum
+        }
+        _ = maxPathSumHelper(root)
+        return maxSum
+    }
+
+    func buildTree(_ preorder: [Int], _ inorder: [Int]) -> TreeNode? {
+        let n = inorder.count
+        var hashMapValToIndex : [Int:Int] = [:]
+        for (val,index) in inorder.enumerated() {
+            hashMapValToIndex[val] = index
+        }
+        func buildTreeHelper(_ currPreorderIdx : Int, _ inorderStartIdx : Int, _ inorderEndIdx: Int) -> TreeNode? {
+            if currPreorderIdx >= n || inorderStartIdx > inorderEndIdx || inorderStartIdx >= n || inorderEndIdx < 0 {
+                return nil
+            }
+            let root = TreeNode(preorder[currPreorderIdx])
+            //finding the index of preorder[currPreorderIdx] in inorder
+            let indexForRootInInorder = hashMapValToIndex[preorder[currPreorderIdx]]
+            let leftSubTreeSize = indexForRootInInorder! - inorderStartIdx
+            root.left = buildTreeHelper(
+                currPreorderIdx+1,
+                inorderStartIdx,
+                indexForRootInInorder! - 1
+            )
+            root.right = buildTreeHelper(
+                currPreorderIdx+1+leftSubTreeSize,
+                indexForRootInInorder! + 1,
+                inorderEndIdx
+            )
+            return root
+        }
+        return buildTreeHelper(0,0,n-1)
+    }
 }
+
+
+class Codec {
+    func serialize(_ root: TreeNode?) -> String {
+        var strArr : [String] = []
+        func bfs(_ root: TreeNode?) {
+            guard let root = root else {
+                strArr.append("null")
+                return
+            }
+            var queue: [TreeNode?] = []
+            queue.append(root)
+            strArr.append("\(root.val)")
+
+            while !queue.isEmpty {
+                var size = queue.count
+                while size != 0 {
+                    var node = queue.removeFirst()!
+                    if let left = node.left {
+                        queue.append(left)
+                        strArr.append("\(left.val)")
+                    } else {
+                        strArr.append("null")
+                    }
+                    if let right = node.right {
+                        queue.append(right)
+                        strArr.append("\(right.val)")
+                    } else {
+                        strArr.append("null")
+                    }
+                    size -= 1
+                }
+            }
+        }
+        bfs(root)
+        var ansString = strArr.joined(separator: "")
+        return ansString
+    }
+
+    func deserialize(_ data: String) -> TreeNode? {
+
+        var queue: [TreeNode?] = []
+
+        var resultStr : [String] = []
+        var currIdx = data.startIndex
+
+        while currIdx < data.endIndex {
+            let remainingString = data[currIdx...]
+            if remainingString.hasPrefix("null"){
+                resultStr.append("null")
+                currIdx = data.index(currIdx, offsetBy: 4)
+            } else {
+                resultStr.append(String(data[currIdx]))
+                currIdx = data.index(currIdx, offsetBy: 1)
+            }
+        }
+
+        func buildTree(from array: [String]) -> TreeNode? {
+            guard !array.isEmpty, array[0] != "null" else {return nil}
+            var root = TreeNode(Int(array[0])!)
+            var queue : [TreeNode] = [root]
+            var i = 1
+            while i < array.count {
+                let parent = queue.removeFirst()
+                if i < array.count {
+                    if array[i] != "null" {
+                        let leftNode = TreeNode(Int(array[i])!)
+                        parent.left = leftNode
+                        queue.append(leftNode)
+                    }
+                    i += 1
+                }
+
+                if i < array.count {
+                    if array[i] != "null" {
+                        let rightNode = TreeNode(Int(array[i])!)
+                        parent.right = rightNode
+                        queue.append(rightNode)
+                    }
+                    i += 1
+                }
+            }
+            return root
+        }
+
+        return buildTree(from: resultStr)
+    }
+
+    func canFinish(_ numCourses: Int, _ prerequisites: [[Int]]) -> Bool {
+        //DFS
+        func canFinishDFS(_ numCourses: Int, _ prerequisites: [[Int]]) -> Bool {
+            var adjList : [Int:[Int]] = [:]
+            var state = Array(repeating: 0, count: numCourses) //0,1,2
+
+            for edge in prerequisites {
+                let source = edge[0]
+                let target = edge[1]
+                adjList[source, default: []].append(target)
+            }
+
+            func dfs(_ node: Int) -> Bool {
+                if state[node] == 1 { return true } //cycle found
+                if state[node] == 2 { return false } //already processed
+
+                state[node] = 1
+                if let neighbors = adjList[node] {
+                    for neighbor in neighbors {
+                        if dfs(neighbor) {
+                            return true
+                        }
+                    }
+                }
+
+                state[node] = 2
+                return false
+            }
+
+            for i in 0..<numCourses {
+                if state[i] == 0 {
+                    if dfs(i) {
+                        return false //contains cycle
+                    }
+                }
+            }
+
+            return true
+        }
+
+//        return canFinishDFS(numCourses, prerequisites)
+
+        func canFinishBFS(_ numCourses: Int, _ prerequisites: [[Int]] ) -> Bool {
+            var queue: [Int] = []
+            var adjList : [Int:[Int]] = [:]
+            var indegree = Array(repeating: 0, count: numCourses)
+            for edge in prerequisites {
+                let source = edge.first!
+                let target = edge.last!
+                adjList[source,default: []].append(target)
+                indegree[target] += 1
+            }
+
+            for (index,degree) in indegree.enumerated() {
+                if degree == 0 {
+                    queue.append(index)
+                }
+            }
+
+            var currIdx = 0
+
+            while currIdx < queue.count {
+                let currNode = queue[currIdx]
+                currIdx += 1
+                if let neighbors = adjList[currNode] {
+                    for neighbor in neighbors {
+                        indegree[neighbor] -= 1
+                        if indegree[neighbor] == 0 {
+                            queue.append(neighbor)
+                        }
+                    }
+                }
+            }
+
+            return currIdx == numCourses //if there's a cycle we couldn't reach this condition
+        }
+
+        return canFinishBFS(numCourses, prerequisites)
+    }
+
+//    func isBipartite(_ graph: [[Int]]) -> Bool {
+//        /*
+//        var setA = Set<Int>()
+//        var setB = Set<Int>()
+//        var queue: [Int] = []
+//        var previousSet = "A"
+//        queue.append(0)
+//        setA.insert(0)
+//        var index = 0
+//        while index < queue.count {
+//            //Need to do this level wise --- WRONG : NODES AT SAME LEVEL SHOULDN'T ALWAYS HAVE SAME COLOR IF THEY ARE CONNECTED
+//            let levelSize = queue.count - index
+//            for _ in 0..<levelSize {
+//                let currNode = queue[index]
+//                index += 1
+//                for neighbor in graph[currNode] {
+//                    if previousSet == "A" {
+//                        if setA.contains(neighbor) {
+//                            return false
+//                        }
+//                        setB.insert(neighbor)
+//                    } else if previousSet == "B" {
+//                        if setB.contains(neighbor) {
+//                            return false
+//                        }
+//                        setA.insert(neighbor)
+//                    }
+//                    queue.append(neighbor)
+//                }
+//            }
+//            previousSet = (previousSet == "A") ? "B" : "A"
+//        }
+//        return true
+//         */
+//
+//        //BIPARTITE WILL NOT HAVE ODD LENGTH CYCLE
+//        var nodeToColorDictionary = [Int: Int]()
+//
+//        func bfsHelper(_ node: Int) -> Bool {
+//            var queue: [Int] = []
+//            var index = 0
+//            queue.append(node)
+//            nodeToColorDictionary[node] = 0
+//            while index < queue.count {
+//                var currNode = queue[index]
+//                index += 1
+//                for neighbor in graph[currNode] {
+//                    if nodeToColorDictionary[neighbor] == nodeToColorDictionary[currNode] {
+//                        return false
+//                    }
+//                    if nodeToColorDictionary[neighbor] == nil {
+//                        nodeToColorDictionary[neighbor] = nodeToColorDictionary[currNode] == 0 ? 1 : 0
+//                        queue.append(neighbor)
+//                    }
+//                }
+//            }
+//            return true
+//        }
+//
+//        for i in 0..<graph.count {
+//            if nodeToColorDictionary[i] == nil {
+//                if !bfsHelper(i) {
+//                    return false
+//                }
+//            }
+//        }
+//        return true
+//    }
+    func isBipartite(_ graph: [[Int]]) -> Bool {
+        let numberOfNodes = graph.count
+        var colors = Array(repeating: -1, count: numberOfNodes)
+        // -1 : Unvisited, 0: ColorA, 1: ColorB
+        func dfsHelper(_ node: Int, _ color: Int) -> Bool {
+            colors[node] = color
+            for neighbor in graph[node] {
+                if colors[neighbor] == color {
+                    return false
+                }
+                if colors[neighbor] == -1 {
+                    if !dfsHelper(neighbor, 1-color) {
+                        return false
+                    }
+                }
+            }
+            return true
+        }
+        for i in 0..<numberOfNodes {
+            if colors[i] == -1 {
+                if !dfsHelper(i,0) {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    func maxNumOfSubstrings(_ s: String) -> [String] {
+//        let characterArray = Array(s)
+//        let n = characterArray.count
+//
+//        var first = [Character:Int]()
+//        var last = [Character:Int]()
+//
+//        for (i,ch) in characterArray.enumerated() {
+//            if first[c] == nil { first[c] = i}
+//        }
+        return [""]
+    }
+}
+
+typealias Graph = [Int:[Int]]
+class SCC {
+    func kosarajuSCC(_ graph: Graph, vertices: [Int]) -> [[Int]] {
+        var stack: [Int] = []
+        var visited = Set<Int>()
+
+        var reversed: Graph = [:]
+        for v in vertices {
+            reversed[v] = []
+        }
+        for (v,neighbors) in graph {
+            for u in neighbors {
+                reversed[u, default: []].append(v)
+            }
+        }
+
+        //First DFS: Filling the stack by finish time (post-order)
+        func dfs1(_ v: Int) {
+            visited.insert(v)
+            for u in graph[v] ?? [] {
+                if !visited.contains(u) {
+                    dfs1(u)
+                }
+            }
+            stack.append(v)
+        }
+
+        for v in vertices {
+            if !visited.contains(v) { dfs1(v) }
+        }
+
+        var components : [[Int]] = []
+        visited.removeAll()
+
+        func dfs2(_ v: Int,_ component: inout [Int]) {
+            visited.insert(v)
+            component.append(v)
+            for u in reversed[v] ?? [] {
+                if !visited.contains(u) {
+                    dfs2(u, &component)
+                }
+            }
+        }
+
+        while let v = stack.popLast() {
+            if !visited.contains(v) {
+                var component : [Int] = []
+                dfs2(v, &component)
+                components.append(component)
+            }
+        }
+        return components
+    }
+}
+
 
 let solution = Solution()
 //print(solution.myAtoi("0-1"))
@@ -2554,4 +2933,5 @@ let solution = Solution()
 //solution.moveZeroes(&nums)
 //print(solution.minimizeMax([10,1,2,7,1,3,5,9], 3))
 //print(solution.maxTargetNodes([[0,1],[0,2],[2,3],[2,4]], [[0,1],[0,2],[0,3],[2,7],[1,4],[4,5],[4,6]]))
-print(solution.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
+//print(solution.spiralOrder([[1,2,3],[4,5,6],[7,8,9]]))
+

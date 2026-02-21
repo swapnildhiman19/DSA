@@ -2,7 +2,7 @@
 //////MARK: Strong Reference Understanding
 /////*
 //// 1 Strong Reference
-//// 
+////
 ////class Bird {
 ////    var nest: Nest? // Strong reference
 ////    deinit { print("Bird deallocated") }
@@ -216,40 +216,40 @@
 ////
 //
 ////class Downloader {
-////    
+////
 ////    var completion: (()->Void)?
-////    
+////
 ////    func download(completion: @escaping ()->Void){
 //////        self.completion = completion
 ////        DispatchQueue.main.asyncAfterUnsafe(deadline: .now()+2.0) {
 ////            completion()
 ////        }
 ////    }
-////    
+////
 ////    deinit{
 ////        print("downloader deinitialized")
 ////    }
-////    
+////
 ////}
 ////
 ////class ViewController {
-////    
+////
 ////    let downloader = Downloader()
-////    
+////
 ////    func fetchData(){
 ////        downloader.download {
 ////            self.updateUI()
 ////        }
 ////    }
-////    
+////
 ////    func updateUI(){
 ////        print("UI updated")
 ////    }
-////    
+////
 ////    deinit {
 ////        print("viewcontroller deinitialized")
 ////    }
-////    
+////
 ////}
 ////
 ////var vc : ViewController? = ViewController()
@@ -495,7 +495,7 @@
 //
 //// [weak self] we use in swift to not increase the ARC counter [unowned self] also won't increase the counter but we need to sure that var to whom it is pointing to should always stay in memory when trying to access otherwise it might crash
 
-import Foundation
+//import Foundation
 
 //func makeAdderValue(value: Int) -> (Int) -> Int {
 //    var sum = 0
@@ -642,26 +642,26 @@ class Triangle: Shape {
 /*
  Q1
  class Animal {
-     func speak() { print("Some sound") }
+ func speak() { print("Some sound") }
  }
  class Dog: Animal {
-     override func speak() { print("Woof") }
+ override func speak() { print("Woof") }
  }
  class Fish: Animal { }
 
  If I want only Fish to Swim ( which is sort of a capability ) I would prefer protocol here so
  protocol canSwim {
-  func swim()
+ func swim()
  }
- 
+
  extension Fish : canSwim {
-  func swim () {
-    print("Fish can swim" )
-    }
+ func swim () {
+ print("Fish can swim" )
  }
- 
+ }
+
  if I would have added func swim in base class that would give Dog also the capability to swim.
- 
+
  Q2. protocol CanSpeak { func speak() }
  protocol CanSwim { func swim() }
  class Dog: CanSpeak { func speak() {print("dog is speaking")} }
@@ -670,10 +670,124 @@ class Triangle: Shape {
  }
 
  Q3. extension CanSpeak {
-  func speak() {print("Animal is speaking")}
+ func speak() {print("Animal is speaking")}
  }
- 
+
  Q4. Adding new protocol named canRun
  */
 
+//import Foundation
+//
+//enum MediaType {
+//    case book(name: String, author: String)
+//    case movie(name: String, director: String)
+//}
+//
+//let inception = MediaType.movie(name: "Coding", director: "Swapnil Dhiman")
+//
+//switch inception {
+//case .book(let name, let author):
+//    print("Book: \(name) by \(author)")
+//case .movie(let name, let director):
+//    print("Movie: \(name) directed by \(director)")
+//}
 
+//
+//protocol AdvancedLifeSupport {
+//    func performCPR() //Any person adopting this protocol must know how to perform CPR
+//}
+//
+//class EventHandler {
+//    // need to think of [weak var] implementation also
+//    var delegate: AdvancedLifeSupport?
+//    func assess(){
+//        print("What happened?")
+//    }
+//    func triggerEmergency(){
+//        print("Medical Emergency, please perform CPR")
+//        delegate?.performCPR()
+//    }
+//}
+//
+//class Doctor: AdvancedLifeSupport {
+//    init(handler: EventHandler){
+//        handler.delegate = self
+//    }
+//    func performCPR() {
+//        print("Doctor performed the CPR")
+//    }
+//}
+//
+//class Surgeon: Doctor {
+//    override func performCPR() {
+//        print("Surgeon performed the CPR with extra steps")
+//    }
+//}
+//
+//class Nurse : AdvancedLifeSupport {
+//    var handler: EventHandler?
+//    func performCPR() {
+//        print("Nurse can perform CPR too")
+//    }
+//}
+//
+//let emilio = EventHandler()
+//let doctor = Surgeon(handler: emilio)
+//let nurse = Nurse()
+//nurse.handler = emilio
+//nurse.handler?.delegate = nurse // assigning nurse as delegate
+//emilio.triggerEmergency()
+
+//class EmergencyResponseHandler {
+//    var performCPRHandler: (() -> Void)?
+//    func triggerEmergency() {
+//        print("Medical Emergency, please perform CPR")
+//        performCPRHandler?()
+//    }
+//}
+//
+//let doctor : (() -> Void) = {
+//    print("Doctor performed the CPR")
+//}
+//
+//let emilio = EmergencyResponseHandler()
+//emilio.performCPRHandler = doctor
+//emilio.triggerEmergency()
+
+import Foundation
+import UIKit
+
+protocol MyViewControllerDelegate {
+    func didTapButton()
+}
+
+class MyViewController : UIViewController {
+    var delegate : MyViewControllerDelegate?
+
+    override func viewDidAppear(_ animated: Bool) {
+        <#code#>
+    }
+
+    private let button : UIButton = {
+        let btn = UIButton(type: .system)
+        btn.setTitle("Tap Me", for: .normal)
+        btn.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
+        return btn
+    }()
+    @objc func didTapButton() {
+        delegate?.didTapButton()
+    }
+}
+
+class Coordinator : MyViewControllerDelegate {
+
+    func launch() {
+        let myVC = MyViewController()
+        myVC.delegate = self
+        // Present myVC in your app's window or navigation stack
+    }
+
+    func didTapButton() {
+        print("Button was tapped in My viewcontroller and notified to Coordinator")
+    }
+}
