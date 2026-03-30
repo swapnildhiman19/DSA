@@ -171,6 +171,7 @@ public class TreeNode {
         self.right = right
     }
 }
+/*
 class MinHeap {
     private var minHeap : [ListNode] = []
 
@@ -240,6 +241,78 @@ class MinHeap {
             parentIdx = smallestIdx
         }
 
+        return answer
+    }
+}
+*/
+struct NodeWeightPair: Comparable {
+    let node: Int
+    let weight : Int
+    static func < (lhs: NodeWeightPair, rhs: NodeWeightPair) -> Bool {
+        if lhs.weight != rhs.weight { return lhs.weight < rhs.weight }
+        return lhs.node < rhs.node
+    }
+    static func == (lhs: NodeWeightPair, rhs: NodeWeightPair) -> Bool {
+        return lhs.node == rhs.node && lhs.weight == rhs.weight
+    }
+}
+
+class MinHeap<T:Comparable> {
+
+    private var minHeap : [T] = []
+
+    var peek : T? {
+        return minHeap.first
+    }
+
+    var isEmpty : Bool {
+        return minHeap.isEmpty
+    }
+
+    var count : Int {
+        return minHeap.count
+    }
+
+    func insert(_ node: T?) {
+        //Heapify up
+        guard let node = node else {return}
+        minHeap.append(node)
+        var currIdx = minHeap.count - 1
+        while currIdx > 0 {
+            var parentIdx = (currIdx - 1)/2
+            if minHeap[parentIdx] < minHeap[currIdx] {
+                break
+            }
+            minHeap.swapAt(parentIdx, currIdx)
+            currIdx = parentIdx
+        }
+    }
+
+    func extractMin() -> T? {
+        if isEmpty { return nil }
+        if count == 1 {
+            return minHeap.removeLast()
+        }
+
+        let answer = minHeap.first
+        minHeap[0] = minHeap.removeLast()
+
+        //Now Heapify Down
+        var parentIdx = 0
+        while parentIdx < count {
+            let leftChildIdx = 2 * parentIdx + 1
+            let rightChildIdx = 2 * parentIdx + 2
+            var smallestValueIdx = parentIdx
+            if leftChildIdx < count && minHeap[leftChildIdx] < minHeap[parentIdx] {
+                smallestValueIdx = leftChildIdx
+            }
+            if rightChildIdx < count && minHeap[rightChildIdx] < minHeap[parentIdx] {
+                smallestValueIdx = rightChildIdx
+            }
+            if smallestValueIdx == parentIdx { break }
+            minHeap.swapAt(smallestValueIdx, parentIdx)
+            parentIdx = smallestValueIdx
+        }
         return answer
     }
 }
@@ -552,7 +625,7 @@ class Solution {
         return true
     }
 
-
+/*
     func mergeKLists(_ lists: [ListNode?]) -> ListNode? {
 
         if lists.count == 1 {
@@ -583,6 +656,7 @@ class Solution {
 
         return dummyHead.next
     }
+ */
 
     func myAtoi(_ s: String) -> Int {
         /*
@@ -2562,33 +2636,121 @@ class Solution {
     }
 
     func dijkstra(_ V: Int, _ adj : [[Int]], _ S : Int) -> [Int] {
-        var result = Array(repeating: 0, count : V)
         /*
-         Here adj is written as in u,v,weight
-         [[0,1,1], [0,2,6], [1,2,3]]
+         Two methods :
+         1. Priority Queue : Not work with negative weights
+         2. Set
+         3. Simple plain Queue -> But why aren't we not using this ??? : End up exploring all the paths and not the intuition of minimal distance 
          */
-        //Converting it to adjList first
+        //Input : V = 3, edges = [[0, 1, 1], [0, 2, 6], [1, 2, 3]] , S=2
+        //Step 1 : Converting it into adjList
+
         var adjList : [Int:[(Int,Int)]] = [:]
         for edge in adj {
-            let u = edge[0]
-            let v = edge[1]
+            let source = edge[0]
+            let target = edge[1]
             let weight = edge[2]
-            adjList[u, default: []].append((v,weight))
-            adjList[v, default: []].append((u,weight))
+            //This is a undirected graph
+            adjList[source, default: []].append((target,weight))
+            adjList[target, default: []].append((source,weight))
         }
-        var visited = Array(repeating: 0, count: V) //Undirected graph state needs to be like 0,1,2
-        var queue = [S]
-        visited[S] = 1
-        while !queue.isEmpty {
-            let currSourceNode = queue.removeFirst()
-            for neighbor in adjList[currSourceNode]! {
-                let currTargetNode = neighbor.0
-                let weightBetweenCurrSourceNodeAndCurrTargetNode = neighbor.1
-//                if result[currTargetNode] < 
+
+        //Approach 1 : Using minHeap -> Minimum priority queue
+        var dist = Array(repeating: Int.max, count: V)
+        dist[S] = 0
+        var heap = MinHeap<NodeWeightPair>()
+        heap.insert(NodeWeightPair(node: S, weight: 0))
+        while !heap.isEmpty {
+            guard let top = heap.peek else { break }
+            let u = top.node
+            let d = top.weight
+            if d != dist[u] { continue } //Since it is a min heap, reaching u should be optimized if that's not happening d > dist[u] why check further ahead
+            for (v,w) in adjList[u] ?? [] {
+                if d == Int.max { continue }
+                let newD = d + w
+                if newD < dist[v] {
+                    dist[v] = newD
+                    heap.insert(NodeWeightPair(node: v, weight: newD))
+                }
             }
         }
-        print(adjList)
-        return [0]
+        return dist
+    }
+
+    func strStr(_ haystack: String, _ needle: String) -> Int {
+        let lpsArrOfNeedle = calculateLPS(needle)
+        var sPointer = 0
+        var tPointer = 0
+        var sArray = Array(haystack)
+        var tArray = Array(needle)
+        let sLen = sArray.count
+        let tLen = tArray.count
+
+        while sPointer < sLen && tPointer < tLen {
+            if sArray[sPointer] == tArray[tPointer] {
+                sPointer += 1
+                tPointer += 1
+            } else {
+                if tPointer == 0 {
+                    sPointer += 1
+                } else {
+                    tPointer = lpsArrOfNeedle[tPointer - 1]
+                }
+            }
+        }
+        return tPointer == tLen ? sPointer - tPointer : -1
+    }
+
+    func calculateLPS(_ s: String) -> [Int] {
+        var strArr = Array(s)
+        let n = strArr.count
+        var lps = Array(repeating: 0, count: n)
+        var suffix = 1
+        var prefix = 0
+        while suffix < n {
+            if strArr[prefix] == strArr[suffix] {
+                lps[suffix] = prefix + 1
+                prefix += 1
+                suffix += 1
+            } else {
+                if prefix == 0 {
+                    lps[suffix] = 0
+                    suffix += 1
+                } else {
+                    prefix = lps[prefix - 1]
+                }
+            }
+        }
+        return lps
+    }
+
+    func bellmanFord(_ V: Int, _ edges: [[Int]], _ S: Int) -> [Int] {
+        //we need to do relaxation V-1 times
+        var distance = Array(repeating: Int.max, count: V)
+        distance[S] = 0
+        var counter = 0 
+        while counter < V-1 {
+            for edge in edges {
+                let u = edge[0]
+                let v = edge[1]
+                let wt = edge[2]
+                if distance[u] != Int.max && distance[u] + wt < distance[v] {
+                    distance[v] = distance[u] + wt //Definition of relaxation
+                }
+            }
+            counter += 1
+        }
+        //If doing relaxation for V th iteration, distance array still gets updated meaning we are having negative weight cycle
+        for edge in edges {
+            let u = edge[0]
+            let v = edge[1]
+            let wt = edge[2]
+            if distance[u] != Int.max && distance[u] + wt < distance[v] {
+                // distance[v] = distance[u] + wt
+                return Array(repeating: Int.min, count: V)
+            }
+        }
+        return distance 
     }
 }
 
